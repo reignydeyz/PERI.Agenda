@@ -1,0 +1,48 @@
+<h1>Member</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+<hr />
+
+<form class="form-group" #frm="ngForm" (ngSubmit)="onSearchSubmit(frm)" ngNativeValidate id="frm">
+    <div class="form-group">
+        <label>Name</label>
+        <input class="form-control" placeholder="Name" name="name" ngModel required>
+    </div>
+    <div class="form-group">
+        <label>Email address</label>
+        <input type="email" class="form-control" placeholder="Enter email" name="email" ngModel>
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+    <a class="btn btn-default" onclick='document.getElementById("frm").reset()'>Clear</a>
+</form>
+
+<hr />
+
+<p *ngIf="!members"><em>Loading...</em></p>
+
+<p *ngIf="members">
+    <button class="btn btn-primary">New</button>
+    <button class="btn btn-default">Delete</button>
+</p>
+
+<table class="table" *ngIf="members">
+    <thead>
+        <tr>
+            <th width="5%"><input type="checkbox" /></th>
+            <th>Name</th>
+            <th>Nick</th>
+            <th>Address</th>
+            <th>Mobile</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let m of members">
+            <td><input type="checkbox"/></td>
+            <td>{{ m.name }}</td>
+            <td>{{ m.nickName }}</td>
+            <td>{{ m.address }}</td>
+            <td>{{ m.mobile }}</td>
+        </tr>
+    </tbody>
+</table>
