@@ -18,6 +18,7 @@
     "@angular/platform-server": "4.2.5",
     "@angular/router": "4.2.5",
     "@ngtools/webpack": "1.5.0",
+    "@types/bootstrap": "^3.3.37",
     "@types/chai": "4.0.1",
     "@types/jasmine": "2.5.53",
     "@types/webpack-env": "1.13.0",
@@ -58,5 +59,9 @@
     "webpack-hot-middleware": "2.18.2",
     "webpack-merge": "4.1.0",
     "zone.js": "0.8.12"
+  },
+  "dependencies": {
+    "@types/jquery": "^3.3.0",
+    "jquery-modal": "^0.9.1"
   }
 }

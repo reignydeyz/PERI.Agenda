@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { Http } from '@angular/http';
 import { NgForm } from '@angular/forms';
+import * as $ from "jquery";
 
 @Component({
     selector: 'member',
@@ -13,7 +14,7 @@ export class MemberComponent {
     _http: Http;
     _baseUrl: string;
 
-    public find(m: Member) {
+    private find(m: Member) {
         this._http.post(this._baseUrl + 'api/member/find', {
             name: m.name,
             email: m.email
@@ -22,10 +23,17 @@ export class MemberComponent {
         }, error => console.error(error));
     }
 
+    private add(m: Member) {
+        this._http.post(this._baseUrl + 'api/member/new', {
+            name: m.name,
+            email: m.email
+        }).subscribe(result => { alert('Added!'); $('#myModal').modal('toggle'); }, error => console.error(error));
+    }
+
     constructor(http: Http, @Inject('BASE_URL') baseUrl: string) {
         this._http = http;
         this._baseUrl = baseUrl;
-        this.find(new Member());
+        this.find(new Member());        
     }
 
     // https://www.concretepage.com/angular-2/angular-2-ngform-with-ngmodel-directive-example
@@ -35,6 +43,14 @@ export class MemberComponent {
         m.email = f.controls['email'].value;
 
         this.find(m);
+    }
+
+    public onNewSubmit(f: NgForm) {
+        var m = new Member();
+        m.name = f.controls['name'].value;
+        m.email = f.controls['email'].value;
+
+        this.add(m);
     }
 }
 

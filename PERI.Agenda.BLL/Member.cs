@@ -22,9 +22,11 @@ namespace PERI.Agenda.BLL
             throw new NotImplementedException();
         }
 
-        public Task<int> Add(EF.Member args)
+        public async Task<int> Add(EF.Member args)
         {
-            throw new NotImplementedException();
+            var id = await context.Member.AddAsync(args);
+            context.SaveChanges();
+            return args.Id;
         }
 
         public Task Deactivate(int[] ids)
