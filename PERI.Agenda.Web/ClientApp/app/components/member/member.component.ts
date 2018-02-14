@@ -41,6 +41,7 @@ export class MemberComponent {
     constructor(http: Http, @Inject('BASE_URL') baseUrl: string) {
         this._http = http;
         this._baseUrl = baseUrl;
+        this.member = new Member();
         this.find(new Member());
     }
 
@@ -73,10 +74,21 @@ export class MemberComponent {
 
         this.edit(m);
     }
+
+    // https://stackoverflow.com/questions/20043265/check-if-checkbox-element-is-checked-in-typescript
+    checkAll() {
+        var src = <HTMLInputElement>document.getElementById("checkall");
+
+        $("#tbl").find('input[type=checkbox]').each(function () { 
+            var element = <HTMLInputElement>this;
+            element.checked = src.checked;
+        });
+    }
 }
 
 class Member {
     name: string;
+    gender: number;
     nickName: string;
     email: string;
     address: string;

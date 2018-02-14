@@ -26,28 +26,35 @@
     <button class="btn btn-default">Delete</button>
 </p>
 
-<table class="table" *ngIf="members">
-    <thead>
-        <tr>
-            <th width="5%"><input type="checkbox" /></th>
-            <th width="5%"></th>
-            <th>Name</th>
-            <th>Nick</th>
-            <th>Address</th>
-            <th>Mobile</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let m of members">
-            <td><input type="checkbox"/></td>
-            <td><button class="btn btn-default" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(m.id);">Edit</button></td>
-            <td>{{ m.name }}</td>
-            <td>{{ m.nickName }}</td>
-            <td>{{ m.address }}</td>
-            <td>{{ m.mobile }}</td>
-        </tr>
-    </tbody>
-</table>
+<div style="width:100%; overflow:auto" *ngIf="members">
+    <table class="table" id="tbl">
+        <thead>
+            <tr>
+                <th width="5%"><input type="checkbox" (change)="checkAll()" id="checkall"/></th>
+                <th width="5%"></th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Nick</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let m of members">
+                <td><input type="checkbox" /></td>
+                <td><button class="btn btn-default" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(m.id);">Edit</button></td>
+                <td>{{ m.name }}</td>
+                <td>{{ m.gender == 3 ? 'Male' : (m.gender == 4 ? 'Female' : '') }}</td>
+                <td>{{ m.nickName }}</td>
+                <td><a href="mailto: {{m.email}}">{{ m.email }}</a></td>
+                <td>{{ m.mobile }}</td>
+                <td>{{ m.address }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
 
 <div class="modal fade" id="modalNew" role="dialog">
     <div class="modal-dialog">
@@ -69,11 +76,15 @@
                         <input type="email" class="form-control" placeholder="Enter email" name="email" ngModel>
                     </div>
                     <div class="form-group">
+                        <label>Birth date</label>
+                        <input type="date" class="form-control" name="dob" ngModel>
+                    </div>
+                    <div class="form-group">
                         <label>Gender</label>
                         <select class="form-control" required>
                             <option value="">--SELECT--</option>
-                            <option value="1">Male</option>
-                            <option value="2">Female</option>
+                            <option value="3">Male</option>
+                            <option value="4">Female</option>
                         </select>
                     </div>
                 </div>
@@ -109,8 +120,8 @@
                         <label>Gender</label>
                         <select class="form-control" required>
                             <option value="">--SELECT--</option>
-                            <option value="1">Male</option>
-                            <option value="2">Female</option>
+                            <option value="3" selected="{{ member.gender == 3 ? 'selected' : '' }}">Male</option>
+                            <option value="4" selected="{{ member.gender == 4 ? 'selected' : '' }}">Female</option>
                         </select>
                     </div>
                 </div>
