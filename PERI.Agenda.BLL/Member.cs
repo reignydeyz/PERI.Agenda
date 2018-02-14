@@ -56,7 +56,7 @@ namespace PERI.Agenda.BLL
 
         public async Task<IEnumerable<EF.Member>> Find(EF.Member args)
         {
-            return await context.Member.Where(x => x.Name.Contains(args.Name ?? "")).ToListAsync();
+            return await context.Member.Where(x => x.Name.Contains(args.Name ?? "")).OrderBy(x => x.Name).Take(1000).ToListAsync();
         }
 
         public async Task<EF.Member> Get(EF.Member args)
