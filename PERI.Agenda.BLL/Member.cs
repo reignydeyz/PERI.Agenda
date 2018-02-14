@@ -59,9 +59,9 @@ namespace PERI.Agenda.BLL
             return await context.Member.Where(x => x.Name.Contains(args.Name ?? "")).ToListAsync();
         }
 
-        public Task<EF.Member> Get(EF.Member args)
+        public async Task<EF.Member> Get(EF.Member args)
         {
-            throw new NotImplementedException();
+            return await context.Member.FirstOrDefaultAsync(x => x.Id == args.Id);
         }
     }
 }

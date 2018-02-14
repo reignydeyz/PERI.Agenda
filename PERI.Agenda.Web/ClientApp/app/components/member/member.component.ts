@@ -9,6 +9,7 @@ import * as $ from "jquery";
 })
 
 export class MemberComponent {
+    public member: Member;
     public members: Member[];
 
     _http: Http;
@@ -27,13 +28,20 @@ export class MemberComponent {
         this._http.post(this._baseUrl + 'api/member/new', {
             name: m.name,
             email: m.email
-        }).subscribe(result => { alert('Added!'); $('#myModal').modal('toggle'); }, error => console.error(error));
+        }).subscribe(result => { alert('Added!'); $('#modalNew').modal('toggle'); }, error => console.error(error));
+    }
+
+    private edit(m: Member) {
+        this._http.post(this._baseUrl + 'api/member/edit', {
+            name: m.name,
+            email: m.email
+        }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => console.error(error));
     }
 
     constructor(http: Http, @Inject('BASE_URL') baseUrl: string) {
         this._http = http;
         this._baseUrl = baseUrl;
-        this.find(new Member());        
+        this.find(new Member());
     }
 
     // https://www.concretepage.com/angular-2/angular-2-ngform-with-ngmodel-directive-example
@@ -51,6 +59,19 @@ export class MemberComponent {
         m.email = f.controls['email'].value;
 
         this.add(m);
+    }
+
+    public onEditInit(id: number) {
+        this._http.get(this._baseUrl + 'api/member/findbyid?id=' + id)
+            .subscribe(result => { this.member = result.json() as Member }, error => console.error(error));
+    }
+
+    public onEditSubmit(f: NgForm) {
+        var m = new Member();
+        m.name = f.controls['name'].value;
+        m.email = f.controls['email'].value;
+
+        this.edit(m);
     }
 }
 

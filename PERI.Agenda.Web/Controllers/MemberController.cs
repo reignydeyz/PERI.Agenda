@@ -28,5 +28,16 @@ namespace PERI.Agenda.Web.Controllers
 
             return await bll_member.Add(obj);
         }
+        
+        [HttpGet("[action]")]
+        public async Task<EF.Member> FindById()
+        {
+            var id = Request.Query["id"].ToString();
+
+            var context = new EF.aarsdbContext();
+            var bll_member = new BLL.Member(context);
+
+            return await bll_member.Get(new EF.Member { Id = Convert.ToInt32(id) });
+        }
     }
 }
