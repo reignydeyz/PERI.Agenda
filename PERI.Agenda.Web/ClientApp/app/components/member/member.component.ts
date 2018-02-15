@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, AfterViewInit } from '@angular/core';
 import { Http } from '@angular/http';
 import { NgForm } from '@angular/forms';
 import * as $ from "jquery";
@@ -83,6 +83,11 @@ export class MemberComponent {
             var element = <HTMLInputElement>this;
             element.checked = src.checked;
         });
+    }
+
+    // https://stackoverflow.com/questions/34547127/angular2-equivalent-of-document-ready
+    ngAfterViewInit() {
+
     }
 }
 
