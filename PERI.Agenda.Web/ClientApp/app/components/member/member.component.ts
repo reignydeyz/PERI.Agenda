@@ -3,6 +3,8 @@ import { Http } from '@angular/http';
 import { NgForm } from '@angular/forms';
 import * as $ from "jquery";
 
+import { LookUpComponent } from '../lookup/lookup.component';
+
 @Component({
     selector: 'member',
     templateUrl: './member.component.html'
@@ -87,7 +89,11 @@ export class MemberComponent {
 
     // https://stackoverflow.com/questions/34547127/angular2-equivalent-of-document-ready
     ngAfterViewInit() {
+        var lookup = new LookUpComponent();
+        lookup.baseUrl = this._baseUrl;
+        lookup.http = this._http;
 
+        console.log(lookup.getByGroup('Gender'));
     }
 }
 
