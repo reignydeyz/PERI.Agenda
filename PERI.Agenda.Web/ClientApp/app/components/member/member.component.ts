@@ -3,7 +3,7 @@ import { Http } from '@angular/http';
 import { NgForm } from '@angular/forms';
 import * as $ from "jquery";
 
-import { LookUpComponent } from '../lookup/lookup.component';
+import { LookUp } from "../lookup/lookup.component";
 
 @Component({
     selector: 'member',
@@ -13,6 +13,7 @@ import { LookUpComponent } from '../lookup/lookup.component';
 export class MemberComponent {
     public member: Member;
     public members: Member[];
+    public genders: LookUp[];
 
     _http: Http;
     _baseUrl: string;
@@ -89,15 +90,13 @@ export class MemberComponent {
 
     // https://stackoverflow.com/questions/34547127/angular2-equivalent-of-document-ready
     ngAfterViewInit() {
-        var lookup = new LookUpComponent();
-        lookup.baseUrl = this._baseUrl;
-        lookup.http = this._http;
-
-        console.log(lookup.getByGroup('Gender'));
+        // Get Gender from LookUp
+        this._http.get(this._baseUrl + 'api/lookup/findbygroup?group=Gender')
+            .subscribe(result => { this.genders = result.json() as LookUp[] }, error => console.error(error));
     }
 }
 
-class Member {
+export class Member {
     name: string;
     gender: number;
     nickName: string;
