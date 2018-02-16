@@ -31,8 +31,9 @@
                 <th width="5%"><input type="checkbox" (change)="checkAll()" id="checkall"/></th>
                 <th width="5%"></th>
                 <th>Name</th>
-                <th>Gender</th>
                 <th>Nick</th>
+                <th>Birth date</th>
+                <th>Gender</th>                
                 <th>Email</th>
                 <th>Mobile</th>
                 <th>Address</th>
@@ -43,8 +44,9 @@
                 <td><input type="checkbox" /></td>
                 <td><button class="btn btn-default" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(m.id);">Edit</button></td>
                 <td>{{ m.name }}</td>
-                <td>{{ m.gender == 3 ? 'Male' : (m.gender == 4 ? 'Female' : '') }}</td>
                 <td>{{ m.nickName }}</td>
+                <td>{{ m.birthDate | date: 'MM/dd/yyyy' }}</td>
+                <td>{{ m.gender == 3 ? 'Male' : (m.gender == 4 ? 'Female' : '') }}</td>
                 <td><a href="mailto: {{m.email}}">{{ m.email }}</a></td>
                 <td>{{ m.mobile }}</td>
                 <td>{{ m.address }}</td>
@@ -108,6 +110,11 @@
                     <div class="form-group">
                         <label>Name</label>
                         <input class="form-control" placeholder="Name" name="name" ngModel required value="{{ member.name }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Birth date</label>
+                        <!--https://stackoverflow.com/questions/18157045/date-field-does-not-display-the-value-in-chrome-browser-->
+                        <input type="date" class="form-control" name="birthdate" ngModel value="{{ member.birthDate | date: 'yyyy-MM-dd' }}">
                     </div>
                     <div class="form-group">
                         <label>Email address</label>

@@ -98,8 +98,9 @@ export class MemberComponent {
 
 export class Member {
     name: string;
-    gender: number;
     nickName: string;
+    birthDate: string;
+    gender: number;
     email: string;
     address: string;
     mobile: string;
