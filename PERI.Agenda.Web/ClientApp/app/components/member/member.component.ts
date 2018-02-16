@@ -21,7 +21,11 @@ export class MemberComponent {
     private find(m: Member) {
         this._http.post(this._baseUrl + 'api/member/find', {
             name: m.name,
-            email: m.email
+            nickName: m.nickName,
+            birthDate: m.birthDate,
+            email: m.email,
+            address: m.address,
+            mobile: m.mobile,
         }).subscribe(result => {
             this.members = result.json() as Member[];
         }, error => console.error(error));
@@ -30,15 +34,19 @@ export class MemberComponent {
     private add(m: Member) {
         this._http.post(this._baseUrl + 'api/member/new', {
             name: m.name,
-            email: m.email
-        }).subscribe(result => { alert('Added!'); $('#modalNew').modal('toggle'); }, error => console.error(error));
+            nickName: m.nickName,
+            birthDate: m.birthDate,
+            email: m.email,
+            address: m.address,
+            mobile: m.mobile,
+        }).subscribe(result => { alert('Added!'); $('#modalNew').modal('toggle'); }, error => { console.error(error); alert('Oops! Unknown error has occured.') });
     }
 
     private edit(m: Member) {
         this._http.post(this._baseUrl + 'api/member/edit', {
             name: m.name,
             email: m.email
-        }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => console.error(error));
+        }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => { console.error(error); alert('Oops! Unknown error has occured.') });
     }
 
     constructor(http: Http, @Inject('BASE_URL') baseUrl: string) {
@@ -60,7 +68,11 @@ export class MemberComponent {
     public onNewSubmit(f: NgForm) {
         var m = new Member();
         m.name = f.controls['name'].value;
+        m.nickName = f.controls['nickName'].value;
+        m.birthDate = f.controls['birthDate'].value;
         m.email = f.controls['email'].value;
+        m.address = f.controls['address'].value;
+        m.mobile = f.controls['mobile'].value;
 
         this.add(m);
     }
@@ -98,6 +110,7 @@ export class MemberComponent {
 }
 
 export class Member {
+    id: number;
     name: string;
     nickName: string;
     birthDate: string;
