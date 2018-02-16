@@ -3,7 +3,7 @@ import { Http } from '@angular/http';
 import { NgForm } from '@angular/forms';
 import * as $ from "jquery";
 
-import { LookUp } from "../lookup/lookup.component";
+import { LookUpComponent, LookUp } from "../lookup/lookup.component";
 
 @Component({
     selector: 'member',
@@ -90,9 +90,10 @@ export class MemberComponent {
 
     // https://stackoverflow.com/questions/34547127/angular2-equivalent-of-document-ready
     ngAfterViewInit() {
-        // Get Gender from LookUp
-        this._http.get(this._baseUrl + 'api/lookup/findbygroup?group=Gender')
-            .subscribe(result => { this.genders = result.json() as LookUp[] }, error => console.error(error));
+        var lc = new LookUpComponent();
+        lc.http = this._http;
+        lc.baseUrl = this._baseUrl;
+        lc.getByGroup('Gender').subscribe(result => { this.genders = result });
     }
 }
 
