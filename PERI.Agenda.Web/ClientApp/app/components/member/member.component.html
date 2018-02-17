@@ -5,7 +5,7 @@
 <form class="form-group" #frm="ngForm" (ngSubmit)="onSearchSubmit(frm)" ngNativeValidate id="frm">
     <div class="form-group">
         <label>Name</label>
-        <input class="form-control" placeholder="Name" name="name" ngModel required>
+        <input class="form-control" placeholder="Name" name="name" ngModel>
     </div>
     <div class="form-group">
         <label>Email address</label>
@@ -40,9 +40,9 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let m of members">
+            <tr *ngFor="let m of members; let i = index">
                 <td><input type="checkbox" /></td>
-                <td><button class="btn btn-default" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(m.id);">Edit</button></td>
+                <td><button class="btn btn-default" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(m.id, i)">Edit</button></td>
                 <td>{{ m.name }}</td>
                 <td>{{ m.nickName }}</td>
                 <td>{{ m.birthDate | date: 'MM/dd/yyyy' }}</td>
@@ -118,6 +118,7 @@
                 <h4 class="modal-title">Edit Member</h4>
             </div>
             <form class="form-group" (ngSubmit)="onEditSubmit(member)" ngNativeValidate id="frmEdit">
+                <input type="hidden" id="index">
                 <input type="hidden" name="member.id" [(ngModel)]="member.id">
                 <div class="modal-body">
                     <div class="form-group">
@@ -131,13 +132,14 @@
                     <div class="form-group">
                         <label>Birth date</label>
                         <!--https://stackoverflow.com/questions/18157045/date-field-does-not-display-the-value-in-chrome-browser-->
-                        <input type="date" class="form-control" name="member.birthDate" [(ngModel)]="member.birthDate">
+                        <input type="date" class="form-control" value="{{ member.birthDate | date: 'yyyy-MM-dd' }}" id="txtDate" (keypress)="onBirthDateChange()">
                     </div>
                     <div class="form-group">
                         <label>Gender</label>
-                        <select class="form-control" required [(ngModel)]="member.gender == null ? '' : member.gender" name="gender">
+                        <!--https://stackoverflow.com/questions/35945001/binding-select-element-to-object-in-angular-->
+                        <select class="form-control" required [(ngModel)]="member.gender" name="member.gender">
                             <option value="">--SELECT--</option>
-                            <option *ngFor="let g of genders" value="{{ g.value }}">{{ g.name }}</option>
+                            <option *ngFor="let g of genders" [value]="g.value">{{ g.name }}</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -153,7 +155,7 @@
                         <input class="form-control" placeholder="Mobile" name="member.mobile" [(ngModel)]="member.mobile">
                     </div>
                 </div>
-               
+
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Submit</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

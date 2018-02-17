@@ -61,7 +61,7 @@ namespace PERI.Agenda.BLL
             user.Address = args.Address;
             user.Mobile = args.Mobile;
 
-            await context.SaveChangesAsync();
+            context.SaveChanges();
         }
 
         public async Task<IEnumerable<EF.Member>> Find(EF.Member args)

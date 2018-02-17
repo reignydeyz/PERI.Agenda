@@ -4,6 +4,7 @@ import { NgForm, NgModel } from '@angular/forms';
 import * as $ from "jquery";
 
 import { LookUpComponent, LookUp } from "../lookup/lookup.component";
+import * as moment from 'moment';
 
 @Component({
     selector: 'member',
@@ -11,6 +12,7 @@ import { LookUpComponent, LookUp } from "../lookup/lookup.component";
 })
 
 export class MemberComponent {
+    public row: number;
     public member: Member;
     public members: Member[];
     public genders: LookUp[];
@@ -47,6 +49,7 @@ export class MemberComponent {
             id: m.id,
             name: m.name,
             nickName: m.nickName,
+            gender: m.gender,
             birthDate: m.birthDate,
             email: m.email,
             address: m.address,
@@ -80,15 +83,24 @@ export class MemberComponent {
         m.mobile = f.controls['mobile'].value;
 
         this.add(m);
+
+        this.members.push(m);
     }
 
-    public onEditInit(id: number) {
+    public onEditInit(id: number, index: number) {
         this._http.get(this._baseUrl + 'api/member/findbyid?id=' + id)
             .subscribe(result => { this.member = result.json() as Member }, error => console.error(error));
+
+        this.row = index;
     }
 
-    public onEditSubmit(member: Member) {        
-        this.edit(member);
+    public onEditSubmit(member: Member) {
+        var date = <HTMLInputElement>document.getElementById("txtDate");
+        this.member.birthDate = date.value;
+
+        this.edit(member);  
+
+        this.members[this.row] = member;
     }
 
     // https://stackoverflow.com/questions/20043265/check-if-checkbox-element-is-checked-in-typescript
