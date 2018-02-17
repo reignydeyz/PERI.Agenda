@@ -1,6 +1,6 @@
 import { Component, Inject, AfterViewInit } from '@angular/core';
 import { Http } from '@angular/http';
-import { NgForm } from '@angular/forms';
+import { NgForm, NgModel } from '@angular/forms';
 import * as $ from "jquery";
 
 import { LookUpComponent, LookUp } from "../lookup/lookup.component";
@@ -44,8 +44,13 @@ export class MemberComponent {
 
     private edit(m: Member) {
         this._http.post(this._baseUrl + 'api/member/edit', {
+            id: m.id,
             name: m.name,
-            email: m.email
+            nickName: m.nickName,
+            birthDate: m.birthDate,
+            email: m.email,
+            address: m.address,
+            mobile: m.mobile,
         }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => { console.error(error); alert('Oops! Unknown error has occured.') });
     }
 
@@ -82,12 +87,8 @@ export class MemberComponent {
             .subscribe(result => { this.member = result.json() as Member }, error => console.error(error));
     }
 
-    public onEditSubmit(f: NgForm) {
-        var m = new Member();
-        m.name = f.controls['name'].value;
-        m.email = f.controls['email'].value;
-
-        this.edit(m);
+    public onEditSubmit(member: Member) {        
+        this.edit(member);
     }
 
     // https://stackoverflow.com/questions/20043265/check-if-checkbox-element-is-checked-in-typescript

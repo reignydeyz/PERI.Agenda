@@ -49,9 +49,19 @@ namespace PERI.Agenda.BLL
             throw new NotImplementedException();
         }
 
-        public Task Edit(EF.Member args)
+        public async Task Edit(EF.Member args)
         {
-            throw new NotImplementedException();
+            var user = await context.Member.FirstAsync(x => x.Id == args.Id);
+
+            user.Name = args.Name;
+            user.NickName = args.NickName;
+            user.BirthDate = args.BirthDate;
+            user.Gender = args.Gender;
+            user.Email = args.Email;
+            user.Address = args.Address;
+            user.Mobile = args.Mobile;
+
+            await context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<EF.Member>> Find(EF.Member args)
