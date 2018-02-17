@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PERI.Agenda.EF", "PERI.Agenda.EF\PERI.Agenda.EF.csproj", "{D1AAEAD7-BFCA-46F4-A367-238C24B727D3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PERI.Agenda.BLL", "PERI.Agenda.BLL\PERI.Agenda.BLL.csproj", "{9419E712-6045-45ED-9861-DB86021FD625}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PERI.Agenda.Web", "PERI.Agenda.Web\PERI.Agenda.Web.csproj", "{B2AF69E7-6379-4B7B-A802-5BA30341E76D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PERI.Agenda.Core", "PERI.Agenda.Core\PERI.Agenda.Core.csproj", "{FD007DD4-BEEB-4007-88B4-5D5E3352012A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PERI.Agenda.Core", "PERI.Agenda.Core\PERI.Agenda.Core.csproj", "{FD007DD4-BEEB-4007-88B4-5D5E3352012A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PERI.Agenda.Web", "PERI.Agenda.Web\PERI.Agenda.Web.csproj", "{D43F787A-4891-4C90-B20E-3BA108806436}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,14 +25,14 @@ Global
 		{9419E712-6045-45ED-9861-DB86021FD625}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9419E712-6045-45ED-9861-DB86021FD625}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9419E712-6045-45ED-9861-DB86021FD625}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B2AF69E7-6379-4B7B-A802-5BA30341E76D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B2AF69E7-6379-4B7B-A802-5BA30341E76D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B2AF69E7-6379-4B7B-A802-5BA30341E76D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B2AF69E7-6379-4B7B-A802-5BA30341E76D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FD007DD4-BEEB-4007-88B4-5D5E3352012A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FD007DD4-BEEB-4007-88B4-5D5E3352012A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD007DD4-BEEB-4007-88B4-5D5E3352012A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD007DD4-BEEB-4007-88B4-5D5E3352012A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D43F787A-4891-4C90-B20E-3BA108806436}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D43F787A-4891-4C90-B20E-3BA108806436}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D43F787A-4891-4C90-B20E-3BA108806436}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D43F787A-4891-4C90-B20E-3BA108806436}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
