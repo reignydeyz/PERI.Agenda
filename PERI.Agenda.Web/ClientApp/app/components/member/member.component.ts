@@ -8,7 +8,8 @@ import * as moment from 'moment';
 
 @Component({
     selector: 'member',
-    templateUrl: './member.component.html'
+    templateUrl: './member.component.html',
+    styleUrls: ['./member.component.css']
 })
 
 export class MemberComponent {
@@ -89,7 +90,7 @@ export class MemberComponent {
 
     public onEditInit(id: number, index: number) {
         this._http.get(this._baseUrl + 'api/member/findbyid?id=' + id)
-            .subscribe(result => { this.member = result.json() as Member }, error => console.error(error));
+            .subscribe(result => { this.member = result.json() as Member; console.log(result.json()) }, error => console.error(error));
 
         this.row = index;
     }
@@ -131,4 +132,5 @@ export class Member {
     email: string;
     address: string;
     mobile: string;
+    isActive: boolean;
 }

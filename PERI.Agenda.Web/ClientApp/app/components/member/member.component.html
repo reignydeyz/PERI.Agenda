@@ -28,12 +28,13 @@
     <table class="table" id="tbl">
         <thead>
             <tr>
-                <th width="5%"><input type="checkbox" (change)="checkAll()" id="checkall"/></th>
+                <th width="1%"></th>
+                <th width="5%"><input type="checkbox" (change)="checkAll()" id="checkall" /></th>
                 <th width="5%"></th>
                 <th>Name</th>
                 <th>Nick</th>
                 <th>Birth date</th>
-                <th>Gender</th>                
+                <th>Gender</th>
                 <th>Email</th>
                 <th>Mobile</th>
                 <th>Address</th>
@@ -41,6 +42,7 @@
         </thead>
         <tbody>
             <tr *ngFor="let m of members; let i = index">
+                <td [class.inactive]="m.isActive == false"></td>
                 <td><input type="checkbox" /></td>
                 <td><button class="btn btn-default" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(m.id, i)">Edit</button></td>
                 <td>{{ m.name }}</td>
