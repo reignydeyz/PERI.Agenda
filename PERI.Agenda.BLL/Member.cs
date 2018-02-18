@@ -24,6 +24,7 @@ namespace PERI.Agenda.BLL
 
         public async Task<int> Add(EF.Member args)
         {
+            args.IsActive = true;
             var id = await context.Member.AddAsync(args);
             context.SaveChanges();
             return args.Id;
@@ -60,6 +61,7 @@ namespace PERI.Agenda.BLL
             user.Email = args.Email;
             user.Address = args.Address;
             user.Mobile = args.Mobile;
+            user.IsActive = args.IsActive;
 
             context.SaveChanges();
         }

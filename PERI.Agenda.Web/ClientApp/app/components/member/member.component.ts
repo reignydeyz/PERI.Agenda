@@ -17,6 +17,7 @@ export class MemberComponent {
     public member: Member;
     public members: Member[];
     public genders: LookUp[];
+    public statuses: boolean[];
 
     _http: Http;
     _baseUrl: string;
@@ -28,7 +29,7 @@ export class MemberComponent {
             birthDate: m.birthDate,
             email: m.email,
             address: m.address,
-            mobile: m.mobile,
+            mobile: m.mobile
         }).subscribe(result => {
             this.members = result.json() as Member[];
         }, error => console.error(error));
@@ -42,6 +43,7 @@ export class MemberComponent {
             email: m.email,
             address: m.address,
             mobile: m.mobile,
+            isActive: m.isActive
         }).subscribe(result => { alert('Added!'); $('#modalNew').modal('toggle'); }, error => { console.error(error); alert('Oops! Unknown error has occured.') });
     }
 
@@ -55,6 +57,7 @@ export class MemberComponent {
             email: m.email,
             address: m.address,
             mobile: m.mobile,
+            isActive: m.isActive
         }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => { console.error(error); alert('Oops! Unknown error has occured.') });
     }
 
@@ -63,6 +66,8 @@ export class MemberComponent {
         this._baseUrl = baseUrl;
         this.member = new Member();
         this.find(new Member());
+
+        this.statuses = [false, true];
     }
 
     // https://www.concretepage.com/angular-2/angular-2-ngform-with-ngmodel-directive-example
@@ -90,7 +95,7 @@ export class MemberComponent {
 
     public onEditInit(id: number, index: number) {
         this._http.get(this._baseUrl + 'api/member/findbyid?id=' + id)
-            .subscribe(result => { this.member = result.json() as Member; console.log(result.json()) }, error => console.error(error));
+            .subscribe(result => { this.member = result.json() as Member }, error => console.error(error));
 
         this.row = index;
     }
@@ -102,6 +107,8 @@ export class MemberComponent {
         this.edit(member);  
 
         this.members[this.row] = member;
+
+        console.log(member);
     }
 
     // https://stackoverflow.com/questions/20043265/check-if-checkbox-element-is-checked-in-typescript

@@ -22,6 +22,7 @@
 <p *ngIf="members">
     <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modalNew" onclick='document.getElementById("frmNew").reset()'>New</a>
     <button class="btn btn-default">Delete</button>
+    <button class="btn btn-success" style="float: right" onclick="location.reload();">Refresh</button>
 </p>
 
 <div style="width:100%; overflow:auto" *ngIf="members">
@@ -42,7 +43,7 @@
         </thead>
         <tbody>
             <tr *ngFor="let m of members; let i = index">
-                <td [class.inactive]="m.isActive == false"></td>
+                <td [ngClass]="{active: m.isActive == true || m.isActive == 'true', inactive: m.isActive == false || m.isActive == 'false'}"></td>
                 <td><input type="checkbox" /></td>
                 <td><button class="btn btn-default" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(m.id, i)">Edit</button></td>
                 <td>{{ m.name }}</td>
@@ -155,6 +156,12 @@
                     <div class="form-group">
                         <label>Mobile</label>
                         <input class="form-control" placeholder="Mobile" name="member.mobile" [(ngModel)]="member.mobile">
+                    </div>
+                    <div class="form-group">
+                        <label>Is active?</label>
+                        <select class="form-control" [(ngModel)]="member.isActive" name="member.isActive">
+                            <option *ngFor="let s of statuses" [value]="s">{{ s == false ? 'No' : 'Yes' }}</option>
+                        </select>
                     </div>
                 </div>
 
