@@ -21,7 +21,7 @@
 
 <p *ngIf="members">
     <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modalNew" onclick='document.getElementById("frmNew").reset()'>New</a>
-    <button class="btn btn-default">Delete</button>
+    <button class="btn btn-default" (click)="onDeleteClick()">Delete</button>
     <button class="btn btn-success" style="float: right" onclick="location.reload();">Refresh</button>
 </p>
 
@@ -44,7 +44,7 @@
         <tbody>
             <tr *ngFor="let m of members; let i = index">
                 <td [ngClass]="{active: m.isActive == true || m.isActive == 'true', inactive: m.isActive == false || m.isActive == 'false'}" style="padding: 2px"></td>
-                <td><input type="checkbox" /></td>
+                <td><input type="checkbox" value="{{ m.id }}" (change)="onSelectedRowChange($event, i)" class="checkBox" /></td>
                 <td><button class="btn btn-default" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(m.id, i)">Edit</button></td>
                 <td>{{ m.name }}</td>
                 <td>{{ m.nickName }}</td>

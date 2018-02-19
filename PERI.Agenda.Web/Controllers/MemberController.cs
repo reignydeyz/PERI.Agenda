@@ -48,5 +48,14 @@ namespace PERI.Agenda.Web.Controllers
 
             await bll_member.Edit(obj);
         }
+
+        [HttpPost("[action]")]
+        public async Task Delete([FromBody] int[] ids)
+        {
+            var context = new EF.aarsdbContext();
+            var bll_member = new BLL.Member(context);
+
+            await bll_member.Delete(ids);
+        }
     }
 }

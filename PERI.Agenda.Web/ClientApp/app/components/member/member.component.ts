@@ -13,7 +13,7 @@ import * as moment from 'moment';
 })
 
 export class MemberComponent {
-    public row: number;
+    public rows: number[];
     public member: Member;
     public members: Member[];
     public genders: LookUp[];
@@ -68,6 +68,7 @@ export class MemberComponent {
         this.find(new Member());
 
         this.statuses = [false, true];
+        this.rows = [];
     }
 
     // https://www.concretepage.com/angular-2/angular-2-ngform-with-ngmodel-directive-example
@@ -97,7 +98,8 @@ export class MemberComponent {
         this._http.get(this._baseUrl + 'api/member/findbyid?id=' + id)
             .subscribe(result => { this.member = result.json() as Member }, error => console.error(error));
 
-        this.row = index;
+        this.rows = [];
+        this.rows.push(index);
     }
 
     public onEditSubmit(member: Member) {
@@ -106,7 +108,7 @@ export class MemberComponent {
 
         this.edit(member);  
 
-        this.members[this.row] = member;
+        this.members[this.rows[0]] = member;
 
         console.log(member);
     }
@@ -127,6 +129,43 @@ export class MemberComponent {
         lc.http = this._http;
         lc.baseUrl = this._baseUrl;
         lc.getByGroup('Gender').subscribe(result => { this.genders = result });
+    }
+
+    onDeleteClick() {
+        var flag = confirm('Are you sure you want to delete selected records?');
+
+        if (!flag)
+            return false;
+
+        var selectedIds = new Array();
+        $('input:checkbox.checkBox').each(function () {
+            if ($(this).prop('checked')) {
+                selectedIds.push($(this).val());
+            }
+        });
+
+        let options : any = {};
+        options.url = "api/member/delete";
+        options.type = "POST";
+        options.data = JSON.stringify(selectedIds);
+        options.contentType = "application/json";
+        options.dataType = "json";
+        options.success = function () {
+            alert('Sucess!');
+        };
+        options.error = function () {
+            alert("Error while deleting the records!");
+        };
+        $.ajax(options);
+    }
+
+    onSelectedRowChange(event: any, index: number) {
+        if (event.target.checked) {
+            this.rows.push(index);
+        }
+        else {
+            this.rows.splice(index, 1);
+        }
     }
 }
 
