@@ -44,8 +44,8 @@
         <tbody>
             <tr *ngFor="let m of members; let i = index">
                 <td [ngClass]="{active: m.isActive == true || m.isActive == 'true', inactive: m.isActive == false || m.isActive == 'false'}" style="padding: 2px"></td>
-                <td><input type="checkbox" value="{{ m.id }}" (change)="onSelectedRowChange($event, i)" class="checkBox" /></td>
-                <td><button class="btn btn-default" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(m.id, i)">Edit</button></td>
+                <td><input type="checkbox" value="{{ m.id }}" class="checkBox" /></td>
+                <td><button class="btn btn-default" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(m.id)">Edit</button></td>
                 <td>{{ m.name }}</td>
                 <td>{{ m.nickName }}</td>
                 <td>{{ m.birthDate | date: 'MM/dd/yyyy' }}</td>

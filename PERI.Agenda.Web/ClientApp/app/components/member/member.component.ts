@@ -13,7 +13,6 @@ import * as moment from 'moment';
 })
 
 export class MemberComponent {
-    public rows: number[];
     public member: Member;
     public members: Member[];
     public genders: LookUp[];
@@ -68,7 +67,6 @@ export class MemberComponent {
         this.find(new Member());
 
         this.statuses = [false, true];
-        this.rows = [];
     }
 
     // https://www.concretepage.com/angular-2/angular-2-ngform-with-ngmodel-directive-example
@@ -94,12 +92,9 @@ export class MemberComponent {
         this.members.push(m);
     }
 
-    public onEditInit(id: number, index: number) {
+    public onEditInit(id: number) {
         this._http.get(this._baseUrl + 'api/member/findbyid?id=' + id)
             .subscribe(result => { this.member = result.json() as Member }, error => console.error(error));
-
-        this.rows = [];
-        this.rows.push(index);
     }
 
     public onEditSubmit(member: Member) {
@@ -108,7 +103,12 @@ export class MemberComponent {
 
         this.edit(member);  
 
-        this.members[this.rows[0]] = member;
+        for (let m of this.members) {
+            if (m.id == member.id) {
+                let index: number = this.members.indexOf(m);
+                this.members[index] = member;
+            }
+        }
 
         console.log(member);
     }
@@ -151,26 +151,21 @@ export class MemberComponent {
         options.contentType = "application/json";
         options.dataType = "json";
         options.success = () => {
-            this.deleteRows();
+
+            for (let id of selectedIds) {
+                for (let m of this.members) {
+                    if (m.id == id) {
+                        this.members.splice(this.members.indexOf(m), 1);
+                    }
+                }
+            }
+
             alert('Success!');
         };
         options.error = function () {
             alert("Error while deleting the records!");
         };
         $.ajax(options);
-    }
-
-    onSelectedRowChange(event: any, index: number) {
-        if (event.target.checked) {
-            this.rows.push(index);
-        }
-        else {
-            this.rows.splice(index, 1);
-        }
-    }
-
-    deleteRows() {
-        // To do
     }
 }
 
