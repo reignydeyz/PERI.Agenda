@@ -40,9 +40,10 @@ namespace PERI.Agenda.BLL
             throw new NotImplementedException();
         }
 
-        public Task Delete(int[] ids)
+        public async Task Delete(int[] ids)
         {
-            throw new NotImplementedException();
+            context.Member.RemoveRange(context.Member.Where(x => ids.Contains(x.Id)));
+            await context.SaveChangesAsync();
         }
 
         public Task Delete(EF.Member args)

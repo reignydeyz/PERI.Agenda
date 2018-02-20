@@ -50,12 +50,14 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task Delete([FromBody] int[] ids)
+        public async Task<IActionResult> Delete([FromBody] int[] ids)
         {
             var context = new EF.aarsdbContext();
             var bll_member = new BLL.Member(context);
 
             await bll_member.Delete(ids);
+
+            return Json("Success!");
         }
     }
 }

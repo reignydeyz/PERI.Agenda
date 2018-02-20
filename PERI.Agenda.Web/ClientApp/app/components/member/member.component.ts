@@ -150,8 +150,9 @@ export class MemberComponent {
         options.data = JSON.stringify(selectedIds);
         options.contentType = "application/json";
         options.dataType = "json";
-        options.success = function () {
-            alert('Sucess!');
+        options.success = () => {
+            this.deleteRows();
+            alert('Success!');
         };
         options.error = function () {
             alert("Error while deleting the records!");
@@ -166,6 +167,10 @@ export class MemberComponent {
         else {
             this.rows.splice(index, 1);
         }
+    }
+
+    deleteRows() {
+        // To do
     }
 }
 
