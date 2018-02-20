@@ -17,9 +17,13 @@ namespace PERI.Agenda.BLL
             context = dbcontext;
         }
 
-        public Task Activate(int[] ids)
+        public async Task Activate(int[] ids)
         {
-            throw new NotImplementedException();
+            foreach (var id in ids)
+            {
+                (await context.Member.FirstAsync(x => x.Id == id)).IsActive = true;
+            }
+            context.SaveChanges();
         }
 
         public async Task<int> Add(EF.Member args)
@@ -30,9 +34,13 @@ namespace PERI.Agenda.BLL
             return args.Id;
         }
 
-        public Task Deactivate(int[] ids)
+        public async Task Deactivate(int[] ids)
         {
-            throw new NotImplementedException();
+            foreach (var id in ids)
+            {
+                (await context.Member.FirstAsync(x => x.Id == id)).IsActive = false;
+            }
+            context.SaveChanges();
         }
 
         public Task Delete(int id)
@@ -69,7 +77,7 @@ namespace PERI.Agenda.BLL
 
         public async Task<IEnumerable<EF.Member>> Find(EF.Member args)
         {
-            return await context.Member.Where(x => x.Name.Contains(args.Name ?? "")).OrderBy(x => x.Name).Take(1000).ToListAsync();
+            return await context.Member.Where(x => x.Name.Contains(args.Name ?? "")).OrderBy(x => x.Name).ToListAsync();
         }
 
         public async Task<EF.Member> Get(EF.Member args)

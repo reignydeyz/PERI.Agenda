@@ -13,6 +13,9 @@ import * as moment from 'moment';
 })
 
 export class MemberComponent {
+    public total: number;
+    public actives: number;
+    public inactives: number;
     public member: Member;
     public members: Member[];
     public genders: LookUp[];
@@ -60,6 +63,20 @@ export class MemberComponent {
         }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => { console.error(error); alert('Oops! Unknown error has occured.') });
     }
 
+    private getTotal() {
+        this._http.get(this._baseUrl + 'api/member/total').subscribe(result => {
+            this.total = result.json() as number;
+        }, error => console.error(error));
+
+        this._http.get(this._baseUrl + 'api/member/total?q=active').subscribe(result => {
+            this.actives = result.json() as number;
+        }, error => console.error(error));
+
+        this._http.get(this._baseUrl + 'api/member/total?q=inactive').subscribe(result => {
+            this.inactives = result.json() as number;
+        }, error => console.error(error));
+    }
+
     constructor(http: Http, @Inject('BASE_URL') baseUrl: string) {
         this._http = http;
         this._baseUrl = baseUrl;
@@ -67,6 +84,8 @@ export class MemberComponent {
         this.find(new Member());
 
         this.statuses = [false, true];
+
+        this.getTotal();
     }
 
     // https://www.concretepage.com/angular-2/angular-2-ngform-with-ngmodel-directive-example
@@ -90,6 +109,9 @@ export class MemberComponent {
         this.add(m);
 
         this.members.push(m);
+
+        this.actives += 1;
+        this.total += 1;
     }
 
     public onEditInit(id: number) {
@@ -108,6 +130,15 @@ export class MemberComponent {
                 let index: number = this.members.indexOf(m);
                 this.members[index] = member;
             }
+        }
+
+        if (member.isActive) {
+            this.actives += 1;
+            this.inactives -= 1;
+        }
+        else {
+            this.actives -= 1;
+            this.inactives += 1;
         }
 
         console.log(member);
@@ -155,10 +186,100 @@ export class MemberComponent {
             for (let id of selectedIds) {
                 for (let m of this.members) {
                     if (m.id == id) {
+
+                        if (m.isActive) {
+                            this.actives -= 1;
+                        }
+                        else {
+                            this.inactives -= 1;
+                        }
+
                         this.members.splice(this.members.indexOf(m), 1);
                     }
                 }
             }
+
+            this.total -= selectedIds.length;            
+
+            alert('Success!');
+        };
+        options.error = function () {
+            alert("Error while deleting the records!");
+        };
+        $.ajax(options);
+    }
+
+    onActivateClick() {
+        var flag = confirm('Are you sure you want to activate selected records?');
+
+        if (!flag)
+            return false;
+
+        var selectedIds = new Array();
+        $('input:checkbox.checkBox').each(function () {
+            if ($(this).prop('checked')) {
+                selectedIds.push($(this).val());
+            }
+        });
+
+        let options: any = {};
+        options.url = "api/member/activate";
+        options.type = "POST";
+        options.data = JSON.stringify(selectedIds);
+        options.contentType = "application/json";
+        options.dataType = "json";
+        options.success = () => {
+
+            for (let id of selectedIds) {
+                for (let m of this.members) {
+                    if (m.id == id) {
+                        this.members[this.members.indexOf(m)].isActive = true;
+                    }
+                }
+            }
+
+            this.actives += selectedIds.length;
+            this.inactives -= selectedIds.length;
+
+            alert('Success!');
+        };
+        options.error = function () {
+            alert("Error while deleting the records!");
+        };
+        $.ajax(options);
+    }
+
+    onDeactivateClick() {
+        var flag = confirm('Are you sure you want to deactivate selected records?');
+
+        if (!flag)
+            return false;
+
+        var selectedIds = new Array();
+        $('input:checkbox.checkBox').each(function () {
+            if ($(this).prop('checked')) {
+                selectedIds.push($(this).val());
+            }
+        });
+
+        let options: any = {};
+        options.url = "api/member/deactivate";
+        options.type = "POST";
+        options.data = JSON.stringify(selectedIds);
+        options.contentType = "application/json";
+        options.dataType = "json";
+        options.success = () => {
+
+            for (let id of selectedIds) {
+                for (let m of this.members) {
+                    if (m.id == id) {
+                        this.members[this.members.indexOf(m)].isActive = false;
+                    }
+                }
+            }
+
+            this.actives -= selectedIds.length;
+            this.inactives += selectedIds.length;
 
             alert('Success!');
         };

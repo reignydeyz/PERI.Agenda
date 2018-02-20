@@ -17,7 +17,7 @@ namespace PERI.Agenda.Web.Controllers
             var context = new EF.aarsdbContext();
             var bll_member = new BLL.Member(context);
 
-            return await bll_member.Find(obj);
+            return (await bll_member.Find(obj)).Take(1000);
         }
 
         [HttpPost("[action]")]
@@ -58,6 +58,46 @@ namespace PERI.Agenda.Web.Controllers
             await bll_member.Delete(ids);
 
             return Json("Success!");
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Activate([FromBody] int[] ids)
+        {
+            var context = new EF.aarsdbContext();
+            var bll_member = new BLL.Member(context);
+
+            await bll_member.Activate(ids);
+
+            return Json("Success!");
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Deactivate([FromBody] int[] ids)
+        {
+            var context = new EF.aarsdbContext();
+            var bll_member = new BLL.Member(context);
+
+            await bll_member.Deactivate(ids);
+
+            return Json("Success!");
+        }
+
+        [HttpGet("[action]")]
+        public async Task<int> Total()
+        {
+            var qry = Request.Query["q"].ToString();
+            
+            var context = new EF.aarsdbContext();
+            var bll_member = new BLL.Member(context);
+
+            var members = await bll_member.Find(new EF.Member());
+
+            if (qry == "active")
+                members = members.Where(x => x.IsActive == true);
+            else if (qry == "inactive")
+                members = members.Where(x => x.IsActive == false);
+
+            return members.Count();
         }
     }
 }
