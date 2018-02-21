@@ -11,6 +11,7 @@ import { FetchDataComponent } from './components/fetchdata/fetchdata.component';
 import { CounterComponent } from './components/counter/counter.component';
 
 import { MemberComponent } from './components/member/member.component';
+import { EventComponent } from './components/event/event.component';
 
 @NgModule({
     declarations: [
@@ -20,7 +21,8 @@ import { MemberComponent } from './components/member/member.component';
         FetchDataComponent,
         HomeComponent,
 
-        MemberComponent
+        MemberComponent,
+        EventComponent
     ],
     imports: [
         CommonModule,
@@ -33,6 +35,7 @@ import { MemberComponent } from './components/member/member.component';
             { path: 'fetch-data', component: FetchDataComponent },
 
             { path: 'member', component: MemberComponent },
+            { path: 'event', component: EventComponent },
 
             { path: '**', redirectTo: 'home' }
         ])
