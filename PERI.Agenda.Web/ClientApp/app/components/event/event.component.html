@@ -1,1 +1,51 @@
 ﻿<h1>Events</h1>
+
+<form class="form-group" #frm="ngForm" (ngSubmit)="onSearchSubmit(frm)" ngNativeValidate id="frm">
+    <div class="form-group">
+        <label>Name</label>
+        <input class="form-control" placeholder="Name" name="name" ngModel>
+    </div>
+    <div class="form-group">
+        <label>Category</label>
+        <select class="form-control" name="eventCategoryId" ngModel>
+            <option value="">--ALL--</option>
+            <option *ngFor="let ec of eventCategories" [value]="ec.id">{{ ec.name }}</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Date</label>
+        <input type="date" class="form-control" name="dateTimeStart" ngModel>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Search</button>
+    <a class="btn btn-default" onclick='document.getElementById("frm").reset()'>Clear</a>
+</form>
+
+<p *ngIf="!events"><em>Loading...</em></p>
+
+<p *ngIf="members">
+    <a href="#" class="btn btn-primary">New</a>
+    <button class="btn btn-default">Delete</button>
+    <button class="btn btn-success" style="float: right" onclick="location.reload();">Refresh</button>
+</p>
+
+<div style="width:100%; height:75vh; overflow:auto" *ngIf="events">
+    <table class="table" id="tbl">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Attendance</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let e of events; let i = index">
+                <td>{{ e.name }}</td>
+                <td>{{ e.category }}</td>
+                <td>{{ e.dateTimeStart |  date: 'MM/dd/yyyy hh:mm a' }}</td>
+                <td>{{ e.attendance }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
