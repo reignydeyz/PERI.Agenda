@@ -3,7 +3,7 @@ import { Http } from '@angular/http';
 import { NgForm, NgModel } from '@angular/forms';
 import * as $ from "jquery";
 
-import { EventCategoryComponent, EventCategory } from '../eventcategory/eventcategory.component';
+import { EventCategoryModule, EventCategory } from '../eventcategory/eventcategory.component';
 
 @Component({
     selector: 'event',
@@ -35,7 +35,7 @@ export class EventComponent {
     }
 
     ngAfterViewInit() {
-        var ecc = new EventCategoryComponent();
+        var ecc = new EventCategoryModule();
         ecc.http = this._http;
         ecc.baseUrl = this._baseUrl;
         ecc.find(new EventCategory()).subscribe(result => { this.eventCategories = result });        

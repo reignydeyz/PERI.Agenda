@@ -55,6 +55,7 @@ namespace PERI.Agenda.BLL
         public async Task<IEnumerable<EF.EventCategory>> Find(EF.EventCategory args)
         {
             return await context.EventCategory.Where(x => x.Name.Contains(args.Name ?? ""))
+                .Include(x => x.Event)
                 .OrderBy(x => x.Name)
                 .ToListAsync();
         }

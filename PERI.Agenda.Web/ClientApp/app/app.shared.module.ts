@@ -12,6 +12,7 @@ import { CounterComponent } from './components/counter/counter.component';
 
 import { MemberComponent } from './components/member/member.component';
 import { EventComponent } from './components/event/event.component';
+import { EventCategoryComponent } from './components/eventcategory/eventcategory.component';
 
 @NgModule({
     declarations: [
@@ -22,7 +23,8 @@ import { EventComponent } from './components/event/event.component';
         HomeComponent,
 
         MemberComponent,
-        EventComponent
+        EventComponent,
+        EventCategoryComponent
     ],
     imports: [
         CommonModule,
@@ -36,6 +38,7 @@ import { EventComponent } from './components/event/event.component';
 
             { path: 'member', component: MemberComponent },
             { path: 'event', component: EventComponent },
+            { path: 'eventcategory', component: EventCategoryComponent },
 
             { path: '**', redirectTo: 'home' }
         ])

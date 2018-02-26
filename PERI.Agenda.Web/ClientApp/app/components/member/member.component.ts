@@ -3,7 +3,7 @@ import { Http } from '@angular/http';
 import { NgForm, NgModel } from '@angular/forms';
 import * as $ from "jquery";
 
-import { LookUpComponent, LookUp } from "../lookup/lookup.component";
+import { LookUpModule, LookUp } from "../lookup/lookup.component";
 import * as moment from 'moment';
 
 @Component({
@@ -156,10 +156,10 @@ export class MemberComponent {
 
     // https://stackoverflow.com/questions/34547127/angular2-equivalent-of-document-ready
     ngAfterViewInit() {
-        var lc = new LookUpComponent();
-        lc.http = this._http;
-        lc.baseUrl = this._baseUrl;
-        lc.getByGroup('Gender').subscribe(result => { this.genders = result });
+        var lm = new LookUpModule();
+        lm.http = this._http;
+        lm.baseUrl = this._baseUrl;
+        lm.getByGroup('Gender').subscribe(result => { this.genders = result });
     }
 
     onDeleteClick() {

@@ -1,1 +1,20 @@
 ﻿<h1>Event Categories</h1>
+
+<p *ngIf="!eventcategories"><em>Loading...</em></p>
+
+<div class="row" *ngIf="eventcategories">
+    <table class="table" id="tbl">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Events</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let e of eventcategories; let i = index">
+                <td>{{ e.name }}</td>
+                <td>{{ e.events }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
