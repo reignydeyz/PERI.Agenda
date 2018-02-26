@@ -4,7 +4,7 @@ import { Http } from '@angular/http';
 import 'rxjs/add/operator/map'
 import { Observable } from 'rxjs/Observable';
 
-export class LookUpComponent {
+export class LookUpModule {
     public http: Http;
     public baseUrl: string;
 
