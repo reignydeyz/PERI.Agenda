@@ -4,6 +4,7 @@ import { NgForm, NgModel } from '@angular/forms';
 import * as $ from "jquery";
 
 import { EventCategoryModule, EventCategory } from '../eventcategory/eventcategory.component';
+import { Title } from '@angular/platform-browser';
 
 @Component({
     selector: 'event',
@@ -27,11 +28,14 @@ export class EventComponent {
         }, error => console.error(error));
     }
 
-    constructor(http: Http, @Inject('BASE_URL') baseUrl: string) {
+    // https://stackoverflow.com/questions/44000162/how-to-change-title-of-a-page-using-angularangular-2-or-4-route
+    constructor(http: Http, @Inject('BASE_URL') baseUrl: string, private titleService: Title) {
         this._http = http;
         this._baseUrl = baseUrl;
         this.event = new Event();
         this.find(new Event());
+
+        this.titleService.setTitle('Events');
     }
 
     ngAfterViewInit() {

@@ -5,6 +5,7 @@ import * as $ from "jquery";
 
 import { LookUpModule, LookUp } from "../lookup/lookup.component";
 import * as moment from 'moment';
+import { Title } from '@angular/platform-browser';
 
 @Component({
     selector: 'member',
@@ -77,7 +78,7 @@ export class MemberComponent {
         }, error => console.error(error));
     }
 
-    constructor(http: Http, @Inject('BASE_URL') baseUrl: string) {
+    constructor(http: Http, @Inject('BASE_URL') baseUrl: string, private titleService: Title) {
         this._http = http;
         this._baseUrl = baseUrl;
         this.member = new Member();
@@ -86,6 +87,8 @@ export class MemberComponent {
         this.statuses = [false, true];
 
         this.getTotal();
+
+        this.titleService.setTitle('Members');
     }
 
     // https://www.concretepage.com/angular-2/angular-2-ngform-with-ngmodel-directive-example

@@ -3,6 +3,7 @@ import { Http } from '@angular/http';
 
 import 'rxjs/add/operator/map'
 import { Observable } from 'rxjs/Observable';
+import { Title } from '@angular/platform-browser';
 
 export class EventCategoryModule {
     public http: Http;
@@ -25,12 +26,13 @@ export class EventCategoryComponent {
     public eventcategory = EventCategory;
     public eventcategories: EventCategory[];
 
-    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string) {
+    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
         this.ecm = new EventCategoryModule();
         this.ecm.http = http;
         this.ecm.baseUrl = baseUrl;
 
         this.ecm.find(new EventCategory()).subscribe(result => { this.eventcategories = result });
+        this.titleService.setTitle('Event Categories');
     }
 }
 
