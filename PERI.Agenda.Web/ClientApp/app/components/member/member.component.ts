@@ -21,12 +21,9 @@ export class MemberComponent {
     public members: Member[];
     public genders: LookUp[];
     public statuses: boolean[];
-
-    _http: Http;
-    _baseUrl: string;
-
+    
     private find(m: Member) {
-        this._http.post(this._baseUrl + 'api/member/find', {
+        this.http.post(this.baseUrl + 'api/member/find', {
             name: m.name,
             nickName: m.nickName,
             birthDate: m.birthDate,
@@ -39,7 +36,7 @@ export class MemberComponent {
     }
 
     private add(m: Member) {
-        this._http.post(this._baseUrl + 'api/member/new', {
+        this.http.post(this.baseUrl + 'api/member/new', {
             name: m.name,
             nickName: m.nickName,
             birthDate: m.birthDate,
@@ -51,7 +48,7 @@ export class MemberComponent {
     }
 
     private edit(m: Member) {
-        this._http.post(this._baseUrl + 'api/member/edit', {
+        this.http.post(this.baseUrl + 'api/member/edit', {
             id: m.id,
             name: m.name,
             nickName: m.nickName,
@@ -65,22 +62,20 @@ export class MemberComponent {
     }
 
     private getTotal() {
-        this._http.get(this._baseUrl + 'api/member/total').subscribe(result => {
+        this.http.get(this.baseUrl + 'api/member/total').subscribe(result => {
             this.total = result.json() as number;
         }, error => console.error(error));
 
-        this._http.get(this._baseUrl + 'api/member/total?q=active').subscribe(result => {
+        this.http.get(this.baseUrl + 'api/member/total?q=active').subscribe(result => {
             this.actives = result.json() as number;
         }, error => console.error(error));
 
-        this._http.get(this._baseUrl + 'api/member/total?q=inactive').subscribe(result => {
+        this.http.get(this.baseUrl + 'api/member/total?q=inactive').subscribe(result => {
             this.inactives = result.json() as number;
         }, error => console.error(error));
     }
 
-    constructor(http: Http, @Inject('BASE_URL') baseUrl: string, private titleService: Title) {
-        this._http = http;
-        this._baseUrl = baseUrl;
+    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
         this.member = new Member();
         this.find(new Member());
 
@@ -118,7 +113,7 @@ export class MemberComponent {
     }
 
     public onEditInit(id: number) {
-        this._http.get(this._baseUrl + 'api/member/findbyid?id=' + id)
+        this.http.get(this.baseUrl + 'api/member/findbyid?id=' + id)
             .subscribe(result => { this.member = result.json() as Member }, error => console.error(error));
     }
 
@@ -160,8 +155,8 @@ export class MemberComponent {
     // https://stackoverflow.com/questions/34547127/angular2-equivalent-of-document-ready
     ngAfterViewInit() {
         var lm = new LookUpModule();
-        lm.http = this._http;
-        lm.baseUrl = this._baseUrl;
+        lm.http = this.http;
+        lm.baseUrl = this.baseUrl;
         lm.getByGroup('Gender').subscribe(result => { this.genders = result });
     }
 

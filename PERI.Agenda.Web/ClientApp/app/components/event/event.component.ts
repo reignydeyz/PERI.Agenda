@@ -15,11 +15,8 @@ export class EventComponent {
     public events: Event[];
     public eventCategories: EventCategory[];
 
-    _http: Http;
-    _baseUrl: string;
-
     private find(e: Event) {
-        this._http.post(this._baseUrl + 'api/event/find', {
+        this.http.post(this.baseUrl + 'api/event/find', {
             name: e.name,
             eventCategoryId: e.eventCategoryId,
             dateTimeStart: e.dateTimeStart
@@ -29,9 +26,7 @@ export class EventComponent {
     }
 
     // https://stackoverflow.com/questions/44000162/how-to-change-title-of-a-page-using-angularangular-2-or-4-route
-    constructor(http: Http, @Inject('BASE_URL') baseUrl: string, private titleService: Title) {
-        this._http = http;
-        this._baseUrl = baseUrl;
+    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
         this.event = new Event();
         this.find(new Event());
 
@@ -40,8 +35,8 @@ export class EventComponent {
 
     ngAfterViewInit() {
         var ecc = new EventCategoryModule();
-        ecc.http = this._http;
-        ecc.baseUrl = this._baseUrl;
+        ecc.http = this.http;
+        ecc.baseUrl = this.baseUrl;
         ecc.find(new EventCategory()).subscribe(result => { this.eventCategories = result });        
     }
 
