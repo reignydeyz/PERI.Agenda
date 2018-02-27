@@ -27,6 +27,10 @@ export class EventComponent {
 
     // https://stackoverflow.com/questions/44000162/how-to-change-title-of-a-page-using-angularangular-2-or-4-route
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
+        
+    }
+
+    ngOnInit() {
         this.event = new Event();
         this.find(new Event());
 

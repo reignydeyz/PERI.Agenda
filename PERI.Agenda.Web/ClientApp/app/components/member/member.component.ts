@@ -76,6 +76,10 @@ export class MemberComponent {
     }
 
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
+        
+    }
+
+    ngOnInit() {
         this.member = new Member();
         this.find(new Member());
 

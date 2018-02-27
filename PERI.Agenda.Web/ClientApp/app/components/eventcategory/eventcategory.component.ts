@@ -30,7 +30,9 @@ export class EventCategoryComponent {
         this.ecm = new EventCategoryModule();
         this.ecm.http = http;
         this.ecm.baseUrl = baseUrl;
+    }
 
+    ngOnInit() {
         this.ecm.find(new EventCategory()).subscribe(result => { this.eventcategories = result });
         this.titleService.setTitle('Event Categories');
     }
