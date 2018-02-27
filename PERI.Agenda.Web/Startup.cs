@@ -33,6 +33,13 @@ namespace PERI.Agenda.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            services.AddAuthentication("MyCookieMiddlewareInstance")
+            .AddCookie("MyCookieMiddlewareInstance", options =>
+            {
+                options.AccessDeniedPath = "/Main/Forbidden/";
+                options.LoginPath = "/Authentication/";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,6 +59,8 @@ namespace PERI.Agenda.Web
             }
 
             app.UseStaticFiles();
+
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

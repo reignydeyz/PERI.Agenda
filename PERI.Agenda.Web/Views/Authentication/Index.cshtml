@@ -1,0 +1,29 @@
+﻿@{
+    Layout = "_Layout";
+}
+@model PERI.Agenda.Web.Models.Login
+
+<div class="jumbotron">
+    <div class="container">
+        <div class="panel-heading">
+            <div class="panel-title text-center">
+                <h3><span class='glyphicon glyphicon-lock'></span>&nbsp;&nbsp;&nbsp;Please sign-in.</h3>
+                <hr />
+            </div>
+        </div>
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                @Html.TextBoxFor(x => x.Email, new { placeholder="Email", @class="form-control", required="required", @type="email" })
+            </div>
+            <div class="form-group">
+                @Html.TextBoxFor(x => x.Password, new { placeholder = "Password", @class = "form-control", required = "required", @type = "password" })
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Sign-in</button>
+            <a class="btn btn-default btn-block">Forgot password?</a>
+        }
+    </div>
+</div>
+
