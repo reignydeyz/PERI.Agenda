@@ -10,7 +10,7 @@ export class EventCategoryModule {
     public baseUrl: string;
 
     public find(ec: EventCategory): Observable<EventCategory[]> {
-        return this.http.post('api/eventcategory/find', {
+        return this.http.post(this.baseUrl + 'api/eventcategory/find', {
             name: ec.name
         }).map(response => response.json());
     }

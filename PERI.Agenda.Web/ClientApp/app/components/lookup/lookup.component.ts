@@ -10,7 +10,7 @@ export class LookUpModule {
 
     // http://blog.ninja-squad.com/2016/03/15/ninja-tips-2-type-your-json-with-typescript/
     public getByGroup(group: string) : Observable<LookUp[]> {        
-        return this.http.get('api/lookup/findbygroup?group=' + group)
+        return this.http.get(this.baseUrl + 'api/lookup/findbygroup?group=' + group)
             .map(response => response.json());
     }
 }
