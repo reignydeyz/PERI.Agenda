@@ -31,6 +31,7 @@ namespace PERI.Agenda.Web.Controllers
 
         public IActionResult Index()
         {
+            ViewData["Title"] = "Sign-in";
             return View();
         }
 
@@ -41,6 +42,13 @@ namespace PERI.Agenda.Web.Controllers
             await AddClaimsAndSignIn(args);
 
             return Redirect("~/");
+        }
+
+        public async Task<IActionResult> SignOut()
+        {
+            await HttpContext.SignOutAsync("MyCookieMiddlewareInstance");
+
+            return RedirectToAction("Index", "Authentication");
         }
     }
 }

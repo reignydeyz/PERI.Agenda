@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace PERI.Agenda.Web.Controllers
 {
     [Authorize]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public class HomeController : Controller
     {
         public IActionResult Index()
