@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace PERI.Agenda.EF
 {
-    public partial class aarsdbContext : DbContext
+    public partial class AARSContext : DbContext
     {
         public virtual DbSet<AspnetApplications> AspnetApplications { get; set; }
         public virtual DbSet<AspnetMembership> AspnetMembership { get; set; }
@@ -20,6 +20,7 @@ namespace PERI.Agenda.EF
         public virtual DbSet<AspnetWebEventEvents> AspnetWebEventEvents { get; set; }
         public virtual DbSet<Attendance> Attendance { get; set; }
         public virtual DbSet<Community> Community { get; set; }
+        public virtual DbSet<EndUser> EndUser { get; set; }
         public virtual DbSet<Event> Event { get; set; }
         public virtual DbSet<EventCategory> EventCategory { get; set; }
         public virtual DbSet<EventSection> EventSection { get; set; }
@@ -31,6 +32,7 @@ namespace PERI.Agenda.EF
         public virtual DbSet<Member> Member { get; set; }
         public virtual DbSet<Recurrence> Recurrence { get; set; }
         public virtual DbSet<Registrant> Registrant { get; set; }
+        public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<User> User { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -445,6 +447,73 @@ namespace PERI.Agenda.EF
                 entity.Property(e => e.Utc).HasColumnName("UTC");
             });
 
+            modelBuilder.Entity<EndUser>(entity =>
+            {
+                entity.HasKey(e => e.UserId);
+
+                entity.ToTable("EndUser", "prompt");
+
+                entity.HasIndex(e => e.Email)
+                    .HasName("UQ_User_Email")
+                    .IsUnique();
+
+                entity.HasIndex(e => new { e.FirstName, e.LastName })
+                    .HasName("UQ_User_FirstName_LastName")
+                    .IsUnique();
+
+                entity.Property(e => e.ConfirmationCode)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ConfirmationExpiry).HasColumnType("datetime");
+
+                entity.Property(e => e.DateConfirmed).HasColumnType("datetime");
+
+                entity.Property(e => e.DateCreated).HasColumnType("datetime");
+
+                entity.Property(e => e.DateInactive).HasColumnType("datetime");
+
+                entity.Property(e => e.Email)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FirstName)
+                    .IsRequired()
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.LastFailedPasswordAttempt).HasColumnType("datetime");
+
+                entity.Property(e => e.LastLoginDate).HasColumnType("datetime");
+
+                entity.Property(e => e.LastName)
+                    .IsRequired()
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.LastPasswordChanged).HasColumnType("datetime");
+
+                entity.Property(e => e.LastSessionId)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PasswordExpiry).HasColumnType("datetime");
+
+                entity.Property(e => e.PasswordHash)
+                    .IsRequired()
+                    .HasMaxLength(128);
+
+                entity.Property(e => e.PasswordSalt)
+                    .IsRequired()
+                    .HasMaxLength(128);
+
+                entity.HasOne(d => d.Role)
+                    .WithMany(p => p.EndUser)
+                    .HasForeignKey(d => d.RoleId)
+                    .HasConstraintName("FK_User_Role");
+            });
+
             modelBuilder.Entity<Event>(entity =>
             {
                 entity.HasIndex(e => new { e.Name, e.EventCategoryId, e.DateTimeStart, e.LocationId })
@@ -742,6 +811,16 @@ namespace PERI.Agenda.EF
                     .WithMany(p => p.Registrant)
                     .HasForeignKey(d => d.MemberId)
                     .HasConstraintName("FK_Registrant_Member");
+            });
+
+            modelBuilder.Entity<Role>(entity =>
+            {
+                entity.ToTable("Role", "prompt");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<User>(entity =>

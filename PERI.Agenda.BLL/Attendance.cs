@@ -10,9 +10,9 @@ namespace PERI.Agenda.BLL
 {
     public class Attendance : IAttendance
     {
-        EF.aarsdbContext context;
+        EF.AARSContext context;
 
-        public Attendance(aarsdbContext dbcontext)
+        public Attendance(AARSContext dbcontext)
         {
             context = dbcontext;
         }

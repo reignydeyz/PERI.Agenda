@@ -10,7 +10,7 @@ namespace PERI.Agenda.Web.Controllers
 {
     public class AuthenticationController : Controller
     {
-        private async Task AddClaimsAndSignIn(Models.Login args)
+        private async Task AddClaimsAndSignIn(EF.EndUser args)
         {
             var ci = new ClaimsIdentity(
                     new[]
@@ -20,7 +20,7 @@ namespace PERI.Agenda.Web.Controllers
                         new Claim(ClaimTypes.Email, args.Email),
 
                         // Role
-                        new Claim(ClaimTypes.Role, "User"),
+                        new Claim(ClaimTypes.Role, args.Role.Name),
                     }, "MyCookieMiddlewareInstance");
 
             ClaimsPrincipal principal = new ClaimsPrincipal();
@@ -39,9 +39,40 @@ namespace PERI.Agenda.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(Models.Login args)
         {
-            await AddClaimsAndSignIn(args);
+            var context = new EF.AARSContext();
 
-            return Redirect("~/");
+            var buser = new BLL.EndUser(context);
+
+            var user = await buser.Get(new EF.EndUser { Email = args.Email });
+
+            if (user != null)
+            {
+                // Check if active
+                if (user.DateInactive != null)
+                {
+                    ModelState.AddModelError(string.Empty, "Account is inactive.");
+                    return View(args);
+                }
+
+                // Check password
+                var salt = user.PasswordSalt;
+                var saltBytes = Convert.FromBase64String(salt);
+
+                if (Core.Crypto.Hash(args.Password, saltBytes) == user.PasswordHash)
+                {
+                    // Successful log in
+                    user.LastSessionId = Guid.NewGuid().ToString();
+                    user.LastLoginDate = DateTime.Now;
+                    await buser.Edit(user);
+
+                    await AddClaimsAndSignIn(user);
+
+                    return Redirect("~/");
+                }
+            }
+
+            ModelState.AddModelError(string.Empty, "Access denied.");
+            return View(args);
         }
 
         public async Task<IActionResult> SignOut()

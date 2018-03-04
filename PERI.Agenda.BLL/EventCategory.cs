@@ -10,9 +10,9 @@ namespace PERI.Agenda.BLL
 {
     public class EventCategory : IEventCategory
     {
-        EF.aarsdbContext context;
+        EF.AARSContext context;
 
-        public EventCategory(aarsdbContext dbcontext)
+        public EventCategory(AARSContext dbcontext)
         {
             context = dbcontext;
         }

@@ -16,7 +16,7 @@ namespace PERI.Agenda.Web.Controllers
         {
             var group = Request.Query["group"].ToString();
 
-            var context = new EF.aarsdbContext();
+            var context = new EF.AARSContext();
             var bll_lookup = new BLL.LookUp(context);
 
             return await bll_lookup.GetByGroup(group);

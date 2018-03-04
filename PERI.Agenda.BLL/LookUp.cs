@@ -10,9 +10,9 @@ namespace PERI.Agenda.BLL
 {
     public class LookUp : ILookUp
     {
-        EF.aarsdbContext context;
+        EF.AARSContext context;
 
-        public LookUp(aarsdbContext dbcontext)
+        public LookUp(AARSContext dbcontext)
         {
             context = dbcontext;
         }

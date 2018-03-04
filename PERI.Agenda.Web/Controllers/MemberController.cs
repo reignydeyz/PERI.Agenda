@@ -14,7 +14,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task<IEnumerable<EF.Member>> Find([FromBody] EF.Member obj)
         {
-            var context = new EF.aarsdbContext();
+            var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
 
             return (await bll_member.Find(obj)).Take(1000);
@@ -23,7 +23,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task<int> New([FromBody] EF.Member obj)
         {
-            var context = new EF.aarsdbContext();
+            var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
 
             return await bll_member.Add(obj);
@@ -34,7 +34,7 @@ namespace PERI.Agenda.Web.Controllers
         {
             var id = Request.Query["id"].ToString();
 
-            var context = new EF.aarsdbContext();
+            var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
 
             return await bll_member.Get(new EF.Member { Id = Convert.ToInt32(id) });
@@ -43,7 +43,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task Edit([FromBody] EF.Member obj)
         {
-            var context = new EF.aarsdbContext();
+            var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
 
             await bll_member.Edit(obj);
@@ -52,7 +52,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Delete([FromBody] int[] ids)
         {
-            var context = new EF.aarsdbContext();
+            var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
 
             await bll_member.Delete(ids);
@@ -63,7 +63,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Activate([FromBody] int[] ids)
         {
-            var context = new EF.aarsdbContext();
+            var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
 
             await bll_member.Activate(ids);
@@ -74,7 +74,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Deactivate([FromBody] int[] ids)
         {
-            var context = new EF.aarsdbContext();
+            var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
 
             await bll_member.Deactivate(ids);
@@ -87,7 +87,7 @@ namespace PERI.Agenda.Web.Controllers
         {
             var qry = Request.Query["q"].ToString();
             
-            var context = new EF.aarsdbContext();
+            var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
 
             var members = await bll_member.Find(new EF.Member());

@@ -14,7 +14,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Find(EF.EventCategory args)
         {
-            var context = new EF.aarsdbContext();
+            var context = new EF.AARSContext();
             var bll_eventCategory = new BLL.EventCategory(context);
 
             var res = from r in (await bll_eventCategory.Find(args))
