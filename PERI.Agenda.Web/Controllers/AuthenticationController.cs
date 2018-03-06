@@ -39,6 +39,8 @@ namespace PERI.Agenda.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(Models.Login args)
         {
+            ViewData["Title"] = "Sign-in";
+
             var context = new EF.AARSContext();
 
             var buser = new BLL.EndUser(context);
@@ -80,6 +82,12 @@ namespace PERI.Agenda.Web.Controllers
             await HttpContext.SignOutAsync("MyCookieMiddlewareInstance");
 
             return RedirectToAction("Index", "Authentication");
+        }
+
+        public IActionResult ForgotPassword()
+        {
+            ViewData["Title"] = "Forgot Password";
+            return View();
         }
     }
 }
