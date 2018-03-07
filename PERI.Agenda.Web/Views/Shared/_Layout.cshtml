@@ -12,5 +12,10 @@
     @RenderBody()
 
     @RenderSection("scripts", required: false)
+
+    @if (TempData["notice"] != null)
+    {
+        <script language='javascript' type='text/javascript'>alert('@TempData["notice"]');</script>
+    }
 </body>
 </html>

@@ -21,7 +21,6 @@
         <div class="form-group">
             @Html.TextBoxFor(x => x.Password, new { placeholder = "Password", @class = "form-control", required = "required", @type = "password" })
         </div>
-        <center style="color:red">@Html.ValidationSummary()</center>
         <button type="submit" class="btn btn-primary btn-block">Sign-in</button>
         <a class="btn btn-default btn-block" href="~/Authentication/ForgotPassword">Forgot password?</a>
     }

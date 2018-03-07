@@ -74,6 +74,7 @@ namespace PERI.Agenda.Web.Controllers
             }
 
             ModelState.AddModelError(string.Empty, "Access denied.");
+            TempData["notice"] = "Access denied.";
             return View(args);
         }
 
