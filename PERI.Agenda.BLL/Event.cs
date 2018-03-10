@@ -57,7 +57,7 @@ namespace PERI.Agenda.BLL
             return await context.Event
             .Include(x => x.EventCategory)
             .Include(x => x.Attendance)
-            .Where(x => x.DateTimeStart == (args.DateTimeStart ?? x.DateTimeStart)
+            .Where(x => (x.DateTimeStart >= (args.DateTimeStart ?? x.DateTimeStart) && x.DateTimeStart < (args.DateTimeStart ?? x.DateTimeStart).Value.AddDays(1))
             && x.Name.Contains(args.Name ?? "")
             && x.EventCategoryId == (args.EventCategoryId == 0 ? x.EventCategoryId : args.EventCategoryId))
             .OrderByDescending(x => x.DateTimeStart)

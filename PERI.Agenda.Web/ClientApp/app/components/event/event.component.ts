@@ -5,6 +5,7 @@ import * as $ from "jquery";
 
 import { EventCategoryModule, EventCategory } from '../eventcategory/eventcategory.component';
 import { Title } from '@angular/platform-browser';
+import * as moment from "moment";
 
 @Component({
     selector: 'event',
@@ -48,6 +49,11 @@ export class EventComponent {
         var m = new Event();
         m.name = f.controls['name'].value;
         m.eventCategoryId = f.controls['eventCategoryId'].value;
+                
+        if (f.controls['eventCategoryId'].value == "" || f.controls['eventCategoryId'].value == null) {
+            m.eventCategoryId = 0;
+        }        
+        
         m.dateTimeStart = f.controls['dateTimeStart'].value;
 
         this.find(m);
