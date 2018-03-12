@@ -38,6 +38,15 @@ export class EventComponent {
         this.titleService.setTitle('Events');
     }
 
+    checkAll() {
+        var src = <HTMLInputElement>document.getElementById("checkall");
+
+        $("#tbl").find('input[type=checkbox]').each(function () {
+            var element = <HTMLInputElement>this;
+            element.checked = src.checked;
+        });
+    }
+
     ngAfterViewInit() {
         var ecc = new EventCategoryModule();
         ecc.http = this.http;
