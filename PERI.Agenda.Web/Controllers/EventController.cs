@@ -23,7 +23,7 @@ namespace PERI.Agenda.Web.Controllers
                           r.Name,
                           r.IsActive,
                           r.DateTimeStart,
-                          r.Location,
+                          Location = (r.Location == null ? "" : r.Location.Name),
                           Attendance = r.Attendance.Count
                         };
 
