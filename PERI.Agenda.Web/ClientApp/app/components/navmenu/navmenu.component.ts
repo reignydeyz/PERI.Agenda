@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
+import * as $ from "jquery";
 
 @Component({
     selector: 'nav-menu',
@@ -6,4 +7,14 @@ import { Component } from '@angular/core';
     styleUrls: ['./navmenu.component.css']
 })
 export class NavMenuComponent {
+
+    ngAfterViewInit() {
+
+        // Collapse navbar when page redirects (mobile)
+        // https://github.com/twbs/bootstrap/issues/12852
+        $(".navbar-nav li a").click(function (event) {
+            $(".navbar-collapse").collapse('hide');
+        });
+    }
+
 }
