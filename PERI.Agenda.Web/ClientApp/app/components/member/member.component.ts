@@ -6,6 +6,7 @@ import * as $ from "jquery";
 import { LookUpModule, LookUp } from "../lookup/lookup.component";
 import * as moment from 'moment';
 import { Title } from '@angular/platform-browser';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
     selector: 'member',
@@ -35,16 +36,17 @@ export class MemberComponent {
         }, error => console.error(error));
     }
 
-    private add(m: Member) {
-        this.http.post(this.baseUrl + 'api/member/new', {
+    private add(m: Member) : Observable<number> {
+        return this.http.post(this.baseUrl + 'api/member/new', {
             name: m.name,
             nickName: m.nickName,
             birthDate: m.birthDate,
             email: m.email,
             address: m.address,
             mobile: m.mobile,
-            isActive: m.isActive
-        }).subscribe(result => { alert('Added!'); $('#modalNew').modal('toggle'); }, error => { console.error(error); alert('Oops! Unknown error has occured.') });
+            isActive: m.isActive,
+            gender: m.gender
+        }).map(response => response.json());
     }
 
     private edit(m: Member) {
@@ -107,13 +109,23 @@ export class MemberComponent {
         m.email = f.controls['email'].value;
         m.address = f.controls['address'].value;
         m.mobile = f.controls['mobile'].value;
+        m.gender = f.controls['gender'].value;
 
-        this.add(m);
+        this.add(m).subscribe(
+            result => {
+                m.id = result;
+                this.members.push(m);
 
-        this.members.push(m);
+                this.actives += 1;
+                this.total += 1;
 
-        this.actives += 1;
-        this.total += 1;
+                alert('Added!');
+                $('#modalNew').modal('toggle');
+            },
+            error => {
+                console.error(error);
+                alert('Oops! Unknown error has occured.')
+            });
     }
 
     public onEditInit(id: number) {
