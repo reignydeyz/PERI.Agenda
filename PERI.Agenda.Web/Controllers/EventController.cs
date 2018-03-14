@@ -29,5 +29,14 @@ namespace PERI.Agenda.Web.Controllers
 
             return Json(res);
         }
+
+        [HttpPost("[action]")]
+        public async Task<int> New([FromBody] EF.Event obj)
+        {
+            var context = new EF.AARSContext();
+            var bll_event = new BLL.Event(context);
+
+            return await bll_event.Add(obj);
+        }
     }
 }

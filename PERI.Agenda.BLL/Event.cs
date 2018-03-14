@@ -22,9 +22,12 @@ namespace PERI.Agenda.BLL
             throw new NotImplementedException();
         }
 
-        public Task<int> Add(EF.Event args)
+        public async Task<int> Add(EF.Event args)
         {
-            throw new NotImplementedException();
+            args.IsActive = true;
+            var id = await context.Event.AddAsync(args);
+            context.SaveChanges();
+            return args.Id;
         }
 
         public Task Deactivate(int[] ids)
@@ -60,7 +63,8 @@ namespace PERI.Agenda.BLL
             .Include(x => x.Location)
             .Where(x => (x.DateTimeStart >= (args.DateTimeStart ?? x.DateTimeStart) && x.DateTimeStart < (args.DateTimeStart ?? x.DateTimeStart).Value.AddDays(1))
             && x.Name.Contains(args.Name ?? "")
-            && x.EventCategoryId == (args.EventCategoryId == 0 ? x.EventCategoryId : args.EventCategoryId))
+            && x.EventCategoryId == (args.EventCategoryId == 0 ? x.EventCategoryId : args.EventCategoryId)
+            && x.LocationId == ((args.LocationId ?? 0) == 0 ? x.LocationId : args.LocationId))
             .OrderByDescending(x => x.DateTimeStart)
             .ToListAsync();
         }
