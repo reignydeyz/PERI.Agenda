@@ -53,6 +53,7 @@ namespace PERI.Agenda.Web.Controllers
                 if (user.DateInactive != null)
                 {
                     ModelState.AddModelError(string.Empty, "Account is inactive.");
+                    TempData["notice"] = "Account is inactive.";
                     return View(args);
                 }
 
