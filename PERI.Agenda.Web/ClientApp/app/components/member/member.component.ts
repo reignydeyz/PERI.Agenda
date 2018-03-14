@@ -50,7 +50,7 @@ export class MemberComponent {
     }
 
     private edit(m: Member) {
-        this.http.post(this.baseUrl + 'api/member/edit', {
+        this.http.patch(this.baseUrl + 'api/member/edit/' + m.id, {
             id: m.id,
             name: m.name,
             nickName: m.nickName,
@@ -64,15 +64,15 @@ export class MemberComponent {
     }
 
     private getTotal() {
-        this.http.get(this.baseUrl + 'api/member/total').subscribe(result => {
+        this.http.get(this.baseUrl + 'api/member/total/all').subscribe(result => {
             this.total = result.json() as number;
         }, error => console.error(error));
 
-        this.http.get(this.baseUrl + 'api/member/total?q=active').subscribe(result => {
+        this.http.get(this.baseUrl + 'api/member/total/active').subscribe(result => {
             this.actives = result.json() as number;
         }, error => console.error(error));
 
-        this.http.get(this.baseUrl + 'api/member/total?q=inactive').subscribe(result => {
+        this.http.get(this.baseUrl + 'api/member/total/inactive').subscribe(result => {
             this.inactives = result.json() as number;
         }, error => console.error(error));
     }
@@ -129,7 +129,7 @@ export class MemberComponent {
     }
 
     public onEditInit(id: number) {
-        this.http.get(this.baseUrl + 'api/member/findbyid?id=' + id)
+        this.http.get(this.baseUrl + 'api/member/get/' + id)
             .subscribe(result => { this.member = result.json() as Member }, error => console.error(error));
     }
 

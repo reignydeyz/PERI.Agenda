@@ -69,9 +69,9 @@ namespace PERI.Agenda.BLL
             .ToListAsync();
         }
 
-        public Task<EF.Event> Get(EF.Event args)
+        public async Task<EF.Event> Get(EF.Event args)
         {
-            throw new NotImplementedException();
+            return await context.Event.FirstOrDefaultAsync(x => x.Id == args.Id);
         }
     }
 }

@@ -7,6 +7,7 @@ import { EventCategoryModule, EventCategory } from '../eventcategory/eventcatego
 import { Title } from '@angular/platform-browser';
 import * as moment from "moment";
 import { LocationModule, Location } from '../location/location.component';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
     selector: 'event',
@@ -29,13 +30,13 @@ export class EventComponent {
         }, error => console.error(error));
     }
 
-    private add(e: Event) {
-        this.http.post(this.baseUrl + 'api/event/new', {
+    private add(e: Event): Observable<number> {
+        return this.http.post(this.baseUrl + 'api/event/new', {
             name: e.name,
             eventCategoryId: e.eventCategoryId,
             dateTimeStart: e.dateTimeStart,
             locationId: e.locationId
-        }).subscribe(result => { alert('Added!'); $('#modalNew').modal('toggle'); }, error => { console.error(error); alert('Oops! Unknown error has occured.') });
+        }).map(response => response.json());
     }
 
     // https://stackoverflow.com/questions/44000162/how-to-change-title-of-a-page-using-angularangular-2-or-4-route
@@ -92,10 +93,31 @@ export class EventComponent {
         e.eventCategoryId = f.controls['eventCategoryId'].value;
         e.dateTimeStart = f.controls['dateTimeStart'].value;
         e.locationId = f.controls['locationId'].value;
+        e.attendance = 0;
 
-        this.add(e);
+        let ec: any = this.eventCategories.find(x => x.id == e.eventCategoryId);
+        e.category = ec.name;
 
-        this.events.push(e);
+        let l: any = this.locations.find(x => x.id == e.locationId);
+        e.location = l.name;
+
+        this.add(e).subscribe(
+            result => {
+                e.id = result;
+                this.events.push(e);
+
+                alert('Added!');
+                $('#modalNew').modal('toggle');
+            },
+            error => {
+                console.error(error);
+                alert('Oops! Unknown error has occured.')
+            });
+    }
+
+    public onEditInit(id: number) {
+        this.http.get(this.baseUrl + 'api/event/get/' + id)
+            .subscribe(result => { this.event = result.json() as Event }, error => console.error(error));
     }
 }
 

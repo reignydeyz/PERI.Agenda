@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -37,6 +38,16 @@ namespace PERI.Agenda.Web.Controllers
             var bll_event = new BLL.Event(context);
 
             return await bll_event.Add(obj);
+        }
+
+        [HttpGet("[action]")]
+        [Route("Get/{id}")]
+        public async Task<EF.Event> Get(int id)
+        {
+            var context = new EF.AARSContext();
+            var bll_event = new BLL.Event(context);
+
+            return await bll_event.Get(new EF.Event { Id = id });
         }
     }
 }
