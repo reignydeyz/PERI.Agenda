@@ -30,18 +30,18 @@ namespace PERI.Agenda.Web.Controllers
         }
         
         [HttpGet("[action]")]
-        public async Task<EF.Member> FindById()
+        [Route("Get/{id}")]
+        public async Task<EF.Member> Get(int id)
         {
-            var id = Request.Query["id"].ToString();
-
             var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
 
-            return await bll_member.Get(new EF.Member { Id = Convert.ToInt32(id) });
+            return await bll_member.Get(new EF.Member { Id = id });
         }
 
-        [HttpPost("[action]")]
-        public async Task Edit([FromBody] EF.Member obj)
+        [HttpPatch("[action]")]
+        [Route("Edit/{id}")]
+        public async Task Edit([FromBody] EF.Member obj, int id)
         {
             var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
@@ -83,18 +83,17 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<int> Total()
+        [Route("Total/{status}")]
+        public async Task<int> Total(string status)
         {
-            var qry = Request.Query["q"].ToString();
-            
             var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
 
             var members = await bll_member.Find(new EF.Member());
 
-            if (qry == "active")
+            if (status.ToLower() == "active")
                 members = members.Where(x => x.IsActive == true);
-            else if (qry == "inactive")
+            else if (status.ToLower() == "inactive")
                 members = members.Where(x => x.IsActive == false);
 
             return members.Count();
