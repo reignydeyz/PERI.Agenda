@@ -39,13 +39,12 @@ namespace PERI.Agenda.Web.Controllers
             return await bll_member.Get(new EF.Member { Id = id });
         }
 
-        [HttpPatch("[action]")]
-        [Route("Edit/{id}")]
-        public async Task Edit([FromBody] EF.Member obj, int id)
+        [HttpPost("[action]")]
+        public async Task Edit([FromBody] EF.Member obj)
         {
             var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
-
+            
             await bll_member.Edit(obj);
         }
 
