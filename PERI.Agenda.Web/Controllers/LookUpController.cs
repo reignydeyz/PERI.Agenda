@@ -12,10 +12,9 @@ namespace PERI.Agenda.Web.Controllers
     public class LookUpController : Controller
     {
         [HttpGet("[action]")]
-        public async Task<IEnumerable<EF.LookUp>> FindByGroup()
+        [Route("Get/{group}")]
+        public async Task<IEnumerable<EF.LookUp>> Get(string group)
         {
-            var group = Request.Query["group"].ToString();
-
             var context = new EF.AARSContext();
             var bll_lookup = new BLL.LookUp(context);
 
