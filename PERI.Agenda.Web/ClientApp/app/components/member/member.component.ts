@@ -50,7 +50,7 @@ export class MemberComponent {
     }
 
     private edit(m: Member) {
-        this.http.patch(this.baseUrl + 'api/member/edit/' + m.id, {
+        this.http.post(this.baseUrl + 'api/member/edit', {
             id: m.id,
             name: m.name,
             nickName: m.nickName,
