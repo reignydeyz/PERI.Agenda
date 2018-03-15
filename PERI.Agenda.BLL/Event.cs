@@ -40,9 +40,10 @@ namespace PERI.Agenda.BLL
             throw new NotImplementedException();
         }
 
-        public Task Delete(int[] ids)
+        public async Task Delete(int[] ids)
         {
-            throw new NotImplementedException();
+            context.Event.RemoveRange(context.Event.Where(x => ids.Contains(x.Id)));
+            await context.SaveChangesAsync();
         }
 
         public Task Delete(EF.Event args)
@@ -50,9 +51,16 @@ namespace PERI.Agenda.BLL
             throw new NotImplementedException();
         }
 
-        public Task Edit(EF.Event args)
+        public async Task Edit(EF.Event args)
         {
-            throw new NotImplementedException();
+            var e = await context.Event.FirstAsync(x => x.Id == args.Id);
+
+            e.Name = args.Name;
+            e.LocationId = args.LocationId;
+            e.EventCategoryId = args.EventCategoryId;
+            e.DateTimeStart = args.DateTimeStart;
+
+            context.SaveChanges();
         }
 
         public async Task<IEnumerable<EF.Event>> Find(EF.Event args)

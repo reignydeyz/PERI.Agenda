@@ -49,5 +49,25 @@ namespace PERI.Agenda.Web.Controllers
 
             return await bll_event.Get(new EF.Event { Id = id });
         }
+
+        [HttpPost("[action]")]
+        public async Task Edit([FromBody] EF.Event obj)
+        {
+            var context = new EF.AARSContext();
+            var bll_event = new BLL.Event(context);
+
+            await bll_event.Edit(obj);
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Delete([FromBody] int[] ids)
+        {
+            var context = new EF.AARSContext();
+            var bll_event = new BLL.Event(context);
+
+            await bll_event.Delete(ids);
+
+            return Json("Success!");
+        }
     }
 }

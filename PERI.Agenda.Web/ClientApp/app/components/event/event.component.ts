@@ -39,6 +39,16 @@ export class EventComponent {
         }).map(response => response.json());
     }
 
+    private edit(e: Event) {
+        this.http.post(this.baseUrl + 'api/event/edit', {
+            id: e.id,
+            name: e.name,
+            eventCategoryId: e.eventCategoryId,
+            dateTimeStart: e.dateTimeStart,
+            locationId: e.locationId
+        }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => { console.error(error); alert('Oops! Unknown error has occured.') });
+    }
+
     // https://stackoverflow.com/questions/44000162/how-to-change-title-of-a-page-using-angularangular-2-or-4-route
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
         
@@ -118,6 +128,66 @@ export class EventComponent {
     public onEditInit(id: number) {
         this.http.get(this.baseUrl + 'api/event/get/' + id)
             .subscribe(result => { this.event = result.json() as Event }, error => console.error(error));
+    }
+
+    public onEditSubmit(event: Event) {
+        var date = <HTMLInputElement>document.getElementById("txtDate");
+        event.dateTimeStart = date.value;
+
+        let e: any = this.events.find(x => x.id == event.id);
+        event.attendance = e.attendance;
+
+        let ec: any = this.eventCategories.find(x => x.id == event.eventCategoryId);
+        event.category = ec.name;
+
+        let l: any = this.locations.find(x => x.id == event.locationId);
+        event.location = l.name;
+
+        this.edit(event);
+
+        for (let e of this.events) {
+            if (e.id == event.id) {
+                let index: number = this.events.indexOf(e);
+                this.events[index] = event;
+            }
+        }
+    }
+
+    onDeleteClick() {
+        var flag = confirm('Are you sure you want to delete selected records?');
+
+        if (!flag)
+            return false;
+
+        var selectedIds = new Array();
+        $('input:checkbox.checkBox').each(function () {
+            if ($(this).prop('checked')) {
+                selectedIds.push($(this).val());
+            }
+        });
+
+        let options : any = {};
+        options.url = "api/event/delete";
+        options.type = "POST";
+        options.data = JSON.stringify(selectedIds);
+        options.contentType = "application/json";
+        options.dataType = "json";
+        options.success = () => {
+
+            for (let id of selectedIds) {
+                for (let e of this.events) {
+                    if (e.id == id) {
+                        this.events.splice(this.events.indexOf(e), 1);
+                    }
+                }
+            }
+
+            alert('Success!');
+        };
+        options.error = function () {
+            alert("Error while deleting the records!");
+        };
+        $.ajax(options);
     }
 }
 
