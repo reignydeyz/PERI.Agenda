@@ -24,6 +24,7 @@ export class EventComponent {
             name: e.name,
             eventCategoryId: e.eventCategoryId,
             dateTimeStart: e.dateTimeStart,
+            dateTimeEnd: e.dateTimeEnd,
             locationId: e.locationId
         }).subscribe(result => {
             this.events = result.json() as Event[];
@@ -92,6 +93,7 @@ export class EventComponent {
         }        
         
         e.dateTimeStart = f.controls['dateTimeStart'].value;
+        e.dateTimeEnd = f.controls['dateTimeEnd'].value;
         e.locationId = f.controls['locationId'].value;
 
         this.find(e);
@@ -197,6 +199,7 @@ export class Event {
     category: string;
     name: string;
     dateTimeStart: string;
+    dateTimeEnd: string;
     time: string;
     locationId: number;
     location: string;
