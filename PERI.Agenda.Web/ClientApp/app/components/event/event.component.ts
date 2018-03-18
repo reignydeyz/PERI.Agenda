@@ -9,29 +9,21 @@ import * as moment from "moment";
 import { LocationModule, Location } from '../location/location.component';
 import { Observable } from 'rxjs/Observable';
 
-@Component({
-    selector: 'event',
-    templateUrl: './event.component.html'
-})
-export class EventComponent {
-    public event: Event;
-    public events: Event[];
-    public eventCategories: EventCategory[];
-    public locations: Location[];
+export class EventModule {
+    public http: Http;
+    public baseUrl: string;
 
-    private find(e: Event) {
-        this.http.post(this.baseUrl + 'api/event/find', {
+    public find(e: Event): Observable<Event[]> {
+        return this.http.post(this.baseUrl + 'api/event/find', {
             name: e.name,
             eventCategoryId: e.eventCategoryId,
             dateTimeStart: e.dateTimeStart,
             dateTimeEnd: e.dateTimeEnd,
             locationId: e.locationId
-        }).subscribe(result => {
-            this.events = result.json() as Event[];
-        }, error => console.error(error));
+        }).map(response => response.json());
     }
 
-    private add(e: Event): Observable<number> {
+    public add(e: Event): Observable<number> {
         return this.http.post(this.baseUrl + 'api/event/new', {
             name: e.name,
             eventCategoryId: e.eventCategoryId,
@@ -40,7 +32,7 @@ export class EventComponent {
         }).map(response => response.json());
     }
 
-    private edit(e: Event) {
+    public edit(e: Event) {
         this.http.post(this.baseUrl + 'api/event/edit', {
             id: e.id,
             name: e.name,
@@ -49,15 +41,30 @@ export class EventComponent {
             locationId: e.locationId
         }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => { console.error(error); alert('Oops! Unknown error has occured.') });
     }
+}
+
+@Component({
+    selector: 'event',
+    templateUrl: './event.component.html'
+})
+export class EventComponent {
+    private em: EventModule;
+
+    public event: Event;
+    public events: Event[];
+    public eventCategories: EventCategory[];
+    public locations: Location[];
 
     // https://stackoverflow.com/questions/44000162/how-to-change-title-of-a-page-using-angularangular-2-or-4-route
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
-        
+        this.em = new EventModule();
+        this.em.http = http;
+        this.em.baseUrl = baseUrl;
     }
 
     ngOnInit() {
         this.event = new Event();
-        this.find(new Event());
+        this.em.find(new Event()).subscribe(r => { this.events = r });
 
         this.titleService.setTitle('Events');
     }
@@ -96,7 +103,7 @@ export class EventComponent {
         e.dateTimeEnd = f.controls['dateTimeEnd'].value;
         e.locationId = f.controls['locationId'].value;
 
-        this.find(e);
+        this.em.find(e).subscribe(r => { this.events = r });
     }
 
     public onNewSubmit(f: NgForm) {
@@ -113,7 +120,7 @@ export class EventComponent {
         let l: any = this.locations.find(x => x.id == e.locationId);
         e.location = l.name;
 
-        this.add(e).subscribe(
+        this.em.add(e).subscribe(
             result => {
                 e.id = result;
                 this.events.push(e);
@@ -145,7 +152,7 @@ export class EventComponent {
         let l: any = this.locations.find(x => x.id == event.locationId);
         event.location = l.name;
 
-        this.edit(event);
+        this.em.edit(event);
 
         for (let e of this.events) {
             if (e.id == event.id) {

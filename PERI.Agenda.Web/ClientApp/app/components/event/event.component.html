@@ -62,7 +62,20 @@
         <tbody>
             <tr *ngFor="let e of events; let i = index">
                 <td><input type="checkbox" value="{{ e.id }}" class="checkBox" /></td>
-                <td><button class="btn btn-default" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(e.id)">Edit</button></td>
+                <td>
+                    <!--<button class="btn btn-default" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(e.id)">Edit</button>-->
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"  style="z-index: 0;">
+                            Action
+                            <span class="fa fa-caret-down"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(e.id)">Edit</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#">Attendance</a></li>
+                        </ul>
+                    </div>
+                </td>
                 <td>{{ e.name }}</td>
                 <td>{{ e.category }}</td>
                 <td>{{ e.location }}</td>
@@ -71,6 +84,16 @@
             </tr>
         </tbody>
     </table>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
 </div>
 
 <div class="modal fade" id="modalNew" role="dialog">
