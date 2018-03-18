@@ -13,6 +13,7 @@ import { CounterComponent } from './components/counter/counter.component';
 import { MemberComponent } from './components/member/member.component';
 import { EventComponent } from './components/event/event.component';
 import { EventCategoryComponent } from './components/eventcategory/eventcategory.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 @NgModule({
     declarations: [
@@ -24,14 +25,15 @@ import { EventCategoryComponent } from './components/eventcategory/eventcategory
 
         MemberComponent,
         EventComponent,
-        EventCategoryComponent
+        EventCategoryComponent,
+        DashboardComponent
     ],
     imports: [
         CommonModule,
         HttpModule,
         FormsModule,
         RouterModule.forRoot([
-            { path: '', redirectTo: 'home', pathMatch: 'full' },
+            { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
             { path: 'home', component: HomeComponent },
             { path: 'counter', component: CounterComponent },
             { path: 'fetch-data', component: FetchDataComponent },
@@ -39,8 +41,9 @@ import { EventCategoryComponent } from './components/eventcategory/eventcategory
             { path: 'member', component: MemberComponent },
             { path: 'event', component: EventComponent },
             { path: 'eventcategory', component: EventCategoryComponent },
+            { path: 'dashboard', component: DashboardComponent },
 
-            { path: '**', redirectTo: 'home' }
+            { path: '**', redirectTo: 'dashboard' }
         ])
     ]
 })
