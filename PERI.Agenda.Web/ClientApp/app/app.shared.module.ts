@@ -15,6 +15,8 @@ import { EventComponent } from './components/event/event.component';
 import { EventCategoryComponent } from './components/eventcategory/eventcategory.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 
+import { ChartsModule } from 'ng2-charts';
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -32,6 +34,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
         CommonModule,
         HttpModule,
         FormsModule,
+        ChartsModule,
         RouterModule.forRoot([
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
             { path: 'home', component: HomeComponent },

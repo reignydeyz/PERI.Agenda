@@ -1,1 +1,15 @@
 ﻿<h1>Dashboard</h1>
+
+<div>
+    <div style="display: block">
+        <canvas baseChart
+                [datasets]="barChartData"
+                [labels]="barChartLabels"
+                [options]="barChartOptions"
+                [legend]="barChartLegend"
+                [chartType]="barChartType"
+                (chartHover)="chartHovered($event)"
+                (chartClick)="chartClicked($event)"></canvas>
+    </div>
+    <button (click)="randomize()">Update</button>
+</div>
