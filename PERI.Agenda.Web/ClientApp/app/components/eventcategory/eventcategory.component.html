@@ -8,12 +8,18 @@
             <tr>
                 <th>Name</th>
                 <th>Events</th>
+                <th>Min Attendees</th>
+                <th>Average Attendees</th>
+                <th>Max Attendees</th>
             </tr>
         </thead>
         <tbody>
             <tr *ngFor="let e of eventcategories; let i = index">
                 <td>{{ e.name }}</td>
                 <td>{{ e.events }}</td>
+                <td>{{ e.minAttendees }}</td>
+                <td>{{ e.averageAttendees }}</td>
+                <td>{{ e.maxAttendees }}</td>
             </tr>
         </tbody>
     </table>

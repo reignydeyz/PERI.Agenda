@@ -1,6 +1,6 @@
 ﻿<h1>Events</h1>
 
-<form class="form-group" #frm="ngForm" (ngSubmit)="onSearchSubmit(frm)" ngNativeValidate id="frm">
+<form class="form-group" #frm="ngForm" (ngSubmit)="onSearchSubmit(frm)" ngNativeValidate id="frm" *ngIf="events">
     <div class="form-group">
         <label>Name</label>
         <input class="form-control" placeholder="Name" name="name" ngModel>
