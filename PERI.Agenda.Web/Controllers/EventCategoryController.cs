@@ -22,7 +22,10 @@ namespace PERI.Agenda.Web.Controllers
                       {
                           r.Id,
                           r.Name,
-                          Events = r.Event.Count
+                          Events = r.Event.Count,
+                          MinAttendees = r.Event.Count <= 0 ? 0 : r.Event.Min(x => x.Attendance.Count),
+                          AverageAttendees = Convert.ToInt16(r.Event.Count <= 0 ? 0 : r.Event.Average(x => x.Attendance.Count)),
+                          MaxAttendees = r.Event.Count <= 0 ? 0 : r.Event.Max(x => x.Attendance.Count)
                       };
 
             return Json(res);
