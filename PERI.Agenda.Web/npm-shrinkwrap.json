@@ -164,6 +164,11 @@
       "integrity": "sha1-N/6neWF8/sP9KxmgJH6LvdUTO/Y=",
       "dev": true
     },
+    "@types/google.visualization": {
+      "version": "0.0.41",
+      "resolved": "https://registry.npmjs.org/@types/google.visualization/-/google.visualization-0.0.41.tgz",
+      "integrity": "sha512-f+Tu97Df9FoTngp+LFKvsu+8+bORBHB7As+9zoWmWv4sauNay6RG+4mtVDt98mhlwsdG+cxKg/RYLkXfYACpow=="
+    },
     "@types/jasmine": {
       "version": "2.5.53",
       "resolved": "https://registry.npmjs.org/@types/jasmine/-/jasmine-2.5.53.tgz",

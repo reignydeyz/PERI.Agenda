@@ -1,15 +1,54 @@
 ﻿<h1>Dashboard</h1>
 
-<div>
-    <div style="display: block">
-        <canvas baseChart
-                [datasets]="barChartData"
-                [labels]="barChartLabels"
-                [options]="barChartOptions"
-                [legend]="barChartLegend"
-                [chartType]="barChartType"
-                (chartHover)="chartHovered($event)"
-                (chartClick)="chartClicked($event)"></canvas>
+<ul class="nav nav-pills">
+    <li class="active"><a data-toggle="pill" href="#home">Members</a></li>
+    <li><a data-toggle="pill" href="#menu1">Attendance</a></li>
+    <li><a data-toggle="pill" href="#menu2">Menu 2</a></li>
+    <li><a data-toggle="pill" href="#menu3">Menu 3</a></li>
+</ul>
+
+<hr />
+
+<div class="tab-content">
+    <div id="home" class="tab-pane fade in active">
+        <p *ngIf="!memberStats"><em>Loading...</em></p>
+        <div style="display: block" *ngIf="memberStats">
+            <h3>Members</h3>
+            <canvas baseChart
+                    [data]="memberStats.values"
+                    [labels]="memberStats.labels"
+                    [chartType]="memberChartType"></canvas>
+        </div>
     </div>
-    <button (click)="randomize()">Update</button>
+    <div id="menu1" class="tab-pane fade">
+        <p *ngIf="!eventcategoryStats"><em>Loading...</em></p>
+        <div *ngIf="eventcategoryStats">
+            <h3>Average Attendees</h3>
+            <canvas baseChart
+                    height="350"
+                    [data]="eventcategoryStats.values"
+                    [labels]="eventcategoryStats.labels"
+                    [chartType]="eventcategoryChartType"></canvas>
+        </div>
+
+        <hr />
+
+        <p *ngIf="!locationStats"><em>Loading...</em></p>
+        <div *ngIf="locationStats">
+            <h3>Locations</h3>
+            <canvas baseChart
+                    height="350"
+                    [data]="locationStats.values"
+                    [labels]="locationStats.labels"
+                    [chartType]="locationChartType"></canvas>
+        </div>
+    </div>
+    <div id="menu2" class="tab-pane fade">
+        <h3>Menu 2</h3>
+        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+    </div>
+    <div id="menu3" class="tab-pane fade">
+        <h3>Menu 3</h3>
+        <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+    </div>
 </div>

@@ -55,6 +55,7 @@ namespace PERI.Agenda.BLL
         public async Task<IEnumerable<EF.Location>> Find(EF.Location args)
         {
             return await context.Location
+                .Include(x => x.Event).ThenInclude(x => x.Attendance)
                 .Where(x => x.Name.Contains(args.Name ?? ""))
                 .OrderBy(x => x.Name)
                 .ToListAsync();

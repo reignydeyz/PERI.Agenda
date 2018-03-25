@@ -7,55 +7,38 @@ import { Title } from '@angular/platform-browser';
     templateUrl: './dashboard.component.html'
 })
 export class DashboardComponent {
+    public memberStats: Statistics;
+    public memberChartType: string = 'pie';
+    
+    public eventcategoryStats: Statistics;
+    public eventcategoryChartType: string = 'pie';
 
-    public barChartOptions: any = {
-        scaleShowVerticalLines: false,
-        responsive: true
-    };
-    public barChartLabels: string[] = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
-    public barChartType: string = 'bar';
-    public barChartLegend: boolean = true;
-
-    public barChartData: any[] = [
-        { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' },
-        { data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B' }
-    ];
-
-    // events
-    public chartClicked(e: any): void {
-        console.log(e);
-    }
-
-    public chartHovered(e: any): void {
-        console.log(e);
-    }
-
-    public randomize(): void {
-        // Only Change 3 values
-        let data = [
-            Math.round(Math.random() * 100),
-            59,
-            80,
-            (Math.random() * 100),
-            56,
-            (Math.random() * 100),
-            40];
-        let clone = JSON.parse(JSON.stringify(this.barChartData));
-        clone[0].data = data;
-        this.barChartData = clone;
-        /**
-         * (My guess), for Angular to recognize the change in the dataset
-         * it has to change the dataset variable directly,
-         * so one way around it, is to clone the data, change it and then
-         * assign it;
-         */
-    }
+    public locationStats: Statistics;
+    public locationChartType: string = 'horizontalBar';
 
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
-
     }
 
     ngOnInit() {
         this.titleService.setTitle('Dashboard'); 
     }
+
+    ngAfterViewInit() {
+        this.http.get(this.baseUrl + 'api/dashboard/member').subscribe(result => {
+            this.memberStats = result.json() as Statistics;
+        }, error => console.error(error));
+
+        this.http.get(this.baseUrl + 'api/dashboard/eventcategories').subscribe(result => {
+            this.eventcategoryStats = result.json() as Statistics;
+        }, error => console.error(error));
+
+        this.http.get(this.baseUrl + 'api/dashboard/locations').subscribe(result => {
+            this.locationStats = result.json() as Statistics;
+        }, error => console.error(error));
+    }
+}
+
+interface Statistics {
+    labels: Array<string>;
+    values: Array<number>;
 }
