@@ -113,8 +113,6 @@ namespace PERI.Agenda.Web.Controllers
             var list = new List<GraphData>();
             list.Add(new GraphData { Label = "Groups", Data = gcs.Select(x => x.Groups).ToArray() });
 
-            List<string> lineChartLabelsList = new List<string>();
-            
             var res = new GraphDataSet
             {
                 DataSet = list,
