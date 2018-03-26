@@ -16,8 +16,9 @@ export class DashboardComponent {
     public locationStats: Statistics;
     public locationChartType: string = 'pie';
 
-    public groupCategoryStats: Statistics;
+    public groupCategoryStats: GraphDataSet;
     public groupCategoryChartType: string = 'bar';
+    public groupCategoryChartLegend: boolean = true;
     public groupCategoryChartOptions: any = {
         responsive: true,
         legend: {
@@ -49,7 +50,7 @@ export class DashboardComponent {
         }, error => console.error(error));
 
         this.http.get(this.baseUrl + 'api/dashboard/groupcategories').subscribe(result => {
-            this.groupCategoryStats = result.json() as Statistics;
+            this.groupCategoryStats = result.json() as GraphDataSet; console.log(result.json());
         }, error => console.error(error));
     }
 }
@@ -57,4 +58,14 @@ export class DashboardComponent {
 interface Statistics {
     labels: Array<string>;
     values: Array<number>;
+}
+
+interface GraphData {
+    data: Array<number>;
+    label: string;
+}
+
+interface GraphDataSet {
+    dataSet: GraphData[];
+    chartLabels: string[];
 }

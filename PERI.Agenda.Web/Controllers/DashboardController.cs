@@ -17,6 +17,18 @@ namespace PERI.Agenda.Web.Controllers
             public string[] Labels { get; set; }
         }
 
+        public class GraphData
+        {
+            public int[] Data { get; set; }
+            public string Label { get; set; }
+        }
+
+        public class GraphDataSet
+        {
+            public List<GraphData> DataSet { get; set; }
+            public string[] ChartLabels { get; set; }
+        }
+
         [HttpGet("[action]")]
         public async Task<Statistics> Member()
         {
@@ -85,7 +97,7 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<Statistics> GroupCategories()
+        public async Task<GraphDataSet> GroupCategories()
         {
             var context = new EF.AARSContext();
             var bll_gc = new BLL.GroupCategory(context);
@@ -98,11 +110,18 @@ namespace PERI.Agenda.Web.Controllers
                           Groups = r.Group.Count()
                       };
 
-            return new Statistics
+            var list = new List<GraphData>();
+            list.Add(new GraphData { Label = "Groups", Data = gcs.Select(x => x.Groups).ToArray() });
+
+            List<string> lineChartLabelsList = new List<string>();
+            
+            var res = new GraphDataSet
             {
-                Values = gcs.Select(x => x.Groups).ToArray(),
-                Labels = gcs.Select(x => x.Name).ToArray()
+                DataSet = list,
+                ChartLabels = gcs.Select(x => x.Name).ToArray()
             };
+
+            return res;
         }
     }
 }

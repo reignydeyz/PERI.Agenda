@@ -38,9 +38,10 @@
         <div style="display: block" *ngIf="groupCategoryStats">
             <h3>Group Categories</h3>
             <canvas baseChart
-                    [data]="groupCategoryStats.values"
-                    [labels]="groupCategoryStats.labels"
+                    [datasets]="groupCategoryStats.dataSet"
+                    [labels]="groupCategoryStats.chartLabels"
                     [options]="groupCategoryChartOptions"
+                    [legend]="groupCategoryChartLegend"
                     [chartType]="groupCategoryChartType"></canvas>
         </div>
         
