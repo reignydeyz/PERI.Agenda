@@ -25,7 +25,8 @@ namespace PERI.Agenda.Web.Controllers
 
             var members = await bll_member.Find(new EF.Member());
 
-            return new Statistics {
+            return new Statistics
+            {
                 Values = new int[] { members.Where(x => !x.IsActive).Count(), members.Where(x => x.IsActive).Count() },
                 Labels = new string[] { "Inactive", "Active" }
             };
@@ -80,6 +81,27 @@ namespace PERI.Agenda.Web.Controllers
             {
                 Values = locs.Select(x => x.AverageAttendees).ToArray(),
                 Labels = locs.Select(x => x.Name).ToArray()
+            };
+        }
+
+        [HttpGet("[action]")]
+        public async Task<Statistics> GroupCategories()
+        {
+            var context = new EF.AARSContext();
+            var bll_gc = new BLL.GroupCategory(context);
+
+            var gcs = from r in (await bll_gc.Find(new EF.GroupCategory()))
+                      select new
+                      {
+                          r.Id,
+                          r.Name,
+                          Groups = r.Group.Count()
+                      };
+
+            return new Statistics
+            {
+                Values = gcs.Select(x => x.Groups).ToArray(),
+                Labels = gcs.Select(x => x.Name).ToArray()
             };
         }
     }

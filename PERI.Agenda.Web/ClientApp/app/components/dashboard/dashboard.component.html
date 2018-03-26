@@ -1,9 +1,9 @@
 ﻿<h1>Dashboard</h1>
 
 <ul class="nav nav-pills">
-    <li class="active"><a data-toggle="pill" href="#home">Members</a></li>
-    <li><a data-toggle="pill" href="#menu1">Attendance</a></li>
-    <li><a data-toggle="pill" href="#menu2">Menu 2</a></li>
+    <li class="active"><a data-toggle="pill" href="#home">Attendance</a></li>
+    <li><a data-toggle="pill" href="#menu1">Groups</a></li>
+    <li><a data-toggle="pill" href="#menu2">Members</a></li>
     <li><a data-toggle="pill" href="#menu3">Menu 3</a></li>
 </ul>
 
@@ -11,16 +11,6 @@
 
 <div class="tab-content">
     <div id="home" class="tab-pane fade in active">
-        <p *ngIf="!memberStats"><em>Loading...</em></p>
-        <div style="display: block" *ngIf="memberStats">
-            <h3>Members</h3>
-            <canvas baseChart
-                    [data]="memberStats.values"
-                    [labels]="memberStats.labels"
-                    [chartType]="memberChartType"></canvas>
-        </div>
-    </div>
-    <div id="menu1" class="tab-pane fade">
         <p *ngIf="!eventcategoryStats"><em>Loading...</em></p>
         <div *ngIf="eventcategoryStats">
             <h3>Average Attendees</h3>
@@ -43,9 +33,27 @@
                     [chartType]="locationChartType"></canvas>
         </div>
     </div>
+    <div id="menu1" class="tab-pane fade">
+        <p *ngIf="!groupCategoryStats"><em>Loading...</em></p>
+        <div style="display: block" *ngIf="groupCategoryStats">
+            <h3>Group Categories</h3>
+            <canvas baseChart
+                    [data]="groupCategoryStats.values"
+                    [labels]="groupCategoryStats.labels"
+                    [options]="groupCategoryChartOptions"
+                    [chartType]="groupCategoryChartType"></canvas>
+        </div>
+        
+    </div>
     <div id="menu2" class="tab-pane fade">
-        <h3>Menu 2</h3>
-        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+        <p *ngIf="!memberStats"><em>Loading...</em></p>
+        <div style="display: block" *ngIf="memberStats">
+            <h3>Members</h3>
+            <canvas baseChart
+                    [data]="memberStats.values"
+                    [labels]="memberStats.labels"
+                    [chartType]="memberChartType"></canvas>
+        </div>
     </div>
     <div id="menu3" class="tab-pane fade">
         <h3>Menu 3</h3>

@@ -14,7 +14,19 @@ export class DashboardComponent {
     public eventcategoryChartType: string = 'pie';
 
     public locationStats: Statistics;
-    public locationChartType: string = 'horizontalBar';
+    public locationChartType: string = 'pie';
+
+    public groupCategoryStats: Statistics;
+    public groupCategoryChartType: string = 'bar';
+    public groupCategoryChartOptions: any = {
+        responsive: true,
+        legend: {
+            display: false,
+            labels: {
+                display: false
+            }
+        }
+    };
 
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
     }
@@ -34,6 +46,10 @@ export class DashboardComponent {
 
         this.http.get(this.baseUrl + 'api/dashboard/locations').subscribe(result => {
             this.locationStats = result.json() as Statistics;
+        }, error => console.error(error));
+
+        this.http.get(this.baseUrl + 'api/dashboard/groupcategories').subscribe(result => {
+            this.groupCategoryStats = result.json() as Statistics;
         }, error => console.error(error));
     }
 }
