@@ -41,6 +41,11 @@ export class EventModule {
             locationId: e.locationId
         }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => { console.error(error); alert('Oops! Unknown error has occured.') });
     }
+
+    public get(id: number): Observable<Event> {
+        return this.http.get(this.baseUrl + 'api/event/get/' + id)
+            .map(response => response.json());
+    }
 }
 
 @Component({

@@ -79,7 +79,11 @@ namespace PERI.Agenda.BLL
 
         public async Task<EF.Event> Get(EF.Event args)
         {
-            return await context.Event.FirstOrDefaultAsync(x => x.Id == args.Id);
+            return await context.Event
+                .Include(x => x.EventCategory)
+                .Include(x => x.Attendance)
+                .Include(x => x.Location)
+                .FirstOrDefaultAsync(x => x.Id == args.Id);
         }
     }
 }

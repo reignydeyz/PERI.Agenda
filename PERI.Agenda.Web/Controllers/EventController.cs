@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -42,12 +43,24 @@ namespace PERI.Agenda.Web.Controllers
 
         [HttpGet("[action]")]
         [Route("Get/{id}")]
-        public async Task<EF.Event> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             var context = new EF.AARSContext();
             var bll_event = new BLL.Event(context);
 
-            return await bll_event.Get(new EF.Event { Id = id });
+            var r = await bll_event.Get(new EF.Event { Id = id });
+
+            dynamic obj = new ExpandoObject();
+            obj.id = r.Id;
+            obj.eventCategoryId = r.EventCategoryId;
+            obj.category = r.EventCategory.Name;
+            obj.name = r.Name;
+            obj.isActive = r.IsActive;
+            obj.dateTimeStart = r.DateTimeStart;
+            obj.location = (r.Location == null ? "" : r.Location.Name);
+            obj.attendance = r.Attendance.Count;
+
+            return Json(obj);
         }
 
         [HttpPost("[action]")]
