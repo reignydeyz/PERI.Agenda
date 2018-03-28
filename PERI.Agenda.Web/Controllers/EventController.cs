@@ -57,6 +57,7 @@ namespace PERI.Agenda.Web.Controllers
             obj.name = r.Name;
             obj.isActive = r.IsActive;
             obj.dateTimeStart = r.DateTimeStart;
+            obj.locationId = r.LocationId;
             obj.location = (r.Location == null ? "" : r.Location.Name);
             obj.attendance = r.Attendance.Count;
 
