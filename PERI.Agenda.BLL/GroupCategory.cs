@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using PERI.Agenda.EF;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace PERI.Agenda.BLL
 {
@@ -54,12 +55,17 @@ namespace PERI.Agenda.BLL
         public async Task<IEnumerable<EF.GroupCategory>> Find(EF.GroupCategory args)
         {
             return await context.GroupCategory
-                .Include(x => x.Group).ThenInclude(x => x.GroupMember).ToListAsync();
+                .Where(x => x.Name.Contains(args.Name ?? x.Name))
+                .Include(x => x.Group).ThenInclude(x => x.GroupMember)
+                .OrderBy(x => x.Name)
+                .ToListAsync();
         }
 
-        public Task<EF.GroupCategory> Get(EF.GroupCategory args)
+        public async Task<EF.GroupCategory> Get(EF.GroupCategory args)
         {
-            throw new NotImplementedException();
+            return await context.GroupCategory
+                .Include(x => x.Group)
+                .FirstOrDefaultAsync(x => x.Id == args.Id);
         }
     }
 }

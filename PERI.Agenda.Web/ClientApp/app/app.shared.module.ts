@@ -15,6 +15,8 @@ import { EventComponent } from './components/event/event.component';
 import { EventCategoryComponent } from './components/eventcategory/eventcategory.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AttendanceComponent } from './components/attendance/attendance.component';
+import { GroupComponent } from './components/group/group.component';
+import { GroupCategoryComponent } from './components/groupcategory/groupcategory.component';
 
 import { ChartsModule } from 'ng2-charts';
 
@@ -30,7 +32,9 @@ import { ChartsModule } from 'ng2-charts';
         EventComponent,
         EventCategoryComponent,
         DashboardComponent,
-        AttendanceComponent
+        AttendanceComponent,
+        GroupComponent,
+        GroupCategoryComponent
     ],
     imports: [
         CommonModule,
@@ -48,6 +52,8 @@ import { ChartsModule } from 'ng2-charts';
             { path: 'eventcategory', component: EventCategoryComponent },
             { path: 'dashboard', component: DashboardComponent },
             { path: 'attendance/:id', component: AttendanceComponent },
+            { path: 'group', component: GroupComponent },
+            { path: 'groupcategory', component: GroupCategoryComponent },
 
             { path: '**', redirectTo: 'dashboard' }
         ])

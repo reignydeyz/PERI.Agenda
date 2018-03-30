@@ -1,0 +1,20 @@
+﻿<h1>Group Categories</h1>
+
+<p *ngIf="!groupcategories"><em>Loading...</em></p>
+
+<div class="row" *ngIf="groupcategories">
+    <table class="table table-striped" id="tbl">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Groups</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let g of groupcategories; let i = index">
+                <td>{{ g.name }}</td>
+                <td>{{ g.groups }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
