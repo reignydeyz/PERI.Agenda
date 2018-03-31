@@ -1,9 +1,11 @@
 import { Component, Inject, AfterViewInit } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, Headers } from '@angular/http';
 import { NgForm, NgModel } from '@angular/forms';
 import * as $ from "jquery";
 
 import { LookUpModule, LookUp } from "../lookup/lookup.component";
+import { ErrorExceptionModule } from '../errorexception/errorexception.component'
+
 import * as moment from 'moment';
 import { Title } from '@angular/platform-browser';
 import { Observable } from 'rxjs/Observable';
@@ -24,6 +26,13 @@ export class MemberComponent {
     public statuses: boolean[];
     
     private find(m: Member) {
+        var ex = new ErrorExceptionModule();
+        ex.baseUrl = this.baseUrl;
+
+        let headers = new Headers();
+        let token = (<HTMLInputElement>document.getElementById("hToken")).value;
+        headers.append('Authorization', token);
+
         this.http.post(this.baseUrl + 'api/member/find', {
             name: m.name,
             nickName: m.nickName,
@@ -31,7 +40,7 @@ export class MemberComponent {
             email: m.email,
             address: m.address,
             mobile: m.mobile
-        }).subscribe(result => {
+        }, { headers: headers }).subscribe(result => {
             this.members = result.json() as Member[];
         }, error => console.error(error));
     }
@@ -64,17 +73,24 @@ export class MemberComponent {
     }
 
     private getTotal() {
-        this.http.get(this.baseUrl + 'api/member/total/all').subscribe(result => {
+        var ex = new ErrorExceptionModule();
+        ex.baseUrl = this.baseUrl;
+
+        let headers = new Headers();
+        let token = (<HTMLInputElement>document.getElementById("hToken")).value;
+        headers.append('Authorization', token);
+
+        this.http.get(this.baseUrl + 'api/member/total/all', { headers: headers }).subscribe(result => {
             this.total = result.json() as number;
-        }, error => console.error(error));
+        }, error => ex.catchError(error));
 
-        this.http.get(this.baseUrl + 'api/member/total/active').subscribe(result => {
+        this.http.get(this.baseUrl + 'api/member/total/active', { headers: headers }).subscribe(result => {
             this.actives = result.json() as number;
-        }, error => console.error(error));
+        }, error => ex.catchError(error));
 
-        this.http.get(this.baseUrl + 'api/member/total/inactive').subscribe(result => {
+        this.http.get(this.baseUrl + 'api/member/total/inactive', { headers: headers }).subscribe(result => {
             this.inactives = result.json() as number;
-        }, error => console.error(error));
+        }, error => ex.catchError(error));
     }
 
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
@@ -124,7 +140,7 @@ export class MemberComponent {
             },
             error => {
                 console.error(error);
-                alert('Oops! Unknown error has occured.')
+                alert()
             });
     }
 

@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using NLog;
 
 namespace PERI.Agenda.Web.Controllers
@@ -19,8 +20,11 @@ namespace PERI.Agenda.Web.Controllers
                     new[]
                     {
                         // User info
-                        new Claim("http://schemas.microsoft.com/accesscontrolservice/2010/07/claims/identityprovider", "ASP.NET Identity", "http://www.w3.org/2001/XMLSchema#string"),                        
+                        new Claim(ClaimTypes.NameIdentifier, args.UserId.ToString()),
+                        new Claim("http://schemas.microsoft.com/accesscontrolservice/2010/07/claims/identityprovider", "ASP.NET Identity", "http://www.w3.org/2001/XMLSchema#string"),
+                        new Claim(ClaimTypes.Name, args.FirstName + " " + args.LastName),
                         new Claim(ClaimTypes.Email, args.Email),
+                        new Claim(ClaimTypes.UserData, Core.JWT.GenerateToken(args.UserId, Core.Setting.Configuration.GetValue<string>("JWT:Secret"))),
 
                         // Role
                         new Claim(ClaimTypes.Role, args.Role.Name),
@@ -80,6 +84,43 @@ namespace PERI.Agenda.Web.Controllers
             ModelState.AddModelError(string.Empty, "Access denied.");
             TempData["notice"] = "Access denied.";
             return View(args);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SignIn([FromBody] Models.Login args)
+        {
+            var context = new EF.AARSContext();
+
+            var buser = new BLL.EndUser(context);
+
+            var user = await buser.Get(new EF.EndUser { Email = args.Email });
+
+            if (user != null)
+            {
+                // Check if active
+                if (user.DateInactive != null)
+                {
+                    ModelState.AddModelError(string.Empty, "Account is inactive.");
+                    TempData["notice"] = "Account is inactive.";
+                    return View(args);
+                }
+
+                // Check password
+                var salt = user.PasswordSalt;
+                var saltBytes = Convert.FromBase64String(salt);
+
+                if (Core.Crypto.Hash(args.Password, saltBytes) == user.PasswordHash)
+                {
+                    // Successful log in
+                    user.LastSessionId = Guid.NewGuid().ToString();
+                    user.LastLoginDate = DateTime.Now;
+                    await buser.Edit(user);
+
+                    return Json(Core.JWT.GenerateToken(user.UserId, Core.Setting.Configuration.GetValue<string>("JWT:Secret")));
+                }
+            }
+
+            return Unauthorized();
         }
 
         public async Task<IActionResult> SignOut()

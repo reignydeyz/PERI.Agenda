@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PERI.Agenda.Web.Controllers
 {
+    [ServiceFilter(typeof(BLL.VerifyUserAttribute))]
     [Produces("application/json")]
     [Route("api/Member")]
     public class MemberController : Controller

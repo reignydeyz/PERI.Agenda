@@ -1,6 +1,8 @@
+@using System.Security.Claims
 @{
     ViewData["Title"] = "Home Page";
 }
+@Html.Hidden("hToken", ((ClaimsIdentity)User.Identity).FindFirst(ClaimTypes.UserData).Value)
 
 <app asp-prerender-module="ClientApp/dist/main-server">Loading...</app>
 

@@ -46,6 +46,8 @@ namespace PERI.Agenda.Web
             });
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddScoped<BLL.VerifyUserAttribute>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
