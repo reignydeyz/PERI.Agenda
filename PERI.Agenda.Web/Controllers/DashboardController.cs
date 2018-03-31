@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NLog;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -11,6 +12,8 @@ namespace PERI.Agenda.Web.Controllers
     [Route("api/Dashboard")]
     public class DashboardController : Controller
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         public class Statistics
         {
             public int[] Values { get; set; }

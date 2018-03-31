@@ -5,11 +5,14 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using NLog;
 
 namespace PERI.Agenda.Web.Controllers
 {
     public class AuthenticationController : Controller
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private async Task AddClaimsAndSignIn(EF.EndUser args)
         {
             var ci = new ClaimsIdentity(
