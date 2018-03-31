@@ -37,10 +37,10 @@ export class DashboardComponent {
     }
 
     ngAfterViewInit() {
-        this.http.get(this.baseUrl + 'api/dashboard/member').subscribe(result => {
-            this.memberStats = result.json() as Statistics;
-        }, error => console.error(error));
+        this.onAttendanceLoad();
+    }
 
+    onAttendanceLoad() {
         this.http.get(this.baseUrl + 'api/dashboard/eventcategories').subscribe(result => {
             this.eventcategoryStats = result.json() as Statistics;
         }, error => console.error(error));
@@ -48,7 +48,15 @@ export class DashboardComponent {
         this.http.get(this.baseUrl + 'api/dashboard/locations').subscribe(result => {
             this.locationStats = result.json() as Statistics;
         }, error => console.error(error));
+    }
 
+    onMemberLoad() {
+        this.http.get(this.baseUrl + 'api/dashboard/member').subscribe(result => {
+            this.memberStats = result.json() as Statistics;
+        }, error => console.error(error));
+    }
+
+    onGroupsLoad() {
         this.http.get(this.baseUrl + 'api/dashboard/groupcategories').subscribe(result => {
             this.groupCategoryStats = result.json() as GraphDataSet; console.log(result.json());
         }, error => console.error(error));

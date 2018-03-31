@@ -1,10 +1,9 @@
 ﻿<h1>Dashboard</h1>
 
 <ul class="nav nav-pills">
-    <li class="active"><a data-toggle="pill" href="#home">Attendance</a></li>
-    <li><a data-toggle="pill" href="#menu1">Groups</a></li>
-    <li><a data-toggle="pill" href="#menu2">Members</a></li>
-    <li><a data-toggle="pill" href="#menu3">Menu 3</a></li>
+    <li class="active"><a data-toggle="pill" href="#home" (click)="onAttendaceLoad()">Attendance</a></li>
+    <li><a data-toggle="pill" href="#menu1" (click)="onGroupsLoad()">Groups</a></li>
+    <li><a data-toggle="pill" href="#menu2" (click)="onMemberLoad()">Members</a></li>
 </ul>
 
 <hr />
@@ -55,9 +54,5 @@
                     [labels]="memberStats.labels"
                     [chartType]="memberChartType"></canvas>
         </div>
-    </div>
-    <div id="menu3" class="tab-pane fade">
-        <h3>Menu 3</h3>
-        <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
     </div>
 </div>
