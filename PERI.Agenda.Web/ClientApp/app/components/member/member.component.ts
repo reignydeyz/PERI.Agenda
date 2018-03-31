@@ -1,5 +1,5 @@
 import { Component, Inject, AfterViewInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
+import { Http, Headers, RequestOptions } from '@angular/http';
 import { NgForm, NgModel } from '@angular/forms';
 import * as $ from "jquery";
 
@@ -24,14 +24,13 @@ export class MemberComponent {
     public members: Member[];
     public genders: LookUp[];
     public statuses: boolean[];
+
+    private ex: ErrorExceptionModule;
+    private token: string;
     
     private find(m: Member) {
-        var ex = new ErrorExceptionModule();
-        ex.baseUrl = this.baseUrl;
-
         let headers = new Headers();
-        let token = (<HTMLInputElement>document.getElementById("hToken")).value;
-        headers.append('Authorization', token);
+        headers.append('Authorization', this.token);
 
         this.http.post(this.baseUrl + 'api/member/find', {
             name: m.name,
@@ -42,10 +41,13 @@ export class MemberComponent {
             mobile: m.mobile
         }, { headers: headers }).subscribe(result => {
             this.members = result.json() as Member[];
-        }, error => ex.catchError(error));
+        }, error => this.ex.catchError(error));
     }
 
-    private add(m: Member) : Observable<number> {
+    private add(m: Member): Observable<number> {
+        let headers = new Headers();
+        headers.append('Authorization', this.token);
+
         return this.http.post(this.baseUrl + 'api/member/new', {
             name: m.name,
             nickName: m.nickName,
@@ -55,10 +57,13 @@ export class MemberComponent {
             mobile: m.mobile,
             isActive: m.isActive,
             gender: m.gender
-        }).map(response => response.json());
+        }, { headers: headers }).map(response => response.json());
     }
 
     private edit(m: Member) {
+        let headers = new Headers();
+        headers.append('Authorization', this.token);
+
         this.http.post(this.baseUrl + 'api/member/edit', {
             id: m.id,
             name: m.name,
@@ -69,32 +74,31 @@ export class MemberComponent {
             address: m.address,
             mobile: m.mobile,
             isActive: m.isActive
-        }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => { console.error(error); alert('Oops! Unknown error has occured.') });
+        }, { headers: headers }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => this.ex.catchError(error));
     }
 
     private getTotal() {
-        var ex = new ErrorExceptionModule();
-        ex.baseUrl = this.baseUrl;
-
-        let headers = new Headers();
-        let token = (<HTMLInputElement>document.getElementById("hToken")).value;
-        headers.append('Authorization', token);
+        let headers = new Headers();        
+        headers.append('Authorization', this.token);
 
         this.http.get(this.baseUrl + 'api/member/total/all', { headers: headers }).subscribe(result => {
             this.total = result.json() as number;
-        }, error => ex.catchError(error));
+        }, error => this.ex.catchError(error));
 
         this.http.get(this.baseUrl + 'api/member/total/active', { headers: headers }).subscribe(result => {
             this.actives = result.json() as number;
-        }, error => ex.catchError(error));
+        }, error => this.ex.catchError(error));
 
         this.http.get(this.baseUrl + 'api/member/total/inactive', { headers: headers }).subscribe(result => {
             this.inactives = result.json() as number;
-        }, error => ex.catchError(error));
+        }, error => this.ex.catchError(error));
     }
 
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
-        
+        this.ex = new ErrorExceptionModule();
+        this.ex.baseUrl = this.baseUrl;
+
+        this.token = (<HTMLInputElement>document.getElementById("hToken")).value;
     }
 
     ngOnInit() {
@@ -138,15 +142,15 @@ export class MemberComponent {
                 alert('Added!');
                 $('#modalNew').modal('toggle');
             },
-            error => {
-                console.error(error);
-                alert()
-            });
+            error => this.ex.catchError(error));
     }
 
     public onEditInit(id: number) {
-        this.http.get(this.baseUrl + 'api/member/get/' + id)
-            .subscribe(result => { this.member = result.json() as Member }, error => console.error(error));
+        let headers = new Headers();
+        headers.append('Authorization', this.token);
+
+        this.http.get(this.baseUrl + 'api/member/get/' + id, { headers:headers })
+            .subscribe(result => { this.member = result.json() as Member }, error => this.ex.catchError(error));
     }
 
     public onEditSubmit(member: Member) {
@@ -205,13 +209,12 @@ export class MemberComponent {
             }
         });
 
-        let options : any = {};
-        options.url = "api/member/delete";
-        options.type = "POST";
-        options.data = JSON.stringify(selectedIds);
-        options.contentType = "application/json";
-        options.dataType = "json";
-        options.success = () => {
+        let body = JSON.stringify(selectedIds);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+        headers.append('Authorization', this.token);
+
+        this.http.post(this.baseUrl + 'api/member/delete', body, options).subscribe(result => {
 
             for (let id of selectedIds) {
                 for (let m of this.members) {
@@ -229,14 +232,11 @@ export class MemberComponent {
                 }
             }
 
-            this.total -= selectedIds.length;            
+            this.total -= selectedIds.length;
 
             alert('Success!');
-        };
-        options.error = function () {
-            alert("Error while deleting the records!");
-        };
-        $.ajax(options);
+
+        }, error => this.ex.catchError(error));
     }
 
     onActivateClick() {
@@ -252,13 +252,12 @@ export class MemberComponent {
             }
         });
 
-        let options: any = {};
-        options.url = "api/member/activate";
-        options.type = "POST";
-        options.data = JSON.stringify(selectedIds);
-        options.contentType = "application/json";
-        options.dataType = "json";
-        options.success = () => {
+        let body = JSON.stringify(selectedIds);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+        headers.append('Authorization', this.token);
+
+        this.http.post(this.baseUrl + 'api/member/activate', body, options).subscribe(result => {
 
             for (let id of selectedIds) {
                 for (let m of this.members) {
@@ -272,11 +271,8 @@ export class MemberComponent {
             this.inactives -= selectedIds.length;
 
             alert('Success!');
-        };
-        options.error = function () {
-            alert("Error while deleting the records!");
-        };
-        $.ajax(options);
+
+        }, error => this.ex.catchError(error));
     }
 
     onDeactivateClick() {
@@ -292,13 +288,12 @@ export class MemberComponent {
             }
         });
 
-        let options: any = {};
-        options.url = "api/member/deactivate";
-        options.type = "POST";
-        options.data = JSON.stringify(selectedIds);
-        options.contentType = "application/json";
-        options.dataType = "json";
-        options.success = () => {
+        let body = JSON.stringify(selectedIds);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+        headers.append('Authorization', this.token);
+
+        this.http.post(this.baseUrl + 'api/member/deactivate', body , options).subscribe(result => {
 
             for (let id of selectedIds) {
                 for (let m of this.members) {
@@ -312,11 +307,8 @@ export class MemberComponent {
             this.inactives += selectedIds.length;
 
             alert('Success!');
-        };
-        options.error = function () {
-            alert("Error while deleting the records!");
-        };
-        $.ajax(options);
+
+        }, error => this.ex.catchError(error));        
     }
 }
 
