@@ -42,7 +42,7 @@ export class MemberComponent {
             mobile: m.mobile
         }, { headers: headers }).subscribe(result => {
             this.members = result.json() as Member[];
-        }, error => console.error(error));
+        }, error => ex.catchError(error));
     }
 
     private add(m: Member) : Observable<number> {
