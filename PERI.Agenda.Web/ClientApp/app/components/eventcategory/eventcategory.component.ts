@@ -12,15 +12,11 @@ export class EventCategoryModule {
     public baseUrl: string;
 
     public ex: ErrorExceptionModule;
-    public token: string;
 
     public find(ec: EventCategory): Observable<EventCategory[]> {
-        let headers = new Headers();
-        headers.append('Authorization', this.token);
-
         return this.http.post(this.baseUrl + 'api/eventcategory/find', {
             name: ec.name
-        }, { headers: headers }).map(response => response.json());
+        }).map(response => response.json());
     }
 }
 
@@ -41,13 +37,11 @@ export class EventCategoryComponent {
 
         this.ecm.ex = new ErrorExceptionModule();
         this.ecm.ex.baseUrl = this.baseUrl;
-
-        this.ecm.token = (<HTMLInputElement>document.getElementById("hToken")).value;
     }
 
     ngOnInit() {
-        this.ecm.find(new EventCategory()).subscribe(result => { this.eventcategories = result }, error => this.ecm.ex.catchError(error));
         this.titleService.setTitle('Event Categories');
+        this.ecm.find(new EventCategory()).subscribe(result => { this.eventcategories = result }, error => this.ecm.ex.catchError(error));        
     }
 }
 

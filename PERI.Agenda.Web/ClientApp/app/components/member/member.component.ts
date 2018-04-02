@@ -26,12 +26,8 @@ export class MemberComponent {
     public statuses: boolean[];
 
     private ex: ErrorExceptionModule;
-    private token: string;
-    
-    private find(m: Member) {
-        let headers = new Headers();
-        headers.append('Authorization', this.token);
 
+    private find(m: Member) {
         this.http.post(this.baseUrl + 'api/member/find', {
             name: m.name,
             nickName: m.nickName,
@@ -39,15 +35,12 @@ export class MemberComponent {
             email: m.email,
             address: m.address,
             mobile: m.mobile
-        }, { headers: headers }).subscribe(result => {
+        }).subscribe(result => {
             this.members = result.json() as Member[];
         }, error => this.ex.catchError(error));
     }
 
     private add(m: Member): Observable<number> {
-        let headers = new Headers();
-        headers.append('Authorization', this.token);
-
         return this.http.post(this.baseUrl + 'api/member/new', {
             name: m.name,
             nickName: m.nickName,
@@ -57,13 +50,10 @@ export class MemberComponent {
             mobile: m.mobile,
             isActive: m.isActive,
             gender: m.gender
-        }, { headers: headers }).map(response => response.json());
+        }).map(response => response.json());
     }
 
     private edit(m: Member) {
-        let headers = new Headers();
-        headers.append('Authorization', this.token);
-
         this.http.post(this.baseUrl + 'api/member/edit', {
             id: m.id,
             name: m.name,
@@ -74,22 +64,19 @@ export class MemberComponent {
             address: m.address,
             mobile: m.mobile,
             isActive: m.isActive
-        }, { headers: headers }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => this.ex.catchError(error));
+        }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => this.ex.catchError(error));
     }
 
     private getTotal() {
-        let headers = new Headers();        
-        headers.append('Authorization', this.token);
-
-        this.http.get(this.baseUrl + 'api/member/total/all', { headers: headers }).subscribe(result => {
+        this.http.get(this.baseUrl + 'api/member/total/all').subscribe(result => {
             this.total = result.json() as number;
         }, error => this.ex.catchError(error));
 
-        this.http.get(this.baseUrl + 'api/member/total/active', { headers: headers }).subscribe(result => {
+        this.http.get(this.baseUrl + 'api/member/total/active').subscribe(result => {
             this.actives = result.json() as number;
         }, error => this.ex.catchError(error));
 
-        this.http.get(this.baseUrl + 'api/member/total/inactive', { headers: headers }).subscribe(result => {
+        this.http.get(this.baseUrl + 'api/member/total/inactive').subscribe(result => {
             this.inactives = result.json() as number;
         }, error => this.ex.catchError(error));
     }
@@ -97,8 +84,6 @@ export class MemberComponent {
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
         this.ex = new ErrorExceptionModule();
         this.ex.baseUrl = this.baseUrl;
-
-        this.token = (<HTMLInputElement>document.getElementById("hToken")).value;
     }
 
     ngOnInit() {
@@ -146,10 +131,7 @@ export class MemberComponent {
     }
 
     public onEditInit(id: number) {
-        let headers = new Headers();
-        headers.append('Authorization', this.token);
-
-        this.http.get(this.baseUrl + 'api/member/get/' + id, { headers:headers })
+        this.http.get(this.baseUrl + 'api/member/get/' + id)
             .subscribe(result => { this.member = result.json() as Member }, error => this.ex.catchError(error));
     }
 
@@ -210,11 +192,8 @@ export class MemberComponent {
         });
 
         let body = JSON.stringify(selectedIds);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
-        headers.append('Authorization', this.token);
 
-        this.http.post(this.baseUrl + 'api/member/delete', body, options).subscribe(result => {
+        this.http.post(this.baseUrl + 'api/member/delete', body).subscribe(result => {
 
             for (let id of selectedIds) {
                 for (let m of this.members) {
@@ -253,11 +232,8 @@ export class MemberComponent {
         });
 
         let body = JSON.stringify(selectedIds);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
-        headers.append('Authorization', this.token);
 
-        this.http.post(this.baseUrl + 'api/member/activate', body, options).subscribe(result => {
+        this.http.post(this.baseUrl + 'api/member/activate', body).subscribe(result => {
 
             for (let id of selectedIds) {
                 for (let m of this.members) {
@@ -289,11 +265,8 @@ export class MemberComponent {
         });
 
         let body = JSON.stringify(selectedIds);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
-        headers.append('Authorization', this.token);
 
-        this.http.post(this.baseUrl + 'api/member/deactivate', body , options).subscribe(result => {
+        this.http.post(this.baseUrl + 'api/member/deactivate', body).subscribe(result => {
 
             for (let id of selectedIds) {
                 for (let m of this.members) {

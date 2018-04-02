@@ -1,10 +1,12 @@
 ﻿import { Component, Inject, AfterViewInit } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, Headers, RequestOptions } from '@angular/http';
 import { NgForm, NgModel } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { EventModule, Event } from '../event/event.component';
 import { Title } from '@angular/platform-browser';
+
+import { ErrorExceptionModule } from '../errorexception/errorexception.component';
 
 // https://angular-2-training-book.rangle.io/handout/routing/routeparams.html
 
@@ -36,6 +38,10 @@ export class AttendanceComponent {
         var em = new EventModule();
         em.http = this.http;
         em.baseUrl = this.baseUrl;
-        em.get(this.id).subscribe(r => { this.event = r });
+
+        em.ex = new ErrorExceptionModule();
+        em.ex.baseUrl = this.baseUrl;
+
+        em.get(this.id).subscribe(r => { this.event = r }, error => em.ex.catchError(error));
     }
 }

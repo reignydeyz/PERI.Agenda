@@ -16,51 +16,38 @@ export class EventModule {
     public baseUrl: string;
 
     public ex: ErrorExceptionModule;
-    public token: string;
 
-    public find(e: Event): Observable<Event[]> {
-        let headers = new Headers();
-        headers.append('Authorization', this.token);
-
+    public find(e: Event): Observable<Event[]> {        
         return this.http.post(this.baseUrl + 'api/event/find', {
             name: e.name,
             eventCategoryId: e.eventCategoryId,
             dateTimeStart: e.dateTimeStart,
             dateTimeEnd: e.dateTimeEnd,
             locationId: e.locationId
-        }, { headers: headers }).map(response => response.json());
+        }).map(response => response.json());
     }
 
     public add(e: Event): Observable<number> {
-        let headers = new Headers();
-        headers.append('Authorization', this.token);
-
         return this.http.post(this.baseUrl + 'api/event/new', {
             name: e.name,
             eventCategoryId: e.eventCategoryId,
             dateTimeStart: e.dateTimeStart,
             locationId: e.locationId
-        }, { headers: headers }).map(response => response.json());
+        }).map(response => response.json());
     }
 
     public edit(e: Event) {
-        let headers = new Headers();
-        headers.append('Authorization', this.token);
-
         this.http.post(this.baseUrl + 'api/event/edit', {
             id: e.id,
             name: e.name,
             eventCategoryId: e.eventCategoryId,
             dateTimeStart: e.dateTimeStart,
             locationId: e.locationId
-        }, { headers: headers }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => { console.error(error); alert('Oops! Unknown error has occured.') });
+        }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => this.ex.catchError(error));
     }
 
     public get(id: number): Observable<Event> {
-        let headers = new Headers();
-        headers.append('Authorization', this.token);
-
-        return this.http.get(this.baseUrl + 'api/event/get/' + id, { headers: headers })
+        return this.http.get(this.baseUrl + 'api/event/get/' + id)
             .map(response => response.json());
     }
 }
@@ -85,8 +72,6 @@ export class EventComponent {
 
         this.em.ex = new ErrorExceptionModule();
         this.em.ex.baseUrl = this.baseUrl;
-
-        this.em.token = (<HTMLInputElement>document.getElementById("hToken")).value;
     }
 
     ngOnInit() {
@@ -110,7 +95,6 @@ export class EventComponent {
         ecc.http = this.http;
         ecc.baseUrl = this.baseUrl;
         ecc.ex = this.em.ex;
-        ecc.token = this.em.token;
         ecc.find(new EventCategory()).subscribe(result => { this.eventCategories = result });        
 
         var l = new LocationModule();
@@ -132,7 +116,7 @@ export class EventComponent {
         e.dateTimeEnd = f.controls['dateTimeEnd'].value;
         e.locationId = f.controls['locationId'].value;
 
-        this.em.find(e).subscribe(r => { this.events = r });
+        this.em.find(e).subscribe(r => { this.events = r }, error => this.em.ex.catchError(error));
     }
 
     public onNewSubmit(f: NgForm) {
@@ -156,19 +140,12 @@ export class EventComponent {
 
                 alert('Added!');
                 $('#modalNew').modal('toggle');
-            },
-            error => {
-                console.error(error);
-                alert('Oops! Unknown error has occured.')
-            });
+            }, error => this.em.ex.catchError(error));
     }
 
     public onEditInit(id: number) {
-        let headers = new Headers();
-        headers.append('Authorization', this.em.token);
-
-        this.http.get(this.baseUrl + 'api/event/get/' + id, { headers: headers })
-            .subscribe(result => { this.event = result.json() as Event }, error => console.error(error));
+        this.http.get(this.baseUrl + 'api/event/get/' + id)
+            .subscribe(result => { this.event = result.json() as Event }, error => this.em.ex.catchError(error));
     }
 
     public onEditSubmit(event: Event) {
@@ -207,12 +184,9 @@ export class EventComponent {
             }
         });
 
-        let body = JSON.stringify(selectedIds);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
-        headers.append('Authorization', this.em.token);
+        let body = JSON.stringify(selectedIds)
 
-        this.http.post(this.baseUrl + 'api/member/delete', body, options).subscribe(result => {
+        this.http.post(this.baseUrl + 'api/event/delete', body).subscribe(result => {
 
             for (let id of selectedIds) {
                 for (let e of this.events) {
