@@ -6,12 +6,21 @@ using Microsoft.Extensions.Configuration;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace PERI.Agenda.BLL
 {
+    /// <summary>
+    /// Verifiies the token of the request
+    /// </summary>
     public class VerifyUserAttribute : ActionFilterAttribute
     {
+        /// <summary>
+        /// Specify allowed Roles. Enter names separated by comma
+        /// </summary>
+        public string AllowedRoles { get; set; }
+
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)
@@ -37,6 +46,17 @@ namespace PERI.Agenda.BLL
                 var context = new EF.AARSContext();
                 var bll_u = new BLL.EndUser(context);
                 var user = bll_u.Get(new EF.EndUser { UserId = userId }).Result;
+
+                // Allowed Roles
+                if (AllowedRoles != null)
+                {
+                    var roles = AllowedRoles.Split(',');
+                    if (roles.Count() > 0 && !roles.Contains(user.Role.Name))
+                    {
+                        logger.Error("Unauthorized.");
+                        filterContext.Result = new UnauthorizedResult();
+                    }
+                }
 
                 if (user.DateInactive != null)
                 {

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace PERI.Agenda.Web.Controllers
 {
+    [BLL.VerifyUser]
     [Produces("application/json")]
     [Route("api/Event")]
     public class EventController : Controller

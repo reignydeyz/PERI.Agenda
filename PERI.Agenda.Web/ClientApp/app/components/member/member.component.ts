@@ -4,7 +4,7 @@ import { NgForm, NgModel } from '@angular/forms';
 import * as $ from "jquery";
 
 import { LookUpModule, LookUp } from "../lookup/lookup.component";
-import { ErrorExceptionModule } from '../errorexception/errorexception.component'
+import { ErrorExceptionModule } from '../errorexception/errorexception.component';
 
 import * as moment from 'moment';
 import { Title } from '@angular/platform-browser';

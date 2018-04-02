@@ -1,5 +1,5 @@
 ﻿import { Component, Inject, AfterViewInit } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, Headers, RequestOptions } from '@angular/http';
 import { NgForm, NgModel } from '@angular/forms';
 import * as $ from "jquery";
 
@@ -9,41 +9,58 @@ import * as moment from "moment";
 import { LocationModule, Location } from '../location/location.component';
 import { Observable } from 'rxjs/Observable';
 
+import { ErrorExceptionModule } from '../errorexception/errorexception.component';
+
 export class EventModule {
     public http: Http;
     public baseUrl: string;
 
+    public ex: ErrorExceptionModule;
+    public token: string;
+
     public find(e: Event): Observable<Event[]> {
+        let headers = new Headers();
+        headers.append('Authorization', this.token);
+
         return this.http.post(this.baseUrl + 'api/event/find', {
             name: e.name,
             eventCategoryId: e.eventCategoryId,
             dateTimeStart: e.dateTimeStart,
             dateTimeEnd: e.dateTimeEnd,
             locationId: e.locationId
-        }).map(response => response.json());
+        }, { headers: headers }).map(response => response.json());
     }
 
     public add(e: Event): Observable<number> {
+        let headers = new Headers();
+        headers.append('Authorization', this.token);
+
         return this.http.post(this.baseUrl + 'api/event/new', {
             name: e.name,
             eventCategoryId: e.eventCategoryId,
             dateTimeStart: e.dateTimeStart,
             locationId: e.locationId
-        }).map(response => response.json());
+        }, { headers: headers }).map(response => response.json());
     }
 
     public edit(e: Event) {
+        let headers = new Headers();
+        headers.append('Authorization', this.token);
+
         this.http.post(this.baseUrl + 'api/event/edit', {
             id: e.id,
             name: e.name,
             eventCategoryId: e.eventCategoryId,
             dateTimeStart: e.dateTimeStart,
             locationId: e.locationId
-        }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => { console.error(error); alert('Oops! Unknown error has occured.') });
+        }, { headers: headers }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => { console.error(error); alert('Oops! Unknown error has occured.') });
     }
 
     public get(id: number): Observable<Event> {
-        return this.http.get(this.baseUrl + 'api/event/get/' + id)
+        let headers = new Headers();
+        headers.append('Authorization', this.token);
+
+        return this.http.get(this.baseUrl + 'api/event/get/' + id, { headers: headers })
             .map(response => response.json());
     }
 }
@@ -65,6 +82,11 @@ export class EventComponent {
         this.em = new EventModule();
         this.em.http = http;
         this.em.baseUrl = baseUrl;
+
+        this.em.ex = new ErrorExceptionModule();
+        this.em.ex.baseUrl = this.baseUrl;
+
+        this.em.token = (<HTMLInputElement>document.getElementById("hToken")).value;
     }
 
     ngOnInit() {
@@ -87,6 +109,8 @@ export class EventComponent {
         var ecc = new EventCategoryModule();
         ecc.http = this.http;
         ecc.baseUrl = this.baseUrl;
+        ecc.ex = this.em.ex;
+        ecc.token = this.em.token;
         ecc.find(new EventCategory()).subscribe(result => { this.eventCategories = result });        
 
         var l = new LocationModule();
@@ -140,7 +164,10 @@ export class EventComponent {
     }
 
     public onEditInit(id: number) {
-        this.http.get(this.baseUrl + 'api/event/get/' + id)
+        let headers = new Headers();
+        headers.append('Authorization', this.em.token);
+
+        this.http.get(this.baseUrl + 'api/event/get/' + id, { headers: headers })
             .subscribe(result => { this.event = result.json() as Event }, error => console.error(error));
     }
 
@@ -180,13 +207,12 @@ export class EventComponent {
             }
         });
 
-        let options : any = {};
-        options.url = "api/event/delete";
-        options.type = "POST";
-        options.data = JSON.stringify(selectedIds);
-        options.contentType = "application/json";
-        options.dataType = "json";
-        options.success = () => {
+        let body = JSON.stringify(selectedIds);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+        headers.append('Authorization', this.em.token);
+
+        this.http.post(this.baseUrl + 'api/member/delete', body, options).subscribe(result => {
 
             for (let id of selectedIds) {
                 for (let e of this.events) {
@@ -197,11 +223,8 @@ export class EventComponent {
             }
 
             alert('Success!');
-        };
-        options.error = function () {
-            alert("Error while deleting the records!");
-        };
-        $.ajax(options);
+
+        }, error => this.em.ex.catchError(error));
     }
 }
 
