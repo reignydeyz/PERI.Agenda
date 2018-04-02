@@ -38,8 +38,13 @@ namespace PERI.Agenda.Web.Controllers
 
         public IActionResult Index()
         {
-            ViewData["Title"] = "Sign-in";
-            return View();
+            if (User.Identity.IsAuthenticated)
+                return RedirectToAction("Index", "Home", null);
+            else
+            {
+                ViewData["Title"] = "Sign-in";
+                return View();
+            }
         }
 
         [HttpPost]
