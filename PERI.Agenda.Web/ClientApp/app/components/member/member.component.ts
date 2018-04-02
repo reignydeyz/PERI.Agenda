@@ -192,8 +192,10 @@ export class MemberComponent {
         });
 
         let body = JSON.stringify(selectedIds);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
 
-        this.http.post(this.baseUrl + 'api/member/delete', body).subscribe(result => {
+        this.http.post(this.baseUrl + 'api/member/delete', body, options).subscribe(result => {
 
             for (let id of selectedIds) {
                 for (let m of this.members) {
@@ -232,8 +234,10 @@ export class MemberComponent {
         });
 
         let body = JSON.stringify(selectedIds);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
 
-        this.http.post(this.baseUrl + 'api/member/activate', body).subscribe(result => {
+        this.http.post(this.baseUrl + 'api/member/activate', body, options).subscribe(result => {
 
             for (let id of selectedIds) {
                 for (let m of this.members) {
@@ -265,8 +269,10 @@ export class MemberComponent {
         });
 
         let body = JSON.stringify(selectedIds);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
 
-        this.http.post(this.baseUrl + 'api/member/deactivate', body).subscribe(result => {
+        this.http.post(this.baseUrl + 'api/member/deactivate', body, options).subscribe(result => {
 
             for (let id of selectedIds) {
                 for (let m of this.members) {

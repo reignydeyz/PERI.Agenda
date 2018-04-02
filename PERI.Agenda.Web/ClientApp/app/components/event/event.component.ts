@@ -184,9 +184,11 @@ export class EventComponent {
             }
         });
 
-        let body = JSON.stringify(selectedIds)
+        let body = JSON.stringify(selectedIds);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
 
-        this.http.post(this.baseUrl + 'api/event/delete', body).subscribe(result => {
+        this.http.post(this.baseUrl + 'api/event/delete', body, options).subscribe(result => {
 
             for (let id of selectedIds) {
                 for (let e of this.events) {
