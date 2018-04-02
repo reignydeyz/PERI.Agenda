@@ -7,6 +7,7 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 
 namespace PERI.Agenda.BLL
@@ -39,7 +40,13 @@ namespace PERI.Agenda.BLL
 
             try
             {
-                var payload = decoder.DecodeToObject<Dictionary<string, object>>(authHeader, secret, verify: true);
+                string token;
+                if (((ClaimsIdentity)filterContext.HttpContext.User.Identity).Claims.Count() > 0)
+                    token = ((ClaimsIdentity)filterContext.HttpContext.User.Identity).FindFirst(ClaimTypes.UserData).Value;
+                else
+                    token = authHeader;    
+
+                var payload = decoder.DecodeToObject<Dictionary<string, object>>(token, secret, verify: true);
                 var userId = Convert.ToInt32(payload["id"]);
 
                 // Verifiy user
