@@ -8,6 +8,7 @@ using NLog;
 
 namespace PERI.Agenda.Web.Controllers
 {
+    [BLL.VerifyUser]
     [Produces("application/json")]
     [Route("api/Dashboard")]
     public class DashboardController : Controller

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PERI.Agenda.Web.Controllers
 {
+    [BLL.VerifyUser]
     [Produces("application/json")]
     [Route("api/Attendance")]
     public class AttendanceController : Controller
