@@ -27,7 +27,8 @@ namespace PERI.Agenda.Web.Controllers
                           r.IsActive,
                           r.DateTimeStart,
                           Location = (r.Location == null ? "" : r.Location.Name),
-                          Attendance = r.Attendance.Count
+                          Attendance = r.Attendance.Count,
+                          r.IsExclusive
                         };
 
             return Json(res);

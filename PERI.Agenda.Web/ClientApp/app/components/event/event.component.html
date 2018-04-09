@@ -50,6 +50,7 @@
     <table class="table table-striped" id="tbl">
         <thead>
             <tr>
+                <th width="1%" style="padding: 2px"></th>
                 <th width="5%"><input type="checkbox" (change)="checkAll()" id="checkall" /></th>
                 <th width="5%"></th>
                 <th>Name</th>
@@ -61,11 +62,12 @@
         </thead>
         <tbody>
             <tr *ngFor="let e of events; let i = index">
+                <td [ngClass]="{exclusive: e.isExclusive == true || e.isExclusive == 'true', open: e.isExclusive == false || e.isExclusive == 'false'}" style="padding: 2px"></td>
                 <td><input type="checkbox" value="{{ e.id }}" class="checkBox" /></td>
                 <td>
                     <!--<button class="btn btn-default" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(e.id)">Edit</button>-->
                     <div class="input-group-btn">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"  style="z-index: 0;">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="z-index: 0;">
                             Action
                             <span class="fa fa-caret-down"></span>
                         </button>

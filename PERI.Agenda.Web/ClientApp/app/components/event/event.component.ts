@@ -54,7 +54,8 @@ export class EventModule {
 
 @Component({
     selector: 'event',
-    templateUrl: './event.component.html'
+    templateUrl: './event.component.html',
+    styleUrls: ['./event.component.css']
 })
 export class EventComponent {
     private em: EventModule;
@@ -76,7 +77,7 @@ export class EventComponent {
 
     ngOnInit() {
         this.event = new Event();
-        this.em.find(new Event()).subscribe(r => { this.events = r });
+        this.em.find(new Event()).subscribe(r => { this.events = r }, error => this.em.ex.catchError(error));
 
         this.titleService.setTitle('Events');
     }
@@ -215,4 +216,5 @@ export class Event {
     locationId: number;
     location: string;
     attendance: number;
+    isExlusive: boolean;
 }

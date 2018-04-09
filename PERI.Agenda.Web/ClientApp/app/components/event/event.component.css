@@ -1,0 +1,7 @@
+﻿.table td.exclusive {
+    background-color: darkmagenta !important;
+}
+
+.table td.open {
+    background-color: none !important;
+}
