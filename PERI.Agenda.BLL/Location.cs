@@ -56,7 +56,8 @@ namespace PERI.Agenda.BLL
         {
             return await context.Location
                 .Include(x => x.Event).ThenInclude(x => x.Attendance)
-                .Where(x => x.Name.Contains(args.Name ?? ""))
+                .Where(x => x.Name.Contains(args.Name ?? "")
+                && x.CommunityId == args.CommunityId)
                 .OrderBy(x => x.Name)
                 .ToListAsync();
         }

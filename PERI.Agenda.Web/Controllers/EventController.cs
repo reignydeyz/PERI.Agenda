@@ -16,6 +16,9 @@ namespace PERI.Agenda.Web.Controllers
         {
             var context = new EF.AARSContext();
             var bll_event = new BLL.Event(context);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            obj.EventCategory = new EF.EventCategory { CommunityId = user.CommunityId };
 
             var res = from r in (await bll_event.Find(obj)).Take(1000)
                       select new
@@ -49,8 +52,9 @@ namespace PERI.Agenda.Web.Controllers
         {
             var context = new EF.AARSContext();
             var bll_event = new BLL.Event(context);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var r = await bll_event.Get(new EF.Event { Id = id });
+            var r = await bll_event.Get(new EF.Event { Id = id, EventCategory = new EF.EventCategory { CommunityId = user.CommunityId } });
 
             dynamic obj = new ExpandoObject();
             obj.id = r.Id;
@@ -71,6 +75,9 @@ namespace PERI.Agenda.Web.Controllers
         {
             var context = new EF.AARSContext();
             var bll_event = new BLL.Event(context);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            obj.EventCategory = new EF.EventCategory { CommunityId = user.CommunityId };
 
             await bll_event.Edit(obj);
         }
@@ -80,6 +87,10 @@ namespace PERI.Agenda.Web.Controllers
         {
             var context = new EF.AARSContext();
             var bll_event = new BLL.Event(context);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            if (!await bll_event.IsSelectedIdsOk(ids, user))
+                return BadRequest();
 
             await bll_event.Delete(ids);
 

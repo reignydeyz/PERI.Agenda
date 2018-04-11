@@ -17,6 +17,9 @@ namespace PERI.Agenda.Web.Controllers
         {
             var context = new EF.AARSContext();
             var bll_eventCategory = new BLL.EventCategory(context);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            args.CommunityId = user.CommunityId;
 
             var res = from r in (await bll_eventCategory.Find(args))
                       select new

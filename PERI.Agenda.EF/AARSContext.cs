@@ -461,6 +461,8 @@ namespace PERI.Agenda.EF
                     .HasName("UQ_User_FirstName_LastName")
                     .IsUnique();
 
+                entity.Property(e => e.CommunityId).HasDefaultValueSql("((1))");
+
                 entity.Property(e => e.ConfirmationCode)
                     .HasMaxLength(50)
                     .IsUnicode(false);
@@ -507,6 +509,11 @@ namespace PERI.Agenda.EF
                 entity.Property(e => e.PasswordSalt)
                     .IsRequired()
                     .HasMaxLength(128);
+
+                entity.HasOne(d => d.Community)
+                    .WithMany(p => p.EndUser)
+                    .HasForeignKey(d => d.CommunityId)
+                    .HasConstraintName("FK_EndUser_Community");
 
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.EndUser)

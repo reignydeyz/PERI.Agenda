@@ -53,8 +53,9 @@ namespace PERI.Agenda.Web.Controllers
         {
             var context = new EF.AARSContext();
             var bll_ec = new BLL.EventCategory(context);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var ecs = from r in (await bll_ec.Find(new EF.EventCategory()))
+            var ecs = from r in (await bll_ec.Find(new EF.EventCategory { CommunityId = user.CommunityId }))
                       select new
                       {
                           r.Id,
@@ -79,8 +80,9 @@ namespace PERI.Agenda.Web.Controllers
         {
             var context = new EF.AARSContext();
             var bll_loc = new BLL.Location(context);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var locs = from r in (await bll_loc.Find(new EF.Location()))
+            var locs = from r in (await bll_loc.Find(new EF.Location { CommunityId = user.CommunityId }))
                        select new
                        {
                            r.Id,
@@ -105,8 +107,9 @@ namespace PERI.Agenda.Web.Controllers
         {
             var context = new EF.AARSContext();
             var bll_gc = new BLL.GroupCategory(context);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var gcs = from r in (await bll_gc.Find(new EF.GroupCategory()))
+            var gcs = from r in (await bll_gc.Find(new EF.GroupCategory { CommunityId = user.CommunityId }))
                       select new
                       {
                           r.Id,

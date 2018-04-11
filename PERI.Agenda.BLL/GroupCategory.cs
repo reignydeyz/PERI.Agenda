@@ -55,7 +55,8 @@ namespace PERI.Agenda.BLL
         public async Task<IEnumerable<EF.GroupCategory>> Find(EF.GroupCategory args)
         {
             return await context.GroupCategory
-                .Where(x => x.Name.Contains(args.Name ?? x.Name))
+                .Where(x => x.Name.Contains(args.Name ?? x.Name)
+                && x.CommunityId == args.CommunityId)
                 .Include(x => x.Group).ThenInclude(x => x.GroupMember)
                 .OrderBy(x => x.Name)
                 .ToListAsync();
