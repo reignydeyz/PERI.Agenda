@@ -510,11 +510,6 @@ namespace PERI.Agenda.EF
                     .IsRequired()
                     .HasMaxLength(128);
 
-                entity.HasOne(d => d.Community)
-                    .WithMany(p => p.EndUser)
-                    .HasForeignKey(d => d.CommunityId)
-                    .HasConstraintName("FK_EndUser_Community");
-
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.EndUser)
                     .HasForeignKey(d => d.RoleId)
