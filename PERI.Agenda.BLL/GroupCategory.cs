@@ -66,7 +66,8 @@ namespace PERI.Agenda.BLL
         {
             return await context.GroupCategory
                 .Include(x => x.Group)
-                .FirstOrDefaultAsync(x => x.Id == args.Id);
+                .FirstOrDefaultAsync(x => x.Id == args.Id
+                && x.CommunityId == args.CommunityId);
         }
     }
 }

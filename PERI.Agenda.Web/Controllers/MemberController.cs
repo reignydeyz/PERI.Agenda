@@ -17,6 +17,9 @@ namespace PERI.Agenda.Web.Controllers
         {
             var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            obj.CommunityId = user.CommunityId;
 
             return (await bll_member.Find(obj)).Take(1000);
         }
@@ -36,8 +39,9 @@ namespace PERI.Agenda.Web.Controllers
         {
             var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            return await bll_member.Get(new EF.Member { Id = id });
+            return await bll_member.Get(new EF.Member { Id = id, CommunityId = user.CommunityId });
         }
 
         [HttpPost("[action]")]
@@ -45,7 +49,10 @@ namespace PERI.Agenda.Web.Controllers
         {
             var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
-            
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            obj.CommunityId = user.CommunityId;
+
             await bll_member.Edit(obj);
         }
 
@@ -54,6 +61,10 @@ namespace PERI.Agenda.Web.Controllers
         {
             var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            if (!await bll_member.IsSelectedIdsOk(ids, user))
+                return BadRequest();
 
             await bll_member.Delete(ids);
 
@@ -65,6 +76,10 @@ namespace PERI.Agenda.Web.Controllers
         {
             var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            if (!await bll_member.IsSelectedIdsOk(ids, user))
+                return BadRequest();
 
             await bll_member.Activate(ids);
 
@@ -76,6 +91,10 @@ namespace PERI.Agenda.Web.Controllers
         {
             var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            if (!await bll_member.IsSelectedIdsOk(ids, user))
+                return BadRequest();
 
             await bll_member.Deactivate(ids);
 
@@ -88,8 +107,9 @@ namespace PERI.Agenda.Web.Controllers
         {
             var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var members = await bll_member.Find(new EF.Member());
+            var members = await bll_member.Find(new EF.Member { CommunityId = user.CommunityId });
 
             if (status.ToLower() == "active")
                 members = members.Where(x => x.IsActive == true);

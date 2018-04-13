@@ -25,7 +25,6 @@ namespace PERI.Agenda.EF
         public DateTime? DateInactive { get; set; }
         public int CommunityId { get; set; }
 
-        public Community Community { get; set; }
         public Role Role { get; set; }
     }
 }

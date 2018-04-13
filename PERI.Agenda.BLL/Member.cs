@@ -61,7 +61,8 @@ namespace PERI.Agenda.BLL
 
         public async Task Edit(EF.Member args)
         {
-            var user = await context.Member.FirstAsync(x => x.Id == args.Id);
+            var user = await context.Member.FirstAsync(x => x.Id == args.Id
+            && x.CommunityId == args.CommunityId);
 
             user.Name = args.Name;
             user.NickName = args.NickName;
@@ -77,12 +78,20 @@ namespace PERI.Agenda.BLL
 
         public async Task<IEnumerable<EF.Member>> Find(EF.Member args)
         {
-            return await context.Member.Where(x => x.Name.Contains(args.Name ?? "")).OrderBy(x => x.Name).ToListAsync();
+            return await context.Member.Where(x => x.Name.Contains(args.Name ?? "")
+            && x.CommunityId == args.CommunityId)
+                .OrderBy(x => x.Name).ToListAsync();
         }
 
         public async Task<EF.Member> Get(EF.Member args)
         {
-            return await context.Member.FirstOrDefaultAsync(x => x.Id == args.Id);
+            return await context.Member.FirstOrDefaultAsync(x => x.Id == args.Id
+            && x.CommunityId == args.CommunityId);
+        }
+
+        public async Task<bool> IsSelectedIdsOk(int[] ids, EF.EndUser user)
+        {
+            return await context.Member.Where(x => ids.Contains(x.Id) && x.CommunityId == user.CommunityId).CountAsync() == ids.Count();
         }
     }
 }
