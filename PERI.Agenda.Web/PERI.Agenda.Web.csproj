@@ -30,6 +30,7 @@
     <None Remove="ClientApp\app\components\event\event.component.ts" />
     <None Remove="ClientApp\app\components\group\group.edit.component.ts" />
     <None Remove="ClientApp\app\components\location\location.component.ts" />
+    <None Remove="ClientApp\app\components\member\member.edit.component.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,6 +46,7 @@
     <TypeScriptCompile Include="ClientApp\app\components\event\event.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\group\group.edit.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\location\location.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\member\member.edit.component.ts" />
   </ItemGroup>
 
   <ItemGroup>
