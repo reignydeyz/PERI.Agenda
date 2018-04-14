@@ -29,7 +29,9 @@ export class MemberComponent {
 
     private find(m: Member) {
         this.http.post(this.baseUrl + 'api/member/find', {
-            name: m.name,
+            firstName: m.firstName,
+            middleName: m.middleName,
+            lastName: m.lastName,
             nickName: m.nickName,
             birthDate: m.birthDate,
             email: m.email,
@@ -42,7 +44,9 @@ export class MemberComponent {
 
     private add(m: Member): Observable<number> {
         return this.http.post(this.baseUrl + 'api/member/new', {
-            name: m.name,
+            firstName: m.firstName,
+            middleName: m.middleName,
+            lastName: m.lastName,
             nickName: m.nickName,
             birthDate: m.birthDate,
             email: m.email,
@@ -56,7 +60,9 @@ export class MemberComponent {
     private edit(m: Member) {
         this.http.post(this.baseUrl + 'api/member/edit', {
             id: m.id,
-            name: m.name,
+            firstName: m.firstName,
+            middleName: m.middleName,
+            lastName: m.lastName,
             nickName: m.nickName,
             gender: m.gender,
             birthDate: m.birthDate,
@@ -100,7 +106,9 @@ export class MemberComponent {
     // https://www.concretepage.com/angular-2/angular-2-ngform-with-ngmodel-directive-example
     public onSearchSubmit(f: NgForm) {
         var m = new Member();
-        m.name = f.controls['name'].value;
+        m.firstName = f.controls['name'].value;
+        m.middleName = f.controls['name'].value;
+        m.lastName = f.controls['name'].value;
         m.email = f.controls['email'].value;
 
         this.find(m);
@@ -108,7 +116,9 @@ export class MemberComponent {
 
     public onNewSubmit(f: NgForm) {
         var m = new Member();
-        m.name = f.controls['name'].value;
+        m.firstName = f.controls['firstName'].value;
+        m.middleName = f.controls['middleName'].value;
+        m.lastName = f.controls['lastName'].value;
         m.nickName = f.controls['nickName'].value;
         m.birthDate = f.controls['birthDate'].value;
         m.email = f.controls['email'].value;
@@ -293,7 +303,9 @@ export class MemberComponent {
 
 export class Member {
     id: number;
-    name: string;
+    firstName: string;
+    middleName: string;
+    lastName: string;
     nickName: string;
     birthDate: string;
     gender: number;

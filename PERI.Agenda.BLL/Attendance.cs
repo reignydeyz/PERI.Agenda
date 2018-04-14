@@ -91,7 +91,7 @@ namespace PERI.Agenda.BLL
                               DateTimeLogged = (lr == null ? null : lr.DateTimeLogged)
                           };
 
-                return res.OrderBy(x => x.Member.Name);
+                return res.OrderBy(x => x.Member.FirstName);
             }
             else
             {
@@ -106,7 +106,7 @@ namespace PERI.Agenda.BLL
                               DateTimeLogged = (lr == null ? null : lr.DateTimeLogged)
                           };
 
-                return res.OrderBy(x => x.Member.Name);
+                return res.OrderBy(x => x.Member.FirstName);
             }
         }
 
@@ -125,7 +125,7 @@ namespace PERI.Agenda.BLL
                 var res = from m in members
                           join a in attendance on m.Id equals a.MemberId into leftr
                           from lr in leftr.DefaultIfEmpty()
-                          where m.Name.ToLower().Contains(member)
+                          where m.FirstName.ToLower().Contains(member) || (m.MiddleName ?? "").ToLower().Contains(member) || m.LastName.ToLower().Contains(member)
                           select new EF.Attendance
                           {
                               Member = m,
@@ -133,7 +133,7 @@ namespace PERI.Agenda.BLL
                               DateTimeLogged = (lr == null ? null : lr.DateTimeLogged)
                           };
 
-                return res.OrderBy(x => x.Member.Name);
+                return res.OrderBy(x => x.Member.FirstName);
             }
             else
             {
@@ -141,7 +141,7 @@ namespace PERI.Agenda.BLL
                           join r in registrants on m.Id equals r.MemberId
                           join a in attendance on r.MemberId equals a.MemberId into leftr
                           from lr in leftr.DefaultIfEmpty()
-                          where m.Name.ToLower().Contains(member)
+                          where m.FirstName.ToLower().Contains(member) || (m.MiddleName ?? "").ToLower().Contains(member) || m.LastName.ToLower().Contains(member)
                           select new EF.Attendance
                           {
                               Member = m,
@@ -149,7 +149,7 @@ namespace PERI.Agenda.BLL
                               DateTimeLogged = (lr == null ? null : lr.DateTimeLogged)
                           };
 
-                return res.OrderBy(x => x.Member.Name);
+                return res.OrderBy(x => x.Member.FirstName);
             }
         }
     }

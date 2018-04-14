@@ -17,6 +17,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AttendanceComponent } from './components/attendance/attendance.component';
 import { GroupComponent } from './components/group/group.component';
 import { GroupCategoryComponent } from './components/groupcategory/groupcategory.component';
+import { GroupEditComponent } from './components/group/group.edit.component';
 
 import { ChartsModule } from 'ng2-charts';
 
@@ -34,7 +35,8 @@ import { ChartsModule } from 'ng2-charts';
         DashboardComponent,
         AttendanceComponent,
         GroupComponent,
-        GroupCategoryComponent
+        GroupEditComponent,
+        GroupCategoryComponent,
     ],
     imports: [
         CommonModule,

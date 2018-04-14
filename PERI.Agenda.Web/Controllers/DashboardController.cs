@@ -38,8 +38,9 @@ namespace PERI.Agenda.Web.Controllers
         {
             var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var members = await bll_member.Find(new EF.Member());
+            var members = await bll_member.Find(new EF.Member { CommunityId = user.CommunityId });
 
             return new Statistics
             {

@@ -22,7 +22,7 @@ namespace PERI.Agenda.Web.Controllers
             var res = from r in (await bll_a.Registrants(id))
                       select new
                       {
-                            r.Member.Name,
+                            Name = r.Member.FirstName + (r.Member.MiddleName == null || r.Member.MiddleName == "" ? "" : " " + r.Member.MiddleName) + " " + r.Member.LastName,
                             r.MemberId,
                             r.DateTimeLogged
                       };
@@ -40,7 +40,7 @@ namespace PERI.Agenda.Web.Controllers
             var res = from r in (await bll_a.Registrants(id, member))
                       select new
                       {
-                          r.Member.Name,
+                          Name = r.Member.FirstName + (r.Member.MiddleName == null || r.Member.MiddleName == "" ? "" : " " + r.Member.MiddleName) + " " + r.Member.LastName,
                           r.MemberId,
                           r.DateTimeLogged
                       };

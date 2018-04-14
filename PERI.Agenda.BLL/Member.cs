@@ -64,7 +64,9 @@ namespace PERI.Agenda.BLL
             var user = await context.Member.FirstAsync(x => x.Id == args.Id
             && x.CommunityId == args.CommunityId);
 
-            user.Name = args.Name;
+            user.FirstName = args.FirstName;
+            user.MiddleName = args.MiddleName;
+            user.LastName = args.LastName;
             user.NickName = args.NickName;
             user.BirthDate = args.BirthDate;
             user.Gender = args.Gender;
@@ -78,9 +80,11 @@ namespace PERI.Agenda.BLL
 
         public async Task<IEnumerable<EF.Member>> Find(EF.Member args)
         {
-            return await context.Member.Where(x => x.Name.Contains(args.Name ?? "")
+            return await context.Member.Where(x => (x.FirstName.Contains(args.FirstName ?? "")
+            || x.MiddleName.Contains(args.MiddleName ?? "")
+            || x.LastName.Contains(args.LastName ?? ""))
             && x.CommunityId == args.CommunityId)
-                .OrderBy(x => x.Name).ToListAsync();
+                .OrderBy(x => x.FirstName).ToListAsync();
         }
 
         public async Task<EF.Member> Get(EF.Member args)
