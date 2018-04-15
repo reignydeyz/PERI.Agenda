@@ -22,7 +22,7 @@ namespace PERI.Agenda.Web.Controllers
             var res = from r in (await bll_a.Registrants(id))
                       select new
                       {
-                            Name = r.Member.FirstName + (r.Member.MiddleName == null || r.Member.MiddleName == "" ? "" : " " + r.Member.MiddleName) + " " + r.Member.LastName,
+                            r.Member.Name,
                             r.MemberId,
                             r.DateTimeLogged
                       };
@@ -40,7 +40,7 @@ namespace PERI.Agenda.Web.Controllers
             var res = from r in (await bll_a.Registrants(id, member))
                       select new
                       {
-                          Name = r.Member.FirstName + (r.Member.MiddleName == null || r.Member.MiddleName == "" ? "" : " " + r.Member.MiddleName) + " " + r.Member.LastName,
+                          r.Member.Name,
                           r.MemberId,
                           r.DateTimeLogged
                       };
@@ -66,6 +66,22 @@ namespace PERI.Agenda.Web.Controllers
             var bll_a = new BLL.Attendance(context);
 
             await bll_a.Delete(new EF.Attendance { EventId = id, MemberId = obj.MemberId });
+        }
+
+        [HttpGet("[action]")]
+        [Route("{id}/Total/{status}")]
+        public async Task<int> Total(int id, string status)
+        {
+            var context = new EF.AARSContext();
+            var bll_a = new BLL.Attendance(context);
+            var res = await bll_a.Registrants(id);
+
+            if (status.ToLower() == "attendees")
+                res = res.Where(x => x.DateTimeLogged != null);
+            else if (status.ToLower() == "pending")
+                res = res.Where(x => x.DateTimeLogged == null);
+
+            return res.Count();
         }
     }
 }

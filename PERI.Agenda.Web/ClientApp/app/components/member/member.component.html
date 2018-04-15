@@ -84,9 +84,7 @@
                 <th width="1%" style="padding: 2px"></th>
                 <th width="5%"><input type="checkbox" (change)="checkAll()" id="checkall" /></th>
                 <th width="5%"></th>
-                <th>First name</th>
-                <th>Middle name</th>
-                <th>Last name</th>
+                <th>Name</th>
                 <th>Nick</th>
                 <th>Birth date</th>
                 <th>Gender</th>
@@ -100,9 +98,7 @@
                 <td [ngClass]="{active: m.isActive == true || m.isActive == 'true', inactive: m.isActive == false || m.isActive == 'false'}" style="padding: 2px"></td>
                 <td><input type="checkbox" value="{{ m.id }}" class="checkBox" /></td>
                 <td><button class="btn btn-default" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(m.id)">Edit</button></td>
-                <td>{{ m.firstName }}</td>
-                <td>{{ m.middleName }}</td>
-                <td>{{ m.lastName }}</td>
+                <td>{{ m.name }}</td>
                 <td>{{ m.nickName }}</td>
                 <td>{{ m.birthDate | date: 'MM/dd/yyyy' }}</td>
                 <td>{{ m.gender == 3 ? 'Male' : (m.gender == 4 ? 'Female' : '') }}</td>
@@ -189,17 +185,9 @@
                 <input type="hidden" name="member.id" [(ngModel)]="member.id">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>First name</label>
-                        <input class="form-control" placeholder="First name" name="member.firstName" required [(ngModel)]="member.firstName">
-                    </div>
-                    <div class="form-group">
-                        <label>Middle name</label>
-                        <input class="form-control" placeholder="Middle name" name="member.middleName" required [(ngModel)]="member.middleName">
-                    </div>
-                    <div class="form-group">
-                        <label>Last name</label>
-                        <input class="form-control" placeholder="Last name" name="member.lastName" required [(ngModel)]="member.lastName">
-                    </div>
+                        <label>Name</label>
+                        <input class="form-control" placeholder="Name" name="member.name" required [(ngModel)]="member.name">
+                    </div>                    
                     <div class="form-group">
                         <label>Nick</label>
                         <input class="form-control" placeholder="Nick" name="member.nickName" [(ngModel)]="member.nickName">
