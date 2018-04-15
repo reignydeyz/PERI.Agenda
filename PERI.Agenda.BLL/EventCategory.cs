@@ -62,9 +62,12 @@ namespace PERI.Agenda.BLL
                 .ToListAsync();
         }
 
-        public Task<EF.EventCategory> Get(EF.EventCategory args)
+        public async Task<EF.EventCategory> Get(EF.EventCategory args)
         {
-            throw new NotImplementedException();
+            return await context.EventCategory
+                .Include(x => x.Event).ThenInclude(x => x.Attendance)
+                .FirstOrDefaultAsync(x => x.Id == args.Id
+                && x.CommunityId == args.CommunityId);
         }
     }
 }

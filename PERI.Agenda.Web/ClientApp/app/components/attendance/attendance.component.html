@@ -8,7 +8,7 @@
         <li><a data-toggle="pill" href="#menu1">Attendees</a></li>
         <li><a data-toggle="pill" href="#menu2">First-timer Registration</a></li>
         <li><a data-toggle="pill" href="#menu3">RSVP</a></li>
-        <li><a data-toggle="pill" href="#menu4">Stats</a></li>
+        <li><a data-toggle="pill" href="#menu4" (click)="onStatsLoad()">Stats</a></li>
     </ul>
 
     <hr />
@@ -92,7 +92,71 @@
 
         </div>
         <div id="menu4" class="tab-pane fade">
+            <p *ngIf="!ec"><em>Loading...</em></p>
+            <div *ngIf="ec">
 
+                <div class="row">
+                    <div class="col-lg-3 col-xs-6">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <h1 class="glyphicon glyphicon-pawn"></h1>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <h2>{{ total }}</h2>
+                                        <div>Total registrants</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ./col -->
+                    <div class="col-lg-3 col-xs-6">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <h1 class="glyphicon glyphicon-check"></h1>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <h2>{{ totalAttendees }}</h2>
+                                        <div>Total attended</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ./col -->
+                    <div class="col-lg-3 col-xs-6">
+                        <div class="panel panel-warning">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <h1 class="glyphicon glyphicon-unchecked"></h1>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <h2>{{ totalPending }}</h2>
+                                        <div>Total pending</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ./col -->
+                </div>
+
+                <hr />
+
+                <h3>Progress</h3>
+                <span>{{ totalAttendees }}/{{ ec.averageAttendees }} (Attended/Estimated)</span>
+                <div class="progress">
+                    <!-- https://stackoverflow.com/questions/39161088/cant-bind-to-aria-valuenow-since-it-isnt-a-known-property-of-div -->
+                    <div class="progress-bar" role="progressbar" attr.aria-valuenow="{{ (totalAttendees/ec.averageAttendees) * 100 }}" aria-valuemin="0" aria-valuemax="100" [style.width]="(totalAttendees/ec.averageAttendees) * 100 +'%'">
+                        <span>{{ (totalAttendees/ec.averageAttendees) * 100 | number }} %</span>
+                    </div>
+                </div>        
+            </div>
         </div>
     </div>
 </div>

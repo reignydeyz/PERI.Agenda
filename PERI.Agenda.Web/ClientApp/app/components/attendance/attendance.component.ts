@@ -3,6 +3,7 @@ import { Http, Headers, RequestOptions } from '@angular/http';
 import { NgForm, NgModel } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
+import { EventCategoryModule, EventCategory } from '../eventcategory/eventcategory.component';
 import { EventModule, Event } from '../event/event.component';
 import { Title } from '@angular/platform-browser';
 
@@ -58,6 +59,12 @@ export class AttendanceComponent {
     event: Event;
     registrants: Attendance[];
 
+    public ec: EventCategory;
+
+    public total: number;
+    public totalAttendees: number;
+    public totalPending: number;
+
     private sub: any;
 
     constructor(private route: ActivatedRoute, private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
@@ -95,7 +102,32 @@ export class AttendanceComponent {
             this.event = r;
             this.titleService.setTitle(r.name);
         }, error => em.ex.catchError(error));
-        
+
+        this.getTotal();
+    }
+
+    onStatsLoad() {
+        var ecm = new EventCategoryModule();
+        ecm.http = this.http;
+        ecm.baseUrl = this.baseUrl;
+        ecm.ex = new ErrorExceptionModule();
+        ecm.get(this.event.eventCategoryId).subscribe(res => { this.ec = res }, error => ecm.ex.catchError(error));
+    }
+
+    private getTotal() {
+        var ex = new ErrorExceptionModule();
+
+        this.http.get(this.baseUrl + 'api/attendance/' + this.id + '/total/all').subscribe(result => {
+            this.total = result.json() as number;
+        }, error => ex.catchError(error));
+
+        this.http.get(this.baseUrl + 'api/attendance/' + this.id + '/total/attendees').subscribe(result => {
+            this.totalAttendees = result.json() as number;
+        }, error => ex.catchError(error));
+
+        this.http.get(this.baseUrl + 'api/attendance/' + this.id + '/total/pending').subscribe(result => {
+            this.totalPending = result.json() as number;
+        }, error => ex.catchError(error));
     }
 
     public onSearchRegistrantsSubmit(f: NgForm) {
@@ -114,7 +146,8 @@ export class AttendanceComponent {
                         this.registrants[index] = a;
                     }
                 }
-
+                this.totalAttendees--;
+                this.totalPending++;
                 alert('Success');
             }, error => this.am.ex.catchError(error));
         }
@@ -128,7 +161,8 @@ export class AttendanceComponent {
                         this.registrants[index] = a;
                     }
                 }
-
+                this.totalAttendees++;
+                this.totalPending--;
                 alert('Success');
             }, error => this.am.ex.catchError(error));
         }        

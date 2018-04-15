@@ -18,6 +18,10 @@ export class EventCategoryModule {
             name: ec.name
         }).map(response => response.json());
     }
+
+    public get(id: number): Observable<EventCategory> {
+        return this.http.get(this.baseUrl + 'api/eventcategory/get/' + id).map(response => response.json());
+    }
 }
 
 @Component({
