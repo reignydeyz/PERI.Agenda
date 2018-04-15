@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PERI.Agenda.BLL", "PERI.Age
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PERI.Agenda.Core", "PERI.Agenda.Core\PERI.Agenda.Core.csproj", "{FD007DD4-BEEB-4007-88B4-5D5E3352012A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PERI.Agenda.Web", "PERI.Agenda.Web\PERI.Agenda.Web.csproj", "{D43F787A-4891-4C90-B20E-3BA108806436}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PERI.Agenda.Web", "PERI.Agenda.Web\PERI.Agenda.Web.csproj", "{D43F787A-4891-4C90-B20E-3BA108806436}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

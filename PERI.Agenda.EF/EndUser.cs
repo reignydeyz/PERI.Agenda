@@ -23,7 +23,7 @@ namespace PERI.Agenda.EF
         public DateTime? DateConfirmed { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime? DateInactive { get; set; }
-        public int CommunityId { get; set; }
+        public int? CommunityId { get; set; }
 
         public Role Role { get; set; }
     }

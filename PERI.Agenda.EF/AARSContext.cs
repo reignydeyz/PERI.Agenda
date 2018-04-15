@@ -461,8 +461,6 @@ namespace PERI.Agenda.EF
                     .HasName("UQ_User_FirstName_LastName")
                     .IsUnique();
 
-                entity.Property(e => e.CommunityId).HasDefaultValueSql("((1))");
-
                 entity.Property(e => e.ConfirmationCode)
                     .HasMaxLength(50)
                     .IsUnicode(false);
@@ -740,6 +738,10 @@ namespace PERI.Agenda.EF
 
             modelBuilder.Entity<Member>(entity =>
             {
+                entity.HasIndex(e => new { e.Name, e.CommunityId })
+                    .HasName("IX_Member")
+                    .IsUnique();
+
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.BirthDate).HasColumnType("datetime");
@@ -754,23 +756,13 @@ namespace PERI.Agenda.EF
 
                 entity.Property(e => e.Email).HasMaxLength(50);
 
-                entity.Property(e => e.FirstName)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.LastName)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.MiddleName)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.Mobile).HasMaxLength(50);
 
                 entity.Property(e => e.ModifiedBy).HasMaxLength(50);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.NickName).HasMaxLength(50);
             });
