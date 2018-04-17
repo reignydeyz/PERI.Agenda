@@ -14,11 +14,14 @@ namespace PERI.Agenda.Web.Controllers
     public class EventCategoryController : Controller
     {
         [HttpPost("[action]")]
-        public async Task<IActionResult> Find(EF.EventCategory args)
+        public async Task<IActionResult> Find([FromBody]EF.EventCategory args)
         {
             var context = new EF.AARSContext();
             var bll_eventCategory = new BLL.EventCategory(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            if (args == null)
+                args = new EF.EventCategory();
 
             args.CommunityId = user.CommunityId;
 
