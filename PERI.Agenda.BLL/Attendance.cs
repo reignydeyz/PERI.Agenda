@@ -79,7 +79,7 @@ namespace PERI.Agenda.BLL
             var registrants = await context.Registrant.Where(x => x.EventId == eventId).ToListAsync();
             var attendance = await context.Attendance.Where(x => x.EventId == eventId).ToListAsync();
 
-            if (ev.IsExclusive == false)
+            if (ev.IsExclusive == false || ev.IsExclusive == null)
             {
                 var res = from m in members
                           join a in attendance on m.Id equals a.MemberId into leftr
