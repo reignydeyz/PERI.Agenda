@@ -21,7 +21,7 @@ namespace PERI.Agenda.Web.Controllers
             
             obj.CommunityId = user.CommunityId;
 
-            return (await bll_member.Find(obj)).Take(1000);
+            return (await bll_member.Find(obj));
         }
 
         [HttpPost("[action]")]

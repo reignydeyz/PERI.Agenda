@@ -20,7 +20,7 @@ namespace PERI.Agenda.Web.Controllers
 
             obj.EventCategory = new EF.EventCategory { CommunityId = user.CommunityId };
 
-            var res = from r in (await bll_event.Find(obj)).Take(1000)
+            var res = from r in (await bll_event.Find(obj))
                       select new
                         {
                           r.Id,
