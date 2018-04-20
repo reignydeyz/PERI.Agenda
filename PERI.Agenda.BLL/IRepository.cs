@@ -21,7 +21,7 @@ namespace PERI.Agenda.BLL
 
         Task Edit(T args);
 
-        Task<IEnumerable<T>> Find(T args);
+        IQueryable<T> Find(T args);
 
         Task<T> Get(T args);
     }

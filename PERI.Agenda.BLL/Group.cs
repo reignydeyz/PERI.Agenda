@@ -52,12 +52,11 @@ namespace PERI.Agenda.BLL
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<EF.Group>> Find(EF.Group args)
+        public IQueryable<EF.Group> Find(EF.Group args)
         {
-            return await context.Group
+            return context.Group
                 .Include(x => x.GroupMember).ThenInclude(x => x.Member)
-                .OrderBy(x => x.Name)
-                .ToListAsync();
+                .OrderBy(x => x.Name).AsQueryable();
         }
 
         public async Task<EF.Group> Get(EF.Group args)

@@ -103,13 +103,13 @@ namespace PERI.Agenda.BLL
             await context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<EF.EndUser>> Find(EF.EndUser args)
+        public IQueryable<EF.EndUser> Find(EF.EndUser args)
         {
-            return await context.EndUser
+            return context.EndUser
             .Include(x => x.Role)
             .Where(x => x.FirstName.Contains(args.FirstName ?? x.FirstName)
             && x.LastName.Contains(args.LastName ?? x.LastName)
-            && x.Email == (args.Email ?? x.Email)).ToListAsync();
+            && x.Email == (args.Email ?? x.Email)).AsQueryable();
         }
 
         public async Task<EF.EndUser> Get(EF.EndUser args)

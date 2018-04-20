@@ -52,14 +52,13 @@ namespace PERI.Agenda.BLL
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<EF.EventCategory>> Find(EF.EventCategory args)
+        public IQueryable<EF.EventCategory> Find(EF.EventCategory args)
         {
-            return await context.EventCategory
+            return context.EventCategory
                 .Where(x => x.Name.Contains(args.Name ?? "")
                 && x.CommunityId == args.CommunityId)
                 .Include(x => x.Event).ThenInclude(x => x.Attendance)
-                .OrderBy(x => x.Name)
-                .ToListAsync();
+                .OrderBy(x => x.Name).AsQueryable();
         }
 
         public async Task<EF.EventCategory> Get(EF.EventCategory args)

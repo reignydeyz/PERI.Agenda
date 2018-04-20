@@ -76,11 +76,11 @@ namespace PERI.Agenda.BLL
             context.SaveChanges();
         }
 
-        public async Task<IEnumerable<EF.Member>> Find(EF.Member args)
+        public IQueryable<EF.Member> Find(EF.Member args)
         {
-            return await context.Member.Where(x => x.Name.Contains(args.Name ?? "")
+            return context.Member.Where(x => x.Name.Contains(args.Name ?? "")
             && x.CommunityId == args.CommunityId)
-                .OrderBy(x => x.Name).ToListAsync();
+                .OrderBy(x => x.Name).AsQueryable();
         }
 
         public async Task<EF.Member> Get(EF.Member args)

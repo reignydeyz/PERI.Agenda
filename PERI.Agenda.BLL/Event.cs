@@ -64,9 +64,9 @@ namespace PERI.Agenda.BLL
             context.SaveChanges();
         }
 
-        public async Task<IEnumerable<EF.Event>> Find(EF.Event args)
+        public IQueryable<EF.Event> Find(EF.Event args)
         {
-            return await context.Event
+            return context.Event
             .Include(x => x.EventCategory)
             .Include(x => x.Attendance)
             .Include(x => x.Location)
@@ -75,8 +75,7 @@ namespace PERI.Agenda.BLL
             && x.EventCategoryId == (args.EventCategoryId == 0 ? x.EventCategoryId : args.EventCategoryId)
             && x.LocationId == ((args.LocationId ?? 0) == 0 ? x.LocationId : args.LocationId)
             && x.EventCategory.CommunityId == args.EventCategory.CommunityId)
-            .OrderByDescending(x => x.DateTimeStart)
-            .ToListAsync();
+            .OrderByDescending(x => x.DateTimeStart).AsQueryable();
         }
 
         public async Task<EF.Event> Get(EF.Event args)

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Dynamic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace PERI.Agenda.Web.Controllers
 
             obj.EventCategory = new EF.EventCategory { CommunityId = user.CommunityId };
 
-            var res = from r in (await bll_event.Find(obj))
+            var res = from r in (await bll_event.Find(obj).ToListAsync())
                       select new
                         {
                           r.Id,

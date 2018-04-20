@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -21,7 +22,11 @@ namespace PERI.Agenda.Web.Controllers
             
             obj.CommunityId = user.CommunityId;
 
-            return (await bll_member.Find(obj));
+            var res = bll_member.Find(obj);
+            var page = Convert.ToInt16(Request.Query["page"]);
+            var pager = new Core.Pager(res.Count(), page == 0 ? 1 : page);
+
+            return await res.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize).ToListAsync();
         }
 
         [HttpPost("[action]")]
@@ -113,12 +118,12 @@ namespace PERI.Agenda.Web.Controllers
             var bll_member = new BLL.Member(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var members = await bll_member.Find(new EF.Member { CommunityId = user.CommunityId });
+            var members = await bll_member.Find(new EF.Member { CommunityId = user.CommunityId }).ToListAsync();
 
             if (status.ToLower() == "active")
-                members = members.Where(x => x.IsActive == true);
+                members = members.Where(x => x.IsActive == true).ToList();
             else if (status.ToLower() == "inactive")
-                members = members.Where(x => x.IsActive == false);
+                members = members.Where(x => x.IsActive == false).ToList();
 
             return members.Count();
         }

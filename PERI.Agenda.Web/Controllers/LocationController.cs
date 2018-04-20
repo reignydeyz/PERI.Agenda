@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -21,7 +22,7 @@ namespace PERI.Agenda.Web.Controllers
 
             args.CommunityId = user.CommunityId;
 
-            var res = from r in (await bll_location.Find(args))
+            var res = from r in (await bll_location.Find(args).ToListAsync())
                       select new
                       {
                           r.Id,
