@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Dynamic;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -22,11 +23,28 @@ namespace PERI.Agenda.Web.Controllers
             
             obj.CommunityId = user.CommunityId;
 
+            return  await bll_member.Find(obj).ToListAsync();
+        }
+
+        [HttpPost("[action]")]
+        [Route("Find/Page/{id}")]
+        public async Task<IActionResult> Page([FromBody] EF.Member obj, int id)
+        {
+            var context = new EF.AARSContext();
+            var bll_member = new BLL.Member(context);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            obj.CommunityId = user.CommunityId;
+
             var res = bll_member.Find(obj);
-            var page = Convert.ToInt16(Request.Query["page"]);
+            var page = id;
             var pager = new Core.Pager(res.Count(), page == 0 ? 1 : page);
 
-            return await res.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize).ToListAsync();
+            dynamic obj1 = new ExpandoObject();
+            obj1.members = await res.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize).ToListAsync();
+            obj1.pager = pager;
+
+            return Json(obj1);
         }
 
         [HttpPost("[action]")]

@@ -5,6 +5,7 @@ import * as $ from "jquery";
 
 import { LookUpModule, LookUp } from "../lookup/lookup.component";
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
+import { Pager } from '../pager/pager.component';
 
 import * as moment from 'moment';
 import { Title } from '@angular/platform-browser';
@@ -25,18 +26,22 @@ export class MemberComponent {
     public genders: LookUp[];
     public statuses: boolean[];
 
+    public search: Member;
+    public pager: Pager;
+    public chunk: Chunk;
+
     private ex: ErrorExceptionModule;
 
     private find(m: Member) {
-        this.http.post(this.baseUrl + 'api/member/find', {
-            name: m.name,
-            nickName: m.nickName,
-            birthDate: m.birthDate,
-            email: m.email,
-            address: m.address,
-            mobile: m.mobile
-        }).subscribe(result => {
+        this.http.post(this.baseUrl + 'api/member/find', m).subscribe(result => {
             this.members = result.json() as Member[];
+            this.paginate(m, 1);
+        }, error => this.ex.catchError(error));
+    }
+
+    private paginate(m: Member, page: number) {
+        this.http.post(this.baseUrl + 'api/member/find/page/' + page, m).subscribe(result => {
+            this.chunk = result.json() as Chunk;
         }, error => this.ex.catchError(error));
     }
 
@@ -88,7 +93,9 @@ export class MemberComponent {
 
     ngOnInit() {
         this.member = new Member();
-        this.find(new Member());
+        this.search = new Member();
+        this.pager = new Pager();
+        this.find(this.member);
 
         this.statuses = [false, true];
 
@@ -104,6 +111,11 @@ export class MemberComponent {
         m.email = f.controls['email'].value;
 
         this.find(m);
+        this.search = m;
+    }
+
+    public onPaginate(page: number) {        
+        this.paginate(this.search, page);
     }
 
     public onNewSubmit(f: NgForm) {
@@ -301,4 +313,9 @@ export class Member {
     address: string;
     mobile: string;
     isActive: boolean;
+}
+
+class Chunk {
+    members: Member[];
+    pager: Pager;
 }

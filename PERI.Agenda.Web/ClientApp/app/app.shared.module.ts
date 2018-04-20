@@ -17,6 +17,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AttendanceComponent } from './components/attendance/attendance.component';
 import { GroupComponent } from './components/group/group.component';
 import { GroupCategoryComponent } from './components/groupcategory/groupcategory.component';
+import { Pager } from './components/pager/pager.component';
 
 import { ChartsModule } from 'ng2-charts';
 
