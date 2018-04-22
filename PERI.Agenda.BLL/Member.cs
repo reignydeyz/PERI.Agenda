@@ -78,9 +78,12 @@ namespace PERI.Agenda.BLL
 
         public IQueryable<EF.Member> Find(EF.Member args)
         {
-            return context.Member.Where(x => x.Name.Contains(args.Name ?? "")
+            var res = context.Member.Where(x => x.Name.Contains(args.Name ?? "")
+            && ((x.Email ?? "").Contains(args.Email ?? ""))
             && x.CommunityId == args.CommunityId)
                 .OrderBy(x => x.Name).AsQueryable();
+
+            return res;
         }
 
         public async Task<EF.Member> Get(EF.Member args)
