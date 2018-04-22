@@ -11,6 +11,8 @@ import { ErrorExceptionModule } from '../errorexception/errorexception.component
 import { Observable } from 'rxjs/Observable';
 import * as moment from 'moment';
 
+import { Pager } from '../pager/pager.component';
+
 export class AttendanceModule {
     public http: Http;
     public baseUrl: string;
@@ -57,13 +59,17 @@ export class AttendanceComponent {
 
     id: number;
     event: Event;
-    registrants: Attendance[];
+    //registrants: Attendance[];
 
     public ec: EventCategory;
 
     public total: number;
     public totalAttendees: number;
     public totalPending: number;
+
+    public search: string;
+    public pager: Pager;
+    public chunk: Chunk;
 
     private sub: any;
 
@@ -76,6 +82,16 @@ export class AttendanceComponent {
         this.am.ex.baseUrl = this.baseUrl;
     }
 
+    private paginate(obj: string, page: number) {
+        let body = JSON.stringify(obj);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+
+        this.http.post(this.baseUrl + 'api/attendance/' + this.id + '/search/page/' + page, body, options).subscribe(result => {
+            this.chunk = result.json() as Chunk;
+        }, error => this.am.ex.catchError(error));
+    }
+
     ngOnInit() {
         this.sub = this.route.params.subscribe(params => {
             this.id = +params['id']; // (+) converts string 'id' to a number
@@ -83,7 +99,9 @@ export class AttendanceComponent {
             // In a real app: dispatch action to load the details here.
         });
 
-        this.am.registrants(this.id).subscribe(r => { this.registrants = r }, error => this.am.ex.catchError(error));
+        this.search = "";
+        this.pager = new Pager();
+        this.paginate(this.search, 1);
     }
 
     ngOnDestroy() {
@@ -131,19 +149,26 @@ export class AttendanceComponent {
     }
 
     public onSearchRegistrantsSubmit(f: NgForm) {
-        this.am.searchRegistrants(this.id, f.controls['name'].value)
-            .subscribe(r => { this.registrants = r }, error => this.am.ex.catchError(error));
+        /*this.am.searchRegistrants(this.id, f.controls['name'].value)
+            .subscribe(r => { this.chunk.registrants = r }, error => this.am.ex.catchError(error));*/
+
+        this.paginate(f.controls['name'].value, 1);
+        this.search = f.controls['name'].value;
+    }
+
+    public onPaginate(page: number) {
+        this.paginate(this.search, page);
     }
 
     public toggle(a: Attendance) {
         if (a.dateTimeLogged != null && a.dateTimeLogged != '') {
             this.am.delete(this.id, a).subscribe(r => {
-                for (let r of this.registrants) {
+                for (let r of this.chunk.registrants) {
                     if (r.memberId == a.memberId) {
-                        let index: number = this.registrants.indexOf(r);
+                        let index: number = this.chunk.registrants.indexOf(r);
 
                         a.dateTimeLogged = '';
-                        this.registrants[index] = a;
+                        this.chunk.registrants[index] = a;
                     }
                 }
                 this.totalAttendees--;
@@ -153,12 +178,12 @@ export class AttendanceComponent {
         }
         else {
             this.am.add(this.id, a).subscribe(r => {
-                for (let r of this.registrants) {
+                for (let r of this.chunk.registrants) {
                     if (r.memberId == a.memberId) {
-                        let index: number = this.registrants.indexOf(r);
+                        let index: number = this.chunk.registrants.indexOf(r);
 
                         a.dateTimeLogged = moment().format('MM/DD/YYYY, h:mm:ss a');
-                        this.registrants[index] = a;
+                        this.chunk.registrants[index] = a;
                     }
                 }
                 this.totalAttendees++;
@@ -173,4 +198,9 @@ export class Attendance {
     memberId: number;
     member: string;
     dateTimeLogged: string;
+}
+
+class Chunk {
+    registrants: Attendance[];
+    pager: Pager;
 }

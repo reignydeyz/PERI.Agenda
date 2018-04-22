@@ -26,17 +26,38 @@
             </form>
             <hr />
 
-            <p *ngIf="!registrants"><em>Loading...</em></p>
-            <div class="row" *ngIf="registrants">
-                <div *ngFor="let r of registrants; let i = index" class="col-xs-12 col-sm-6 col-lg-4">
-                    <div class="thumbnail" [ngClass]="{attended: r.dateTimeLogged != null && r.dateTimeLogged != '', available: r.dateTimeLogged == null || r.dateTimeLogged == ''}"  style="cursor: pointer" (click)="toggle(r)">
+            <p *ngIf="chunk"><small>Found: {{ chunk.pager.totalItems }}</small></p>
+
+            <div class="row" *ngIf="chunk">
+                <div *ngFor="let r of chunk.registrants; let i = index" class="col-xs-12 col-sm-6 col-lg-4">
+                    <div class="thumbnail" [ngClass]="{attended: r.dateTimeLogged != null && r.dateTimeLogged != '', available: r.dateTimeLogged == null || r.dateTimeLogged == ''}" style="cursor: pointer" (click)="toggle(r)">
                         <div class="caption">
                             <h4>{{ r.name }}</h4>
-                            <p>{{ r.dateTimeLogged |  date: 'MM/dd/yyyy hh:mm a' }}</p>                 
+                            <p>{{ r.dateTimeLogged |  date: 'MM/dd/yyyy hh:mm a' }}</p>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <ng-container *ngIf="chunk && chunk.pager.endPage > 1">
+                <ul class="pagination" *ngIf="chunk">
+                    <li *ngIf="chunk.pager.currentPage > 1">
+                        <a style="cursor:pointer" (click)="onPaginate(1)">First</a>
+                    </li>
+                    <li *ngIf="chunk.pager.currentPage > 1">
+                        <a style="cursor:pointer" (click)="onPaginate(chunk.pager.currentPage - 1)">Previous</a>
+                    </li>
+                    <li *ngFor="let p of chunk.pager.pageIndices" [ngClass]="{active: chunk.pager.currentPage == p}">
+                        <a style="cursor:pointer" (click)="onPaginate(p)">{{ p }}</a>
+                    </li>
+                    <li *ngIf="chunk.pager.currentPage < chunk.pager.totalPages">
+                        <a style="cursor:pointer" (click)="onPaginate(chunk.pager.currentPage + 1)">Next</a>
+                    </li>
+                    <li *ngIf="chunk.pager.currentPage < chunk.pager.totalPages">
+                        <a style="cursor:pointer" (click)="onPaginate(chunk.pager.totalPages)">Last</a>
+                    </li>
+                </ul>
+            </ng-container>
 
         </div>
         <div id="menu1" class="tab-pane fade">

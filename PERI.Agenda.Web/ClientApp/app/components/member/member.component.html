@@ -1,6 +1,6 @@
 <h1>Members</h1>
 
-<div class="row" *ngIf="members">
+<div class="row" *ngIf="chunk">
     <div class="col-lg-3 col-xs-6">
         <div class="panel panel-primary">
             <div class="panel-heading">
@@ -51,7 +51,7 @@
     <!-- ./col -->
 </div>
 
-<form class="form-group" #frm="ngForm" (ngSubmit)="onSearchSubmit(frm)" ngNativeValidate id="frm" *ngIf="members">
+<form class="form-group" #frm="ngForm" (ngSubmit)="onSearchSubmit(frm)" ngNativeValidate id="frm" *ngIf="chunk">
     <div class="form-group">
         <label>Name</label>
         <input class="form-control" placeholder="Name" name="name" ngModel>
@@ -66,19 +66,20 @@
 
 <hr />
 
-<p *ngIf="!members"><em>Loading...</em></p>
+<p *ngIf="!chunk"><em>Loading...</em></p>
 
-<p *ngIf="members">
+<p *ngIf="chunk">
     <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modalNew" onclick='document.getElementById("frmNew").reset()'>New</a>
     <button class="btn btn-default" (click)="onDeleteClick()">Delete</button>
     <button class="btn btn-default" (click)="onActivateClick()">Activate</button>
     <button class="btn btn-default" (click)="onDeactivateClick()">Deactivate</button>
+    <button class="btn btn-primary" (click)="onDownloadClick()">Download</button>
     <button class="btn btn-success" onclick="location.reload();">Refresh</button>
 </p>
 
-<small *ngIf="members">Found: {{ members.length }}</small>
+<small *ngIf="chunk">Found: {{ chunk.pager.totalItems }}</small>
 
-<div style="width:100%; height:75vh; overflow:auto" *ngIf="chunk.members">
+<div style="width:100%; height:75vh; overflow:auto" *ngIf="chunk">
     <table class="table table-striped" id="tbl">
         <thead>
             <tr>
@@ -111,20 +112,25 @@
     </table>
 </div>
 
-<ul class="pagination">
-    <li *ngIf="chunk.pager.currentPage > 1">
-        <a style="cursor:pointer" (click)="onPaginate(1)">First</a>
-    </li>
-    <li *ngIf="chunk.pager.currentPage > 1">
-        <a style="cursor:pointer" (click)="onPaginate(chunk.pager.currentPage - 1)">Previous</a>
-    </li>    
-    <li *ngIf="chunk.pager.currentPage < chunk.pager.totalPages">
-        <a style="cursor:pointer" (click)="onPaginate(chunk.pager.currentPage + 1)">Next</a>
-    </li>
-    <li *ngIf="chunk.pager.currentPage < chunk.pager.totalPages">
-        <a style="cursor:pointer" (click)="onPaginate(chunk.pager.totalPages)">Last</a>
-    </li>
-</ul>
+<ng-container *ngIf="chunk && chunk.pager.endPage > 1">
+    <ul class="pagination" *ngIf="chunk">
+        <li *ngIf="chunk.pager.currentPage > 1">
+            <a style="cursor:pointer" (click)="onPaginate(1)">First</a>
+        </li>
+        <li *ngIf="chunk.pager.currentPage > 1">
+            <a style="cursor:pointer" (click)="onPaginate(chunk.pager.currentPage - 1)">Previous</a>
+        </li>
+        <li *ngFor="let p of chunk.pager.pageIndices" [ngClass]="{active: chunk.pager.currentPage == p}">
+            <a style="cursor:pointer" (click)="onPaginate(p)">{{ p }}</a>
+        </li>
+        <li *ngIf="chunk.pager.currentPage < chunk.pager.totalPages">
+            <a style="cursor:pointer" (click)="onPaginate(chunk.pager.currentPage + 1)">Next</a>
+        </li>
+        <li *ngIf="chunk.pager.currentPage < chunk.pager.totalPages">
+            <a style="cursor:pointer" (click)="onPaginate(chunk.pager.totalPages)">Last</a>
+        </li>
+    </ul>
+</ng-container>
 
 <div class="modal fade" id="modalNew" role="dialog">
     <div class="modal-dialog">
@@ -155,7 +161,9 @@
                     </div>
                     <div class="form-group">
                         <label>Birth date</label>
-                        <input type="date" class="form-control" name="birthDate" ngModel>
+                        <!--<input type="date" class="form-control" name="birthDate" ngModel>-->
+                        <my-date-picker name="birthDate" [options]="myDatePickerOptions"
+                                        ngModel required></my-date-picker>
                     </div>
                     <div class="form-group">
                         <label>Gender</label>
@@ -208,9 +216,9 @@
                         <input class="form-control" placeholder="Nick" name="member.nickName" [(ngModel)]="member.nickName">
                     </div>
                     <div class="form-group">
-                        <label>Birth date</label>
-                        <!--https://stackoverflow.com/questions/18157045/date-field-does-not-display-the-value-in-chrome-browser-->
-                        <input type="date" class="form-control" value="{{ member.birthDate | date: 'yyyy-MM-dd' }}" id="txtDate" (keypress)="onBirthDateChange()">
+                        <label>Birth date</label>                        
+                        <my-date-picker name="birthDate" [options]="myDatePickerOptions"
+                                        [(ngModel)]="member.birthDate" required></my-date-picker>
                     </div>
                     <div class="form-group">
                         <label>Gender</label>

@@ -70,7 +70,7 @@ namespace PERI.Agenda.BLL
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<EF.Attendance>> Registrants(int eventId)
+        public async Task<IQueryable<EF.Attendance>> Registrants(int eventId)
         {
             var ev = await context.Event.FirstAsync(x => x.Id == eventId);
 
@@ -90,7 +90,7 @@ namespace PERI.Agenda.BLL
                               DateTimeLogged = (lr == null ? null : lr.DateTimeLogged)
                           };
 
-                return await res.OrderBy(x => x.Member.Name).ToListAsync();
+                return res.OrderBy(x => x.Member.Name);
             }
             else
             {
@@ -105,11 +105,11 @@ namespace PERI.Agenda.BLL
                               DateTimeLogged = (lr == null ? null : lr.DateTimeLogged)
                           };
 
-                return await res.OrderBy(x => x.Member.Name).ToListAsync();
+                return res.OrderBy(x => x.Member.Name);
             }
         }
 
-        public async Task<IEnumerable<EF.Attendance>> Registrants(int eventId, string member)
+        public async Task<IQueryable<EF.Attendance>> Registrants(int eventId, string member)
         {
             member = member == null ? string.Empty : member.ToLower();
 
@@ -132,7 +132,7 @@ namespace PERI.Agenda.BLL
                               DateTimeLogged = (lr == null ? null : lr.DateTimeLogged)
                           };
 
-                return await res.OrderBy(x => x.Member.Name).ToListAsync();
+                return res.OrderBy(x => x.Member.Name);
             }
             else
             {
@@ -148,7 +148,7 @@ namespace PERI.Agenda.BLL
                               DateTimeLogged = (lr == null ? null : lr.DateTimeLogged)
                           };
 
-                return await res.OrderBy(x => x.Member.Name).ToListAsync();
+                return res.OrderBy(x => x.Member.Name);
             }
         }
     }

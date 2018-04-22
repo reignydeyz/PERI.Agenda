@@ -37,6 +37,14 @@ namespace PERI.Agenda.Core
             TotalPages = totalPages;
             StartPage = startPage;
             EndPage = endPage;
+
+            // Added for special purpose
+            var arr = new List<int>();
+            for (int x = StartPage; x <= EndPage; x++)
+            {
+                arr.Add(x);
+            }
+            PageIndices = arr.ToArray();
         }
 
         public int TotalItems { get; private set; }
@@ -45,5 +53,8 @@ namespace PERI.Agenda.Core
         public int TotalPages { get; private set; }
         public int StartPage { get; private set; }
         public int EndPage { get; private set; }
+
+        // Added for special purpose
+        public int[] PageIndices { get; private set; }
     }
 }

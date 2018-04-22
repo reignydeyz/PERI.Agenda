@@ -5,4 +5,7 @@
     totalPages: number;
     startPage: number;
     endPage: number;
+
+    // Added for special purpose
+    pageIndeces: number[];
 }

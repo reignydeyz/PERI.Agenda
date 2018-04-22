@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -27,7 +29,7 @@ namespace PERI.Agenda.Web.Controllers
                             r.DateTimeLogged
                       };
 
-            return Json(res);
+            return Json(await res.ToListAsync());
         }
 
         [HttpPost("[action]")]
@@ -45,7 +47,32 @@ namespace PERI.Agenda.Web.Controllers
                           r.DateTimeLogged
                       };
 
-            return Json(res);
+            return Json(await res.ToListAsync());
+        }
+
+        [HttpPost("[action]")]
+        [Route("{id}/Search/Page/{p}")]
+        public async Task<IActionResult> Page([FromBody] string member, int id, int p)
+        {
+            var context = new EF.AARSContext();
+            var bll_a = new BLL.Attendance(context);
+
+            var res = from r in (await bll_a.Registrants(id, member))
+                      select new
+                      {
+                          r.Member.Name,
+                          r.MemberId,
+                          r.DateTimeLogged
+                      };
+
+            var page = p;
+            var pager = new Core.Pager(await res.CountAsync(), page == 0 ? 1 : page, 100);
+
+            dynamic obj1 = new ExpandoObject();
+            obj1.registrants = await res.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize).ToListAsync();
+            obj1.pager = pager;
+
+            return Json(obj1);
         }
 
         [HttpPut("[action]")]
@@ -81,7 +108,7 @@ namespace PERI.Agenda.Web.Controllers
             else if (status.ToLower() == "pending")
                 res = res.Where(x => x.DateTimeLogged == null);
 
-            return res.Count();
+            return await res.CountAsync();
         }
     }
 }

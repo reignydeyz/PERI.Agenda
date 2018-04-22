@@ -10,6 +10,8 @@ import { LocationModule, Location } from '../location/location.component';
 import { Observable } from 'rxjs/Observable';
 
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
+import { Pager } from '../pager/pager.component';
+import { saveAs } from 'file-saver';
 
 export class EventModule {
     public http: Http;
@@ -61,9 +63,12 @@ export class EventComponent {
     private em: EventModule;
 
     public event: Event;
-    public events: Event[];
     public eventCategories: EventCategory[];
     public locations: Location[];
+
+    public search: Event;
+    public pager: Pager;
+    public chunk: Chunk;
 
     // https://stackoverflow.com/questions/44000162/how-to-change-title-of-a-page-using-angularangular-2-or-4-route
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
@@ -75,9 +80,17 @@ export class EventComponent {
         this.em.ex.baseUrl = this.baseUrl;
     }
 
+    private paginate(obj: Event, page: number) {
+        this.http.post(this.baseUrl + 'api/event/find/page/' + page, obj).subscribe(result => {
+            this.chunk = result.json() as Chunk;
+        }, error => this.em.ex.catchError(error));
+    }
+
     ngOnInit() {
         this.event = new Event();
-        this.em.find(new Event()).subscribe(r => { this.events = r }, error => this.em.ex.catchError(error));
+        this.search = new Event();
+        this.pager = new Pager();
+        this.paginate(this.event, 1);
 
         this.titleService.setTitle('Events');
     }
@@ -117,7 +130,28 @@ export class EventComponent {
         e.dateTimeEnd = f.controls['dateTimeEnd'].value;
         e.locationId = f.controls['locationId'].value;
 
-        this.em.find(e).subscribe(r => { this.events = r }, error => this.em.ex.catchError(error));
+        this.paginate(e, 1);
+        this.search = e;
+    }
+
+    downloadFile(data: any) {
+        var blob = new Blob([data], { type: 'text/csv' });
+        saveAs(blob, "data.csv");
+    }
+
+    public onPaginate(page: number) {
+        this.paginate(this.search, page);
+    }
+
+    public onDownloadClick() {
+        this.download(this.search);
+    }
+
+    private download(e: Event) {
+        this.http.post(this.baseUrl + 'api/event/download', e).subscribe(result => {
+            let parsedResponse = result.text();
+            this.downloadFile(parsedResponse);
+        }, error => this.em.ex.catchError(error));;
     }
 
     public onNewSubmit(f: NgForm) {
@@ -137,7 +171,7 @@ export class EventComponent {
         this.em.add(e).subscribe(
             result => {
                 e.id = result;
-                this.events.push(e);
+                this.chunk.events.push(e);
 
                 alert('Added!');
                 $('#modalNew').modal('toggle');
@@ -153,7 +187,7 @@ export class EventComponent {
         var date = <HTMLInputElement>document.getElementById("txtDate");
         event.dateTimeStart = date.value;
 
-        let e: any = this.events.find(x => x.id == event.id);
+        let e: any = this.chunk.events.find(x => x.id == event.id);
         event.attendance = e.attendance;
 
         let ec: any = this.eventCategories.find(x => x.id == event.eventCategoryId);
@@ -164,10 +198,10 @@ export class EventComponent {
 
         this.em.edit(event);
 
-        for (let e of this.events) {
+        for (let e of this.chunk.events) {
             if (e.id == event.id) {
-                let index: number = this.events.indexOf(e);
-                this.events[index] = event;
+                let index: number = this.chunk.events.indexOf(e);
+                this.chunk.events[index] = event;
             }
         }
     }
@@ -192,9 +226,9 @@ export class EventComponent {
         this.http.post(this.baseUrl + 'api/event/delete', body, options).subscribe(result => {
 
             for (let id of selectedIds) {
-                for (let e of this.events) {
+                for (let e of this.chunk.events) {
                     if (e.id == id) {
-                        this.events.splice(this.events.indexOf(e), 1);
+                        this.chunk.events.splice(this.chunk.events.indexOf(e), 1);
                     }
                 }
             }
@@ -217,4 +251,9 @@ export class Event {
     location: string;
     attendance: number;
     isExlusive: boolean;
+}
+
+class Chunk {
+    events: Event[];
+    pager: Pager;
 }
