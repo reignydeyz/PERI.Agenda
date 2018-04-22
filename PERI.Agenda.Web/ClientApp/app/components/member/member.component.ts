@@ -11,6 +11,9 @@ import * as moment from 'moment';
 import { Title } from '@angular/platform-browser';
 import { Observable } from 'rxjs/Observable';
 
+import { saveAs } from 'file-saver';
+import { IMyDpOptions } from 'mydatepicker';
+
 @Component({
     selector: 'member',
     templateUrl: './member.component.html',
@@ -22,7 +25,6 @@ export class MemberComponent {
     public actives: number;
     public inactives: number;
     public member: Member;
-    public members: Member[];
     public genders: LookUp[];
     public statuses: boolean[];
 
@@ -32,17 +34,27 @@ export class MemberComponent {
 
     private ex: ErrorExceptionModule;
 
-    private find(m: Member) {
-        this.http.post(this.baseUrl + 'api/member/find', m).subscribe(result => {
-            this.members = result.json() as Member[];
-            this.paginate(m, 1);
-        }, error => this.ex.catchError(error));
+    public myDatePickerOptions: IMyDpOptions = {
+        // other options...
+        dateFormat: 'mm/dd/yyyy',
+    };
+    
+    downloadFile(data: any) {
+        var blob = new Blob([data], { type: 'text/csv' });
+        saveAs(blob, "data.csv");
     }
 
     private paginate(m: Member, page: number) {
         this.http.post(this.baseUrl + 'api/member/find/page/' + page, m).subscribe(result => {
             this.chunk = result.json() as Chunk;
         }, error => this.ex.catchError(error));
+    }
+
+    private download(m: Member) {
+        this.http.post(this.baseUrl + 'api/member/download', m).subscribe(result => {
+            let parsedResponse = result.text();
+            this.downloadFile(parsedResponse);
+        }, error => this.ex.catchError(error));;
     }
 
     private add(m: Member): Observable<number> {
@@ -95,7 +107,7 @@ export class MemberComponent {
         this.member = new Member();
         this.search = new Member();
         this.pager = new Pager();
-        this.find(this.member);
+        this.paginate(this.member, 1);
 
         this.statuses = [false, true];
 
@@ -110,7 +122,7 @@ export class MemberComponent {
         m.name = f.controls['name'].value;
         m.email = f.controls['email'].value;
 
-        this.find(m);
+        this.paginate(m, 1);
         this.search = m;
     }
 
@@ -118,11 +130,22 @@ export class MemberComponent {
         this.paginate(this.search, page);
     }
 
+    public onDownloadClick() {
+        this.download(this.search);
+    }
+
     public onNewSubmit(f: NgForm) {
         var m = new Member();
         m.name = f.controls['firstName'].value + ' ' + f.controls['middleName'].value + ' ' + f.controls['lastName'].value;
         m.nickName = f.controls['nickName'].value;
-        m.birthDate = f.controls['birthDate'].value;
+
+        if (f.controls['birthDate'].value != null) {
+            m.birthDate = f.controls['birthDate'].value.formatted;
+        }
+        else {
+            m.birthDate = '';
+        }
+        
         m.email = f.controls['email'].value;
         m.address = f.controls['address'].value;
         m.mobile = f.controls['mobile'].value;
@@ -131,7 +154,7 @@ export class MemberComponent {
         this.add(m).subscribe(
             result => {
                 m.id = result;
-                this.members.push(m);
+                this.chunk.members.push(m);
 
                 this.actives += 1;
                 this.total += 1;
@@ -144,19 +167,26 @@ export class MemberComponent {
 
     public onEditInit(id: number) {
         this.http.get(this.baseUrl + 'api/member/get/' + id)
-            .subscribe(result => { this.member = result.json() as Member }, error => this.ex.catchError(error));
+            .subscribe(result => {
+                this.member = result.json() as Member;
+
+                if (moment(this.member.birthDate).isValid() == true) {
+                    this.member.birthDate = { date: { year: moment(this.member.birthDate).format('YYYY'), month: moment(this.member.birthDate).format('M'), day: moment(this.member.birthDate).format('D') } };
+                }
+            }, error => this.ex.catchError(error));
     }
 
     public onEditSubmit(member: Member) {
-        var date = <HTMLInputElement>document.getElementById("txtDate");
-        this.member.birthDate = date.value;
+        if (this.member.birthDate != null) {
+            this.member.birthDate = moment(this.member.birthDate.date.month + '/' + this.member.birthDate.date.day + '/' + this.member.birthDate.date.year).format('MM/DD/YYYY');
+        }
 
         this.edit(member);  
 
-        for (let m of this.members) {
+        for (let m of this.chunk.members) {
             if (m.id == member.id) {
-                let index: number = this.members.indexOf(m);
-                this.members[index] = member;
+                let index: number = this.chunk.members.indexOf(m);
+                this.chunk.members[index] = member;
             }
         }
 
@@ -168,8 +198,6 @@ export class MemberComponent {
             this.actives -= 1;
             this.inactives += 1;
         }
-
-        console.log(member);
     }
 
     // https://stackoverflow.com/questions/20043265/check-if-checkbox-element-is-checked-in-typescript
@@ -210,7 +238,7 @@ export class MemberComponent {
         this.http.post(this.baseUrl + 'api/member/delete', body, options).subscribe(result => {
 
             for (let id of selectedIds) {
-                for (let m of this.members) {
+                for (let m of this.chunk.members) {
                     if (m.id == id) {
 
                         if (m.isActive) {
@@ -220,7 +248,7 @@ export class MemberComponent {
                             this.inactives -= 1;
                         }
 
-                        this.members.splice(this.members.indexOf(m), 1);
+                        this.chunk.members.splice(this.chunk.members.indexOf(m), 1);
                     }
                 }
             }
@@ -252,9 +280,9 @@ export class MemberComponent {
         this.http.post(this.baseUrl + 'api/member/activate', body, options).subscribe(result => {
 
             for (let id of selectedIds) {
-                for (let m of this.members) {
+                for (let m of this.chunk.members) {
                     if (m.id == id) {
-                        this.members[this.members.indexOf(m)].isActive = true;
+                        this.chunk.members[this.chunk.members.indexOf(m)].isActive = true;
                     }
                 }
             }
@@ -287,9 +315,9 @@ export class MemberComponent {
         this.http.post(this.baseUrl + 'api/member/deactivate', body, options).subscribe(result => {
 
             for (let id of selectedIds) {
-                for (let m of this.members) {
+                for (let m of this.chunk.members) {
                     if (m.id == id) {
-                        this.members[this.members.indexOf(m)].isActive = false;
+                        this.chunk.members[this.chunk.members.indexOf(m)].isActive = false;
                     }
                 }
             }
@@ -307,7 +335,7 @@ export class Member {
     id: number;
     name: string;
     nickName: string;
-    birthDate: string;
+    birthDate: any;
     gender: number;
     email: string;
     address: string;

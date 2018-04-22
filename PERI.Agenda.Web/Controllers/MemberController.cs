@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Dynamic;
+using PERI.Agenda.Core;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+using System.Text;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -15,15 +19,23 @@ namespace PERI.Agenda.Web.Controllers
     public class MemberController : Controller
     {
         [HttpPost("[action]")]
-        public async Task<IEnumerable<EF.Member>> Find([FromBody] EF.Member obj)
+        public async Task<IEnumerable<EF.Member>> Find([FromBody] Models.Member obj)
         {
+            obj = obj ?? new Models.Member();
+
             var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
-            
-            obj.CommunityId = user.CommunityId;
 
-            return  await bll_member.Find(obj).ToListAsync();
+            var obj1 = new EF.Member
+            {
+                CommunityId = user.CommunityId,
+                Name = obj.Name ?? "",
+                Email = obj.Email ?? ""
+            };
+
+            var res = await bll_member.Find(obj1).Where(x => x.IsActive == (obj.IsActive ?? x.IsActive)).ToListAsync();
+            return res;
         }
 
         [HttpPost("[action]")]
@@ -38,7 +50,7 @@ namespace PERI.Agenda.Web.Controllers
 
             var res = bll_member.Find(obj);
             var page = id;
-            var pager = new Core.Pager(res.Count(), page == 0 ? 1 : page);
+            var pager = new Core.Pager(await res.CountAsync(), page == 0 ? 1 : page, 100);
 
             dynamic obj1 = new ExpandoObject();
             obj1.members = await res.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize).ToListAsync();
@@ -136,14 +148,32 @@ namespace PERI.Agenda.Web.Controllers
             var bll_member = new BLL.Member(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var members = await bll_member.Find(new EF.Member { CommunityId = user.CommunityId }).ToListAsync();
+            var members = bll_member.Find(new EF.Member { CommunityId = user.CommunityId });
 
             if (status.ToLower() == "active")
-                members = members.Where(x => x.IsActive == true).ToList();
+                return await members.Where(x => x.IsActive == true).CountAsync();
             else if (status.ToLower() == "inactive")
-                members = members.Where(x => x.IsActive == false).ToList();
+                return await members.Where(x => x.IsActive == false).CountAsync();
+            else
+                return await members.CountAsync();
+        }
 
-            return members.Count();
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Download([FromBody] EF.Member obj)
+        {
+            var context = new EF.AARSContext();
+            var bll_member = new BLL.Member(context);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            obj.CommunityId = user.CommunityId;
+
+            var res = await bll_member.Find(obj).ToListAsync();
+
+            var bytes = Encoding.ASCII.GetBytes(res.ExportToCsv().ToString());
+
+            var result = new FileContentResult(bytes, "text/csv");
+            result.FileDownloadName = "my-csv-file.csv";
+            return result;
         }
     }
 }
