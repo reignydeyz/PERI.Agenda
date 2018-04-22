@@ -17,9 +17,9 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AttendanceComponent } from './components/attendance/attendance.component';
 import { GroupComponent } from './components/group/group.component';
 import { GroupCategoryComponent } from './components/groupcategory/groupcategory.component';
-import { Pager } from './components/pager/pager.component';
 
 import { ChartsModule } from 'ng2-charts';
+import { MyDatePickerModule } from 'mydatepicker';
 
 @NgModule({
     declarations: [
@@ -42,6 +42,7 @@ import { ChartsModule } from 'ng2-charts';
         HttpModule,
         FormsModule,
         ChartsModule,
+        MyDatePickerModule,
         RouterModule.forRoot([
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
             { path: 'home', component: HomeComponent },
