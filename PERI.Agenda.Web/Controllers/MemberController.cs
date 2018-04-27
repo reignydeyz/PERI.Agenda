@@ -27,28 +27,27 @@ namespace PERI.Agenda.Web.Controllers
             var bll_member = new BLL.Member(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var obj1 = new EF.Member
-            {
-                CommunityId = user.CommunityId,
-                Name = obj.Name ?? "",
-                Email = obj.Email ?? ""
-            };
+            obj.CommunityId = user.CommunityId;
 
-            var res = await bll_member.Find(obj1).Where(x => x.IsActive == (obj.IsActive ?? x.IsActive)).ToListAsync();
+            var o = AutoMapper.Mapper.Map<EF.Member>(obj);
+
+            var res = await bll_member.Find(o).Where(x => x.IsActive == (obj.IsActive ?? x.IsActive)).ToListAsync();
             return res;
         }
 
         [HttpPost("[action]")]
         [Route("Find/Page/{id}")]
-        public async Task<IActionResult> Page([FromBody] EF.Member obj, int id)
+        public async Task<IActionResult> Page([FromBody] Models.Member obj, int id)
         {
             var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            obj.CommunityId = user.CommunityId;
+            obj.CommunityId = user.CommunityId.Value;
 
-            var res = bll_member.Find(obj);
+            var o = AutoMapper.Mapper.Map<EF.Member>(obj);
+
+            var res = bll_member.Find(o);
             var page = id;
             var pager = new Core.Pager(await res.CountAsync(), page == 0 ? 1 : page, 100);
 
@@ -60,7 +59,8 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<int> New([FromBody] EF.Member obj)
+        [BLL.ValidateModelState]
+        public async Task<int> New([FromBody] Models.Member obj)
         {
             var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
@@ -69,7 +69,9 @@ namespace PERI.Agenda.Web.Controllers
             obj.Name = obj.Name.ToUpper();
             obj.CommunityId = user.CommunityId;
 
-            return await bll_member.Add(obj);
+            var o = AutoMapper.Mapper.Map<EF.Member>(obj);
+
+            return await bll_member.Add(o);
         }
         
         [HttpGet("[action]")]
@@ -84,7 +86,8 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task Edit([FromBody] EF.Member obj)
+        [BLL.ValidateModelState]
+        public async Task Edit([FromBody] Models.Member obj)
         {
             var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
@@ -92,7 +95,9 @@ namespace PERI.Agenda.Web.Controllers
 
             obj.CommunityId = user.CommunityId;
 
-            await bll_member.Edit(obj);
+            var o = AutoMapper.Mapper.Map<EF.Member>(obj);
+
+            await bll_member.Edit(o);
         }
 
         [HttpPost("[action]")]
@@ -159,7 +164,7 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> Download([FromBody] EF.Member obj)
+        public async Task<IActionResult> Download([FromBody] Models.Member obj)
         {
             var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
@@ -167,7 +172,9 @@ namespace PERI.Agenda.Web.Controllers
 
             obj.CommunityId = user.CommunityId;
 
-            var res = await bll_member.Find(obj).ToListAsync();
+            var o = AutoMapper.Mapper.Map<EF.Member>(obj);
+
+            var res = await bll_member.Find(o).ToListAsync();
 
             var bytes = Encoding.ASCII.GetBytes(res.ExportToCsv().ToString());
 

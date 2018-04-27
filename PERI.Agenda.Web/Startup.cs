@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using NLog.Web;
+using AutoMapper;
 
 namespace PERI.Agenda.Web
 {
@@ -37,6 +38,7 @@ namespace PERI.Agenda.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddAutoMapper();
 
             services.AddAuthentication("MyCookieMiddlewareInstance")
             .AddCookie("MyCookieMiddlewareInstance", options =>
