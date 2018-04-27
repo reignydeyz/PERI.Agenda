@@ -7,11 +7,19 @@ export class ErrorExceptionModule {
     public catchError(error: any) {
         console.error(error);
 
-        if (error.status >= 400 && error.status < 500) {
-            window.location.replace(this.baseUrl + 'authentication/signout');
-        }
-        else {
-            alert('Oops! Unknown error has occured.');
+        switch (error.status) {
+            case 403:
+                var msg = error._body.replace(/"/g, '');
+                alert(msg.replace(/\\n/g, "\n"));
+                break;
+            case 401:
+            case 412:
+            case 417:
+                window.location.replace(this.baseUrl + 'authentication/signout');
+                break;
+            default:
+                alert('Oops! Unknown error has occured.');
+                break;
         }
     }
 }

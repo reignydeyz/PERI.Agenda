@@ -144,20 +144,20 @@
             <form class="form-group" #frmNew="ngForm" (ngSubmit)="onNewSubmit(frmNew)" ngNativeValidate id="frmNew">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>First name</label>
+                        <label>First name*</label>
                         <input class="form-control" placeholder="First name" name="firstName" ngModel required>
                     </div>
                     <div class="form-group">
-                        <label>Middle name</label>
+                        <label>Middle name*</label>
                         <input class="form-control" placeholder="Middle name" name="middleName" ngModel required>
                     </div>
                     <div class="form-group">
-                        <label>Last name</label>
+                        <label>Last name*</label>
                         <input class="form-control" placeholder="Last name" name="lastName" ngModel required>
                     </div>
                     <div class="form-group">
                         <label>Nick</label>
-                        <input class="form-control" placeholder="Nick" name="nickName" ngModel required>
+                        <input class="form-control" placeholder="Nick" name="nickName" ngModel>
                     </div>
                     <div class="form-group">
                         <label>Birth date</label>
@@ -167,7 +167,7 @@
                     </div>
                     <div class="form-group">
                         <label>Gender</label>
-                        <select class="form-control" name="gender" ngModel required>
+                        <select class="form-control" name="gender" ngModel>
                             <option value="">--SELECT--</option>
                             <option *ngFor="let g of genders" value="{{ g.value }}">{{ g.name }}</option>
                         </select>
@@ -208,7 +208,7 @@
                 <input type="hidden" name="member.id" [(ngModel)]="member.id">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Name</label>
+                        <label>Name*</label>
                         <input class="form-control" placeholder="Name" name="member.name" required [(ngModel)]="member.name">
                     </div>                    
                     <div class="form-group">
@@ -223,7 +223,7 @@
                     <div class="form-group">
                         <label>Gender</label>
                         <!--https://stackoverflow.com/questions/35945001/binding-select-element-to-object-in-angular-->
-                        <select class="form-control" required [(ngModel)]="member.gender" name="member.gender">
+                        <select class="form-control" [(ngModel)]="member.gender" name="member.gender">
                             <option value="">--SELECT--</option>
                             <option *ngFor="let g of genders" [value]="g.value">{{ g.name }}</option>
                         </select>
