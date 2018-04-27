@@ -12,6 +12,7 @@ export class ErrorExceptionModule {
                 var msg = error._body.replace(/"/g, '');
                 alert(msg.replace(/\\n/g, "\n"));
                 break;
+            case 400:
             case 401:
             case 412:
             case 417:
