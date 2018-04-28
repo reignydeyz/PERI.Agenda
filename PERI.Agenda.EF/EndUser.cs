@@ -6,9 +6,7 @@ namespace PERI.Agenda.EF
     public partial class EndUser
     {
         public int UserId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
+        public int MemberId { get; set; }
         public int RoleId { get; set; }
         public string PasswordHash { get; set; }
         public string PasswordSalt { get; set; }
@@ -23,8 +21,8 @@ namespace PERI.Agenda.EF
         public DateTime? DateConfirmed { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime? DateInactive { get; set; }
-        public int? CommunityId { get; set; }
 
+        public Member Member { get; set; }
         public Role Role { get; set; }
     }
 }

@@ -105,17 +105,18 @@ namespace PERI.Agenda.BLL
 
         public IQueryable<EF.EndUser> Find(EF.EndUser args)
         {
-            return context.EndUser
-            .Include(x => x.Role)
-            .Where(x => x.FirstName.Contains(args.FirstName ?? x.FirstName)
-            && x.LastName.Contains(args.LastName ?? x.LastName)
-            && x.Email == (args.Email ?? x.Email)).AsQueryable();
+            throw new NotImplementedException();
         }
 
         public async Task<EF.EndUser> Get(EF.EndUser args)
         {
-            var rec = await context.EndUser.Include(x => x.Role).FirstOrDefaultAsync(x => x.UserId == (args.UserId == 0 ? x.UserId : args.UserId)
-            && x.Email == (args.Email ?? x.Email));
+            args.Member = args.Member ?? new EF.Member();
+
+            var rec = await context.EndUser
+                .Include(x => x.Member)
+                .Include(x => x.Role)
+                .FirstOrDefaultAsync(x => x.UserId == (args.UserId == 0 ? x.UserId : args.UserId)
+                && x.Member.Email == (args.Member.Email ?? x.Member.Email));
 
             return rec;
         }

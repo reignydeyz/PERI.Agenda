@@ -20,7 +20,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_gc = new BLL.GroupCategory(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            args.CommunityId = user.CommunityId;
+            args.CommunityId = user.Member.CommunityId;
 
             var res = from r in (await bll_gc.Find(args).ToListAsync())
                       select new

@@ -24,7 +24,7 @@ namespace PERI.Agenda.Web.Controllers
             if (args == null)
                 args = new EF.EventCategory();
 
-            args.CommunityId = user.CommunityId;
+            args.CommunityId = user.Member.CommunityId;
 
             var res = from r in (await bll_eventCategory.Find(args).ToListAsync())
                       select new
@@ -48,7 +48,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_eventCategory = new BLL.EventCategory(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var r = await bll_eventCategory.Get(new EF.EventCategory { Id = id, CommunityId = user.CommunityId });
+            var r = await bll_eventCategory.Get(new EF.EventCategory { Id = id, CommunityId = user.Member.CommunityId });
 
             dynamic obj = new ExpandoObject();
             obj.id = r.Id;           

@@ -13,7 +13,7 @@ using System.Text;
 
 namespace PERI.Agenda.Web.Controllers
 {
-    [BLL.VerifyUser]
+    [BLL.VerifyUser(AllowedRoles ="Admin,Developer")]
     [Produces("application/json")]
     [Route("api/Member")]
     public class MemberController : Controller
@@ -27,7 +27,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_member = new BLL.Member(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            obj.CommunityId = user.CommunityId;
+            obj.CommunityId = user.Member.CommunityId;
 
             var o = AutoMapper.Mapper.Map<EF.Member>(obj);
 
@@ -43,7 +43,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_member = new BLL.Member(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            obj.CommunityId = user.CommunityId.Value;
+            obj.CommunityId = user.Member.CommunityId.Value;
 
             var o = AutoMapper.Mapper.Map<EF.Member>(obj);
 
@@ -58,6 +58,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json(obj1);
         }
 
+        [BLL.VerifyUser]
         [HttpPost("[action]")]
         [BLL.ValidateModelState]
         public async Task<int> New([FromBody] Models.Member obj)
@@ -67,7 +68,7 @@ namespace PERI.Agenda.Web.Controllers
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             obj.Name = obj.Name.ToUpper();
-            obj.CommunityId = user.CommunityId;
+            obj.CommunityId = user.Member.CommunityId;
 
             var o = AutoMapper.Mapper.Map<EF.Member>(obj);
 
@@ -82,7 +83,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_member = new BLL.Member(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            return await bll_member.Get(new EF.Member { Id = id, CommunityId = user.CommunityId });
+            return await bll_member.Get(new EF.Member { Id = id, CommunityId = user.Member.CommunityId });
         }
 
         [HttpPost("[action]")]
@@ -93,7 +94,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_member = new BLL.Member(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            obj.CommunityId = user.CommunityId;
+            obj.CommunityId = user.Member.CommunityId;
 
             var o = AutoMapper.Mapper.Map<EF.Member>(obj);
 
@@ -153,7 +154,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_member = new BLL.Member(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var members = bll_member.Find(new EF.Member { CommunityId = user.CommunityId });
+            var members = bll_member.Find(new EF.Member { CommunityId = user.Member.CommunityId });
 
             if (status.ToLower() == "active")
                 return await members.Where(x => x.IsActive == true).CountAsync();
@@ -170,7 +171,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_member = new BLL.Member(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            obj.CommunityId = user.CommunityId;
+            obj.CommunityId = user.Member.CommunityId;
 
             var o = AutoMapper.Mapper.Map<EF.Member>(obj);
 

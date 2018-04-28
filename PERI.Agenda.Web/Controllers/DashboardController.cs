@@ -41,7 +41,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_member = new BLL.Member(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var members = bll_member.Find(new EF.Member { CommunityId = user.CommunityId });
+            var members = bll_member.Find(new EF.Member { CommunityId = user.Member.CommunityId });
 
             return new Statistics
             {
@@ -57,7 +57,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_ec = new BLL.EventCategory(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var ecs = from r in bll_ec.Find(new EF.EventCategory { CommunityId = user.CommunityId })
+            var ecs = from r in bll_ec.Find(new EF.EventCategory { CommunityId = user.Member.CommunityId })
                       select new
                       {
                           r.Id,
@@ -84,7 +84,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_loc = new BLL.Location(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var locs = from r in bll_loc.Find(new EF.Location { CommunityId = user.CommunityId })
+            var locs = from r in bll_loc.Find(new EF.Location { CommunityId = user.Member.CommunityId })
                        select new
                        {
                            r.Id,
@@ -111,7 +111,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_gc = new BLL.GroupCategory(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var gcs = from r in bll_gc.Find(new EF.GroupCategory { CommunityId = user.CommunityId })
+            var gcs = from r in bll_gc.Find(new EF.GroupCategory { CommunityId = user.Member.CommunityId })
                       select new
                       {
                           r.Id,

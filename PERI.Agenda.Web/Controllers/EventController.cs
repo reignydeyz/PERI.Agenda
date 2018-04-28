@@ -21,7 +21,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_event = new BLL.Event(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            obj.EventCategory = new EF.EventCategory { CommunityId = user.CommunityId };
+            obj.EventCategory = new EF.EventCategory { CommunityId = user.Member.CommunityId };
 
             var res = from r in (await bll_event.Find(obj).ToListAsync())
                       select new
@@ -48,7 +48,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_event = new BLL.Event(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            obj.EventCategory = new EF.EventCategory { CommunityId = user.CommunityId };
+            obj.EventCategory = new EF.EventCategory { CommunityId = user.Member.CommunityId };
 
             var res = from r in bll_event.Find(obj)
                       select new
@@ -80,7 +80,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_event = new BLL.Event(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            obj.EventCategory = new EF.EventCategory { CommunityId = user.CommunityId };
+            obj.EventCategory = new EF.EventCategory { CommunityId = user.Member.CommunityId };
 
             var res = from r in (await bll_event.Find(obj).ToListAsync())
                       select new
@@ -103,6 +103,7 @@ namespace PERI.Agenda.Web.Controllers
             return result;
         }
 
+        [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpPost("[action]")]
         [BLL.ValidateModelState]
         public async Task<int> New([FromBody] Models.Event obj)
@@ -123,7 +124,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_event = new BLL.Event(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var r = await bll_event.Get(new EF.Event { Id = id, EventCategory = new EF.EventCategory { CommunityId = user.CommunityId } });
+            var r = await bll_event.Get(new EF.Event { Id = id, EventCategory = new EF.EventCategory { CommunityId = user.Member.CommunityId } });
 
             dynamic obj = new ExpandoObject();
             obj.id = r.Id;
@@ -139,6 +140,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json(obj);
         }
 
+        [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpPost("[action]")]
         public async Task Edit([FromBody] EF.Event obj)
         {
@@ -146,11 +148,12 @@ namespace PERI.Agenda.Web.Controllers
             var bll_event = new BLL.Event(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            obj.EventCategory = new EF.EventCategory { CommunityId = user.CommunityId };
+            obj.EventCategory = new EF.EventCategory { CommunityId = user.Member.CommunityId };
 
             await bll_event.Edit(obj);
         }
 
+        [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpPost("[action]")]
         public async Task<IActionResult> Delete([FromBody] int[] ids)
         {

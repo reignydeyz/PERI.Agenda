@@ -453,12 +453,8 @@ namespace PERI.Agenda.EF
 
                 entity.ToTable("EndUser", "prompt");
 
-                entity.HasIndex(e => e.Email)
-                    .HasName("UQ_User_Email")
-                    .IsUnique();
-
-                entity.HasIndex(e => new { e.FirstName, e.LastName })
-                    .HasName("UQ_User_FirstName_LastName")
+                entity.HasIndex(e => e.MemberId)
+                    .HasName("IX_EndUser")
                     .IsUnique();
 
                 entity.Property(e => e.ConfirmationCode)
@@ -473,24 +469,9 @@ namespace PERI.Agenda.EF
 
                 entity.Property(e => e.DateInactive).HasColumnType("datetime");
 
-                entity.Property(e => e.Email)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.FirstName)
-                    .IsRequired()
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.LastFailedPasswordAttempt).HasColumnType("datetime");
 
                 entity.Property(e => e.LastLoginDate).HasColumnType("datetime");
-
-                entity.Property(e => e.LastName)
-                    .IsRequired()
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
 
                 entity.Property(e => e.LastPasswordChanged).HasColumnType("datetime");
 
@@ -507,6 +488,11 @@ namespace PERI.Agenda.EF
                 entity.Property(e => e.PasswordSalt)
                     .IsRequired()
                     .HasMaxLength(128);
+
+                entity.HasOne(d => d.Member)
+                    .WithOne(p => p.EndUser)
+                    .HasForeignKey<EndUser>(d => d.MemberId)
+                    .HasConstraintName("FK_EndUser_Member");
 
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.EndUser)

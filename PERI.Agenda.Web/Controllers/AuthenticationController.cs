@@ -22,8 +22,8 @@ namespace PERI.Agenda.Web.Controllers
                         // User info
                         new Claim(ClaimTypes.NameIdentifier, args.UserId.ToString()),
                         new Claim("http://schemas.microsoft.com/accesscontrolservice/2010/07/claims/identityprovider", "ASP.NET Identity", "http://www.w3.org/2001/XMLSchema#string"),
-                        new Claim(ClaimTypes.Name, args.FirstName + " " + args.LastName),
-                        new Claim(ClaimTypes.Email, args.Email),
+                        new Claim(ClaimTypes.Name, args.Member.Name),
+                        new Claim(ClaimTypes.Email, args.Member.Email),
                         new Claim(ClaimTypes.UserData, Core.JWT.GenerateToken(args.UserId, Core.Setting.Configuration.GetValue<string>("JWT:Secret"))),
 
                         // Role
@@ -57,7 +57,7 @@ namespace PERI.Agenda.Web.Controllers
 
             var buser = new BLL.EndUser(context);
 
-            var user = await buser.Get(new EF.EndUser { Email = args.Email });
+            var user = await buser.Get(new EF.EndUser { Member = new EF.Member { Email = args.Email } });
 
             if (user != null)
             {
@@ -98,7 +98,7 @@ namespace PERI.Agenda.Web.Controllers
 
             var buser = new BLL.EndUser(context);
 
-            var user = await buser.Get(new EF.EndUser { Email = args.Email });
+            var user = await buser.Get(new EF.EndUser { Member = new EF.Member { Email = args.Email } });
 
             if (user != null)
             {

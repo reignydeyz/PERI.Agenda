@@ -30,6 +30,7 @@ namespace PERI.Agenda.EF
         public string ModifiedBy { get; set; }
         public int? CommunityId { get; set; }
 
+        public EndUser EndUser { get; set; }
         public ICollection<Attendance> Attendance { get; set; }
         public ICollection<GroupMember> GroupMember { get; set; }
         public ICollection<Registrant> Registrant { get; set; }
