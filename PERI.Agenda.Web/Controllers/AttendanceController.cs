@@ -76,13 +76,14 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [HttpPut("[action]")]
+        [BLL.ValidateModelState]
         [Route("{id}/Add")]
-        public async Task<int> Add([FromBody] EF.Attendance obj, int id)
+        public async Task<int> Add([FromBody] Models.Attendance obj, int id)
         {
             var context = new EF.AARSContext();
             var bll_a = new BLL.Attendance(context);
 
-            return await bll_a.Add(new EF.Attendance { EventId = id, MemberId = obj.MemberId, DateTimeLogged = obj.DateTimeLogged ?? DateTime.Now });
+            return await bll_a.Add(new EF.Attendance { EventId = id, MemberId = obj.MemberId.Value, DateTimeLogged = obj.DateTimeLogged ?? DateTime.Now });
         }
 
         [HttpPost("[action]")]

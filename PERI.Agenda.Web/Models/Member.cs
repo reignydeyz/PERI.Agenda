@@ -15,15 +15,34 @@ namespace PERI.Agenda.Web.Models
         [Required(AllowEmptyStrings = false)]
         [MinLength(7)]
         public string Name { get; set; }
+
+        [DisplayFormat(ConvertEmptyStringToNull = true)]
+        [BLL.NoWhiteSpace]
+        [MaxLength(50)]
         public string NickName { get; set; }
+
+        [DisplayFormat(ConvertEmptyStringToNull = true)]
+        [BLL.NoWhiteSpace]
         public string Address { get; set; }
+
+        [DisplayFormat(ConvertEmptyStringToNull = true)]
+        [BLL.NoWhiteSpace]
+        [MinLength(5)]
+        [MaxLength(13)]
         public string Mobile { get; set; }
 
         [EmailAddress]
         public string Email { get; set; }
         public DateTime? BirthDate { get; set; }
+
+        [DisplayFormat(ConvertEmptyStringToNull = true)]
+        [BLL.NoWhiteSpace]
         public string Remarks { get; set; }
+
+        [Range(1,2)]
         public int? CivilStatus { get; set; }
+
+        [Range(3,4)]
         public int? Gender { get; set; }
         public int? InvitedBy { get; set; }
         public bool? IsActive { get; set; }

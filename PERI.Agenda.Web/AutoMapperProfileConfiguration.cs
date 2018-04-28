@@ -11,6 +11,8 @@ namespace PERI.Agenda.Web
         public AutoMapperProfileConfiguration()
         {
             CreateMap<Models.Member, EF.Member>().IgnoreAllPropertiesWithAnInaccessibleSetter();
+            CreateMap<Models.Event, EF.Event>().IgnoreAllPropertiesWithAnInaccessibleSetter();
+            CreateMap<Models.Attendance, EF.Attendance>().IgnoreAllPropertiesWithAnInaccessibleSetter();
         }
     }
 }

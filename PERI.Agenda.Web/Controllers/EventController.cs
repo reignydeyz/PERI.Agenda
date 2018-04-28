@@ -104,12 +104,15 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<int> New([FromBody] EF.Event obj)
+        [BLL.ValidateModelState]
+        public async Task<int> New([FromBody] Models.Event obj)
         {
             var context = new EF.AARSContext();
             var bll_event = new BLL.Event(context);
 
-            return await bll_event.Add(obj);
+            var o = AutoMapper.Mapper.Map<EF.Event>(obj);
+
+            return await bll_event.Add(o);
         }
 
         [HttpGet("[action]")]
