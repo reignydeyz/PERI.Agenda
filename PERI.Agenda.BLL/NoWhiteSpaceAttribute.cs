@@ -16,9 +16,11 @@ namespace PERI.Agenda.BLL
             {
                 var str = value as string;
                 
-                if (String.IsNullOrWhiteSpace(str))
+                if (str.Length > 0)
                 {
-                    return new ValidationResult(validationContext.DisplayName + " value is just whitespace");
+                    if (String.IsNullOrWhiteSpace(str)) {
+                        return new ValidationResult(validationContext.DisplayName + " value is just whitespace");
+                    }
                 }
             }
 
