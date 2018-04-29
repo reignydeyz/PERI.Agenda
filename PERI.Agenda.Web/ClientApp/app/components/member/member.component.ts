@@ -136,7 +136,7 @@ export class MemberComponent {
 
     public onNewSubmit(f: NgForm) {
         var m = new Member();
-        m.name = f.controls['firstName'].value + ' ' + f.controls['middleName'].value + ' ' + f.controls['lastName'].value;
+        m.name = f.controls['firstName'].value + ' ' + f.controls['lastName'].value;
         m.nickName = f.controls['nickName'].value;
 
         if (f.controls['birthDate'].value != null) {
