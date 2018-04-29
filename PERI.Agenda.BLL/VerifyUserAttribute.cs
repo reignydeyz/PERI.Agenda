@@ -72,7 +72,8 @@ namespace PERI.Agenda.BLL
                 }
                 else
                 {
-                    filterContext.HttpContext.Items.Add("EndUser", user);
+                    if (filterContext.HttpContext.Items["EndUser"] == null)
+                        filterContext.HttpContext.Items.Add("EndUser", user);
                 }
             }
             catch (TokenExpiredException ex)
