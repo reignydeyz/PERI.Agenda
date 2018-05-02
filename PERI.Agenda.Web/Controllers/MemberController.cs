@@ -13,6 +13,7 @@ using System.Text;
 using NLog;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -22,11 +23,12 @@ namespace PERI.Agenda.Web.Controllers
     public class MemberController : Controller
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
-        private Core.Setting smtpSettings { get; set; }
 
-        public MemberController(IOptions<Core.Setting> settings)
+        private readonly Emailer smtp;
+
+        public MemberController(IOptions<Core.Emailer> settingsOptions)
         {
-            smtpSettings = settings.Value;
+            smtp = settingsOptions.Value;
         }
 
         [HttpPost("[action]")]
@@ -114,6 +116,9 @@ namespace PERI.Agenda.Web.Controllers
                         {
                             MemberId = id
                         });
+
+                        // Send email
+                        await smtp.SendEmail(obj.Email, "hello", "hello");
                     }
 
                     txn.Commit();

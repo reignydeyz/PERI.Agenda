@@ -24,6 +24,8 @@ namespace PERI.Agenda.Web
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
+
+            builder.AddEnvironmentVariables();
             Core.Setting.Configuration = builder.Build();
         }
 
@@ -50,6 +52,8 @@ namespace PERI.Agenda.Web
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddScoped<BLL.VerifyUserAttribute>();
+
+            services.Configure<Core.Emailer>(options => Core.Setting.Configuration.GetSection("SmtpClient").Bind(options));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
