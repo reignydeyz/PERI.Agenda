@@ -135,6 +135,11 @@ namespace PERI.Agenda.Web.Controllers
             return RedirectToAction("Index", "Authentication");
         }
 
+        public IActionResult SignUp()
+        {
+            return View();
+        }
+
         public IActionResult ForgotPassword()
         {
             ViewData["Title"] = "Forgot Password";
