@@ -34,6 +34,17 @@ namespace PERI.Agenda.BLL
             return args.Id;
         }
 
+        public async Task<List<EF.Member>> Add(List<EF.Member> args)
+        {
+            foreach (var r in args)
+                r.IsActive = true;
+
+            await context.Member.AddRangeAsync(args);
+            context.SaveChanges();
+
+            return args;
+        }
+
         public async Task Deactivate(int[] ids)
         {
             foreach (var id in ids)
@@ -81,6 +92,26 @@ namespace PERI.Agenda.BLL
             var res = context.Member.Where(x => x.Name.Contains(args.Name ?? "")
             && ((x.Email ?? "").Contains(args.Email ?? ""))
             && x.CommunityId == args.CommunityId)
+                .OrderBy(x => x.Name).AsQueryable();
+
+            return res;
+        }
+
+        public IQueryable<EF.Member> Search(EF.Member args)
+        {
+            var res = context.Member.Where(x => x.Name.Contains(args.Name ?? "")
+            || ((x.Email ?? "").Contains(args.Email ?? ""))
+            && x.CommunityId == args.CommunityId)
+                .OrderBy(x => x.Name).AsQueryable();
+
+            return res;
+        }
+
+        public IQueryable<EF.Member> Search(EF.Member[] args)
+        {
+            var res = context.Member.Where(x => (args.Select(y => y.Name ?? "").Contains(x.Name ?? "")
+            || args.Select(y => y.Email ?? "").Contains(x.Email ?? ""))            
+            && args.Select(y => y.CommunityId).Contains(x.CommunityId))
                 .OrderBy(x => x.Name).AsQueryable();
 
             return res;

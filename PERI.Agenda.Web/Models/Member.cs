@@ -30,7 +30,7 @@ namespace PERI.Agenda.Web.Models
         [MinLength(5)]
         [MaxLength(13)]
         public string Mobile { get; set; }
-
+                
         [EmailAddress]
         public string Email { get; set; }
         public DateTime? BirthDate { get; set; }

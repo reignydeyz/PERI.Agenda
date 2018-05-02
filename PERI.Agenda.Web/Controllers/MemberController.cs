@@ -10,6 +10,9 @@ using PERI.Agenda.Core;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Text;
+using NLog;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -18,6 +21,14 @@ namespace PERI.Agenda.Web.Controllers
     [Route("api/Member")]
     public class MemberController : Controller
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private Core.Setting smtpSettings { get; set; }
+
+        public MemberController(IOptions<Core.Setting> settings)
+        {
+            smtpSettings = settings.Value;
+        }
+
         [HttpPost("[action]")]
         public async Task<IEnumerable<EF.Member>> Find([FromBody] Models.Member obj)
         {
@@ -61,20 +72,157 @@ namespace PERI.Agenda.Web.Controllers
         [BLL.VerifyUser]
         [HttpPost("[action]")]
         [BLL.ValidateModelState]
-        public async Task<int> New([FromBody] Models.Member obj)
+        public async Task<IActionResult> New([FromBody] Models.Member obj)
         {
             var context = new EF.AARSContext();
-            var bll_member = new BLL.Member(context);
-            var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            obj.Name = obj.Name.ToUpper();
-            obj.CommunityId = user.Member.CommunityId;
+            using (var txn = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var bll_member = new BLL.Member(context);
+                    var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var o = AutoMapper.Mapper.Map<EF.Member>(obj);
+                    // Validate if existing
+                    var exist = await bll_member.Search(new EF.Member {
+                        Name = obj.Name,
+                        Email = obj.Email,
+                        CommunityId = user.Member.CommunityId
+                    }).CountAsync();
+                    
+                    if (exist > 0)
+                    {
+                        return new ObjectResult("Existing name or email")
+                        {
+                            StatusCode = 403,
+                            Value = "Existing name or email"
+                        };
+                    }
 
-            return await bll_member.Add(o);
+                    obj.Name = obj.Name.ToUpper();
+                    obj.CommunityId = user.Member.CommunityId;
+
+                    var o = AutoMapper.Mapper.Map<EF.Member>(obj);
+
+                    var id = await bll_member.Add(o);
+
+                    // Add to User
+                    if (obj.Email != null)
+                    {
+                        var bll_user = new BLL.EndUser(context);
+                        await bll_user.Add(new EF.EndUser
+                        {
+                            MemberId = id
+                        });
+                    }
+
+                    txn.Commit();
+
+                    return Ok(id);
+                }
+                catch (Exception ex)
+                {
+                    txn.Rollback();
+
+                    logger.Error(ex);
+
+                    return new ObjectResult(ex.Message)
+                    {
+                        StatusCode = 403,
+                        Value = "Entry is invalid."
+                    };
+                }
+            }
         }
-        
+
+        [BLL.VerifyUser]
+        [HttpPost("[action]")]
+        [BLL.ValidateModelState]
+        public async Task<IActionResult> AddRange([FromBody] List<Models.Member> obj)
+        {
+            // Email must be unique
+            var duplicateEmails = obj.Select(x => x.Email).GroupBy(x => x)
+                        .Where(group => group.Count() > 1)
+                        .Select(group => group.Key);
+            
+            if (duplicateEmails.Count() > 0)
+            {
+                return new ObjectResult("Duplicate email found")
+                {
+                    StatusCode = 403,
+                    Value = "Duplicate email found"
+                };
+            }
+
+            var context = new EF.AARSContext();
+
+            using (var txn = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var bll_member = new BLL.Member(context);
+                    var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+                    // Validate if existing
+                    var map = AutoMapper.Mapper.Map<List<EF.Member>>(obj);
+
+                    var list = from x in map
+                               select new EF.Member
+                               {
+                                   Name = x.Name,
+                                   Email = x.Email,
+                                   CommunityId = user.Member.CommunityId
+                               };
+                    var exist = await bll_member.Search(list.ToArray()).CountAsync();
+                    if (exist > 0)
+                    {
+                        return new ObjectResult("Existing name or email")
+                        {
+                            StatusCode = 403,
+                            Value = "Existing name or email"
+                        };
+                    }
+
+                    foreach (var ob in obj)
+                    {
+                        ob.Name = ob.Name.ToUpper();
+                        ob.CommunityId = user.Member.CommunityId;
+                    }
+
+                    var o = AutoMapper.Mapper.Map<List<EF.Member>>(obj);
+
+                    // Gets the newly added members
+                    var members = await bll_member.Add(o);
+
+                    // Add new users
+                    var bll_user = new BLL.EndUser(context);
+                    foreach (var member in members.Where(x => x.Email != null && x.Email != ""))
+                    {
+                        await bll_user.Add(new EF.EndUser
+                        {
+                            MemberId = member.Id
+                        });
+                    }
+
+                    txn.Commit();
+
+                    return Ok();
+                }
+                catch (Exception ex)
+                {
+                    txn.Rollback();
+
+                    logger.Error(ex);
+
+                    return new ObjectResult(ex.Message)
+                    {
+                        StatusCode = 403,
+                        Value = "Entry is invalid."
+                    };
+                }
+            }
+        }
+
         [HttpGet("[action]")]
         [Route("Get/{id}")]
         public async Task<EF.Member> Get(int id)
