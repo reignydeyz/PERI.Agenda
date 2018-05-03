@@ -47,7 +47,7 @@ namespace PERI.Agenda.BLL
             args.LastSessionId = Guid.NewGuid().ToString();
             args.LastLoginDate = DateTime.Now;
             args.DateCreated = args.LastLoginDate.Value;
-            args.ConfirmationCode = guidString;
+            args.ConfirmationCode = args.ConfirmationCode ?? guidString;
             args.ConfirmationExpiry = DateTime.Now.AddHours(12);
 
             context.EndUser.Add(args);
