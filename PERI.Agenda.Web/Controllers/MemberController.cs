@@ -111,14 +111,26 @@ namespace PERI.Agenda.Web.Controllers
                     // Add to User
                     if (obj.Email != null)
                     {
+                        var salt = Core.Crypto.GenerateSalt();
+                        var enc = Core.Crypto.Hash(Guid.NewGuid().ToString(), salt);
+
+                        // Generate ConfirmationCode
+                        Guid g = Guid.NewGuid();
+                        string guidString = Convert.ToBase64String(g.ToByteArray());
+                        guidString = guidString.Replace("=", "");
+                        guidString = guidString.Replace("+", "");
+
                         var bll_user = new BLL.EndUser(context);
-                        await bll_user.Add(new EF.EndUser
+                        var newId = await bll_user.Add(new EF.EndUser
                         {
-                            MemberId = id
+                            MemberId = id,
+                            ConfirmationCode = guidString
                         });
 
                         // Send email
-                        await smtp.SendEmail(obj.Email, "hello", "hello");
+                        await smtp.SendEmail(obj.Email,
+                            "Your Agenda Credentials",
+                            "Please click the link below to validate and change your password:<br/>http://" + Request.Host.Value + "/user/newpassword/?userid=" + newId + "&code=" + guidString);
                     }
 
                     txn.Commit();
@@ -203,10 +215,25 @@ namespace PERI.Agenda.Web.Controllers
                     var bll_user = new BLL.EndUser(context);
                     foreach (var member in members.Where(x => x.Email != null && x.Email != ""))
                     {
-                        await bll_user.Add(new EF.EndUser
+                        var salt = Core.Crypto.GenerateSalt();
+                        var enc = Core.Crypto.Hash(Guid.NewGuid().ToString(), salt);
+
+                        // Generate ConfirmationCode
+                        Guid g = Guid.NewGuid();
+                        string guidString = Convert.ToBase64String(g.ToByteArray());
+                        guidString = guidString.Replace("=", "");
+                        guidString = guidString.Replace("+", "");
+
+                        var newId = await bll_user.Add(new EF.EndUser
                         {
-                            MemberId = member.Id
+                            MemberId = member.Id,
+                            ConfirmationCode = guidString
                         });
+
+                        // Send email
+                        await smtp.SendEmail(member.Email,
+                            "Your Agenda Credentials",
+                            "Please click the link below to validate and change your password:<br/>http://" + Request.Host.Value + "/user/newpassword/?userid=" + newId + "&code=" + guidString);
                     }
 
                     txn.Commit();
