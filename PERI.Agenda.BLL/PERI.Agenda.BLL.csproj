@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PERI.Agenda.Core\PERI.Agenda.Core.csproj" />
     <ProjectReference Include="..\PERI.Agenda.EF\PERI.Agenda.EF.csproj" />
   </ItemGroup>
 

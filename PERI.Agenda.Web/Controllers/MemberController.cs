@@ -111,9 +111,6 @@ namespace PERI.Agenda.Web.Controllers
                     // Add to User
                     if (obj.Email != null)
                     {
-                        var salt = Core.Crypto.GenerateSalt();
-                        var enc = Core.Crypto.Hash(Guid.NewGuid().ToString(), salt);
-
                         // Generate ConfirmationCode
                         Guid g = Guid.NewGuid();
                         string guidString = Convert.ToBase64String(g.ToByteArray());
@@ -130,7 +127,7 @@ namespace PERI.Agenda.Web.Controllers
                         // Send email
                         await smtp.SendEmail(obj.Email,
                             "Your Agenda Credentials",
-                            "Please click the link below to validate and change your password:<br/>http://" + Request.Host.Value + "/user/newpassword/?userid=" + newId + "&code=" + guidString);
+                            "Please click the link below to validate and change your password:<br/>http://" + Request.Host.Value + "/authentication/newpassword/?userid=" + newId + "&code=" + guidString);
                     }
 
                     txn.Commit();
@@ -233,7 +230,7 @@ namespace PERI.Agenda.Web.Controllers
                         // Send email
                         await smtp.SendEmail(member.Email,
                             "Your Agenda Credentials",
-                            "Please click the link below to validate and change your password:<br/>http://" + Request.Host.Value + "/user/newpassword/?userid=" + newId + "&code=" + guidString);
+                            "Please click the link below to validate and change your password:<br/>http://" + Request.Host.Value + "/authentication/newpassword/?userid=" + newId + "&code=" + guidString);
                     }
 
                     txn.Commit();

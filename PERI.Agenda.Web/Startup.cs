@@ -54,6 +54,9 @@ namespace PERI.Agenda.Web
             services.AddScoped<BLL.VerifyUserAttribute>();
 
             services.Configure<Core.Emailer>(options => Core.Setting.Configuration.GetSection("SmtpClient").Bind(options));
+            services.Configure<Core.GoogleReCaptcha>(options => Core.Setting.Configuration.GetSection("GoogleReCaptcha").Bind(options));
+
+            services.AddScoped<BLL.ValidateReCaptchaAttribute>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
