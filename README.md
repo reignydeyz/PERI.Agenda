@@ -67,6 +67,21 @@ TBA
 
   "JWT": {
     "Secret": "[SECRET_KEY]"
+  },
+  
+  "SmtpClient": {
+    "DisplayName": "[DISPLAY_NAME]",
+    "DisplayEmail": "[EMAIL]",
+    "SmtpServer": "[SMTP_SERVER]",
+    "SmtpPort": "[PORT]",
+    "UseSsl": [true/false],
+    "SmtpUser": "[SMTP_USERNAME]",
+    "SmtpPassword": "[SMTP_USER_PASSWORD]"
+  },
+
+  "GoogleReCaptcha": {
+    "PublicKey": "[YOUR_GOOGLE_RECAPTCHA_PUBLIC_KEY]",
+    "PrivateKey": "[YOUR_GOOGLE_RECAPTCHA_PRIVATE_KEY]"
   }
 }
 
