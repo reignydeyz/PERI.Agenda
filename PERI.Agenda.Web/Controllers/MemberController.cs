@@ -88,7 +88,7 @@ namespace PERI.Agenda.Web.Controllers
                     // Validate if existing
                     var exist = await bll_member.Search(new EF.Member {
                         Name = obj.Name,
-                        Email = obj.Email,
+                        Email = String.IsNullOrEmpty(obj.Email) ? "email" : obj.Email,
                         CommunityId = user.Member.CommunityId
                     }).CountAsync();
                     
@@ -184,7 +184,7 @@ namespace PERI.Agenda.Web.Controllers
                                select new EF.Member
                                {
                                    Name = x.Name,
-                                   Email = x.Email,
+                                   Email = String.IsNullOrEmpty(x.Email) ? "email" : x.Email,
                                    CommunityId = user.Member.CommunityId
                                };
                     var exist = await bll_member.Search(list.ToArray()).CountAsync();
