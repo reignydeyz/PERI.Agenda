@@ -37,6 +37,7 @@ namespace PERI.Agenda.Web.Models
 
         [Required]
         [EmailAddress]
+        [MinLength(10)]
         public string Email { get; set; }
         public DateTime? BirthDate { get; set; }
 
