@@ -216,6 +216,13 @@ export class MemberComponent {
         lm.http = this.http;
         lm.baseUrl = this.baseUrl;
         lm.getByGroup('Gender').subscribe(result => { this.genders = result });
+
+        let tbl: any;
+        tbl = $("#tbl")
+        console.log(tbl);
+        $('table').on('scroll', function () {
+            $("table > *").width(tbl.width() + tbl.scrollLeft());
+        });
     }
 
     onDeleteClick() {

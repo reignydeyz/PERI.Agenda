@@ -5,3 +5,32 @@
 .table td.active {
     background-color: none !important;
 }
+
+thead, tbody {
+    display: block;
+}
+
+td, th {
+    min-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+thead tr th:nth-child(1), 
+tr td:nth-child(1) {
+    min-width: 5px;
+    max-width: 5px;
+}
+
+thead tr th:nth-child(2),
+tr td:nth-child(2) {
+    min-width: 25px;
+    max-width: 25px;
+}
+
+thead tr th:nth-child(3),
+tr td:nth-child(3) {
+    min-width: 75px;
+    max-width: 75px;
+}
