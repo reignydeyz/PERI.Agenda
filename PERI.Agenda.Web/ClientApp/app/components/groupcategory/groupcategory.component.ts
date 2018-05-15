@@ -1,5 +1,7 @@
 ﻿import { Component, Inject } from '@angular/core';
 import { Http } from '@angular/http';
+import { NgForm, NgModel } from '@angular/forms';
+import * as $ from "jquery";
 
 import 'rxjs/add/operator/map'
 import { Observable } from 'rxjs/Observable';
@@ -30,6 +32,15 @@ export class GroupCategoryComponent {
         this.gcm = new GroupCategoryModule();
         this.gcm.http = http;
         this.gcm.baseUrl = baseUrl;
+    }
+
+    checkAll() {
+        var src = <HTMLInputElement>document.getElementById("checkall");
+
+        $("#tbl").find('input[type=checkbox]').each(function () {
+            var element = <HTMLInputElement>this;
+            element.checked = src.checked;
+        });
     }
 
     ngOnInit() {
