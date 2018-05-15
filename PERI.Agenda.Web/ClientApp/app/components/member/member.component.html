@@ -79,8 +79,8 @@
 
 <small *ngIf="chunk">Found: {{ chunk.pager.totalItems }}</small>
 
-<div style="width:100%; height:75vh; overflow:auto" *ngIf="chunk">
-    <table class="table table-striped" id="tbl">
+<div *ngIf="chunk">
+    <table class="table table-striped" id="tbl" width="1000">
         <thead>
             <tr>
                 <th width="1%" style="padding: 2px"></th>

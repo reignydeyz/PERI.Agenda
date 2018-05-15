@@ -49,7 +49,7 @@
 
 <small *ngIf="chunk">Found: {{ chunk.pager.totalItems }}</small>
 
-<div style="width:100%; height:75vh; overflow:auto" *ngIf="chunk">
+<div *ngIf="chunk">
     <table class="table table-striped" id="tbl">
         <thead>
             <tr>
@@ -63,7 +63,7 @@
                 <th>Attendance</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody style="padding-bottom: 50px">
             <tr *ngFor="let e of chunk.events; let i = index">
                 <td [ngClass]="{exclusive: e.isExclusive == true || e.isExclusive == 'true', open: e.isExclusive == false || e.isExclusive == 'false'}" style="padding: 2px"></td>
                 <td><input type="checkbox" value="{{ e.id }}" class="checkBox" /></td>
@@ -89,16 +89,6 @@
             </tr>
         </tbody>
     </table>
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
 </div>
 
 <ng-container *ngIf="chunk && chunk.pager.endPage > 1">

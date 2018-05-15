@@ -117,6 +117,17 @@ export class EventComponent {
         l.find(new Location()).subscribe(result => { this.locations = result });        
     }
 
+    ngAfterViewChecked() {
+        if (this.chunk) {
+            var tbl = <HTMLTableElement>document.getElementById("tbl");
+            let tbl1: any;
+            tbl1 = $("table");
+            tbl.onscroll = function () {
+                $("table > *").width(tbl1.width() + tbl1.scrollLeft());
+            };
+        }
+    }
+
     public onSearchSubmit(f: NgForm) {
         var e = new Event();
         e.name = f.controls['name'].value;

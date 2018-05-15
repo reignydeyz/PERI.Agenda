@@ -216,13 +216,17 @@ export class MemberComponent {
         lm.http = this.http;
         lm.baseUrl = this.baseUrl;
         lm.getByGroup('Gender').subscribe(result => { this.genders = result });
+    }
 
-        let tbl: any;
-        tbl = $("#tbl")
-        console.log(tbl);
-        $('table').on('scroll', function () {
-            $("table > *").width(tbl.width() + tbl.scrollLeft());
-        });
+    ngAfterViewChecked() {
+        if (this.chunk) {
+            var tbl = <HTMLTableElement>document.getElementById("tbl");
+            let tbl1: any;
+            tbl1 = $("table");
+            tbl.onscroll = function () {
+                $("table > *").width(tbl1.width() + tbl1.scrollLeft());
+            };
+        }
     }
 
     onDeleteClick() {

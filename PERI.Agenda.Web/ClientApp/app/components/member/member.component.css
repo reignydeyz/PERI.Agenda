@@ -6,14 +6,26 @@
     background-color: none !important;
 }
 
+table {
+    border-collapse: collapse;
+    overflow-x: scroll;
+    display: block;
+}
+
+tbody {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 75vh;
+}
+
 thead, tbody {
     display: block;
 }
 
 td, th {
     min-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    /*overflow: hidden;
+    text-overflow: ellipsis;*/
     max-width: 200px;
 }
 
