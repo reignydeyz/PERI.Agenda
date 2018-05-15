@@ -12,6 +12,7 @@ namespace PERI.Agenda.Web
         {
             CreateMap<Models.Member, EF.Member>().IgnoreAllPropertiesWithAnInaccessibleSetter();
             CreateMap<Models.Event, EF.Event>().IgnoreAllPropertiesWithAnInaccessibleSetter();
+            CreateMap<Models.EventCategory, EF.EventCategory>().IgnoreAllPropertiesWithAnInaccessibleSetter();
             CreateMap<Models.Attendance, EF.Attendance>().IgnoreAllPropertiesWithAnInaccessibleSetter();
         }
     }

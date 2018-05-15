@@ -60,5 +60,18 @@ namespace PERI.Agenda.Web.Controllers
 
             return Json(obj);
         }
+
+        [HttpPost("[action]")]
+        [BLL.ValidateModelState]
+        public async Task<IActionResult> New([FromBody] Models.EventCategory args)
+        {
+            var context = new EF.AARSContext();
+            var bll_ec = new BLL.EventCategory(context);
+
+            var o = AutoMapper.Mapper.Map<EF.EventCategory>(args);
+            var id = await bll_ec.Add(o);
+
+            return Ok(id);
+        }
     }
 }

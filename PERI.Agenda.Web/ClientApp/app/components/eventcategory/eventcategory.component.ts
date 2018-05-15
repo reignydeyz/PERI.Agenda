@@ -1,5 +1,7 @@
 ﻿import { Component, Inject } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
+import { NgForm, NgModel } from '@angular/forms';
+import * as $ from "jquery";
 
 import 'rxjs/add/operator/map'
 import { Observable } from 'rxjs/Observable';
@@ -41,6 +43,15 @@ export class EventCategoryComponent {
 
         this.ecm.ex = new ErrorExceptionModule();
         this.ecm.ex.baseUrl = this.baseUrl;
+    }
+
+    checkAll() {
+        var src = <HTMLInputElement>document.getElementById("checkall");
+
+        $("#tbl").find('input[type=checkbox]').each(function () {
+            var element = <HTMLInputElement>this;
+            element.checked = src.checked;
+        });
     }
 
     ngOnInit() {

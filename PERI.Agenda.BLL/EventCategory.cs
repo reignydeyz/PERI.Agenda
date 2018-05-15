@@ -22,9 +22,11 @@ namespace PERI.Agenda.BLL
             throw new NotImplementedException();
         }
 
-        public Task<int> Add(EF.EventCategory args)
+        public async Task<int> Add(EF.EventCategory args)
         {
-            throw new NotImplementedException();
+            await context.EventCategory.AddAsync(args);
+            context.SaveChanges();
+            return args.Id;
         }
 
         public Task Deactivate(int[] ids)
@@ -47,9 +49,17 @@ namespace PERI.Agenda.BLL
             throw new NotImplementedException();
         }
 
-        public Task Edit(EF.EventCategory args)
+        public async Task Edit(EF.EventCategory args)
         {
-            throw new NotImplementedException();
+            var ec = await context.EventCategory.FirstAsync(x => x.Id == args.Id
+            && x.CommunityId == args.CommunityId);
+
+            ec.Name = args.Name;
+            ec.Description = args.Description;
+            ec.DateTimeModified = DateTime.Now;
+            ec.ModifiedBy = ec.ModifiedBy;
+
+            context.SaveChanges();
         }
 
         public IQueryable<EF.EventCategory> Find(EF.EventCategory args)
