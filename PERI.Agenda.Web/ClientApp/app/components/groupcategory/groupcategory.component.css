@@ -1,0 +1,5 @@
+﻿thead tr th:nth-child(1),
+tr td:nth-child(1) {
+    min-width: 25px;
+    max-width: 25px;
+}

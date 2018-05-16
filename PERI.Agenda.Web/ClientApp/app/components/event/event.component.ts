@@ -57,7 +57,9 @@ export class EventModule {
 @Component({
     selector: 'event',
     templateUrl: './event.component.html',
-    styleUrls: ['./event.component.css']
+    styleUrls: ['./event.component.css',
+        '../table/table.component.css'
+    ]
 })
 export class EventComponent {
     private em: EventModule;

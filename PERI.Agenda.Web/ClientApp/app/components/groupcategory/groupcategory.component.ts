@@ -20,7 +20,9 @@ export class GroupCategoryModule {
 
 @Component({
     selector: 'groupcategory',
-    templateUrl: './groupcategory.component.html'
+    templateUrl: './groupcategory.component.html',
+    styleUrls: ['./groupcategory.component.css',
+        '../table/table.component.css']
 })
 export class GroupCategoryComponent {
     private gcm: GroupCategoryModule;
@@ -49,6 +51,16 @@ export class GroupCategoryComponent {
         this.gcm.find(new GroupCategory()).subscribe(result => { this.groupcategories = result });
     }
 
+    ngAfterViewChecked() {
+        if (this.groupcategories) {
+            var tbl = <HTMLTableElement>document.getElementById("tbl");
+            let tbl1: any;
+            tbl1 = $("table");
+            tbl.onscroll = function () {
+                $("table > *").width(tbl1.width() + tbl1.scrollLeft());
+            };
+        }
+    }
 }
 
 export class GroupCategory {

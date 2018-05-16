@@ -1,0 +1,26 @@
+﻿table {
+    border-collapse: collapse;
+    overflow-x: auto;
+    display: block;
+}
+
+tbody {
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 75vh;
+}
+
+thead, tbody {
+    display: block;
+}
+
+td, th {
+    min-width: 200px;
+    /*overflow: hidden;
+    text-overflow: ellipsis;*/
+    max-width: 200px;
+}
+
+.table-hover > tbody > tr:hover {
+    background-color: yellow !important;
+}

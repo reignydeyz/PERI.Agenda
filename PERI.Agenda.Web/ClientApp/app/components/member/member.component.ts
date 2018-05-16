@@ -17,7 +17,9 @@ import { IMyDpOptions } from 'mydatepicker';
 @Component({
     selector: 'member',
     templateUrl: './member.component.html',
-    styleUrls: ['./member.component.css']
+    styleUrls: ['./member.component.css',
+        '../table/table.component.css'
+    ]
 })
 
 export class MemberComponent {

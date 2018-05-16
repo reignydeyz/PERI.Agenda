@@ -28,7 +28,9 @@ export class EventCategoryModule {
 
 @Component({
     selector: 'eventcategory',
-    templateUrl: './eventcategory.component.html'
+    templateUrl: './eventcategory.component.html',
+    styleUrls: ['./eventcategory.component.css',
+        '../table/table.component.css']
 })
 export class EventCategoryComponent {
     private ecm: EventCategoryModule;
@@ -57,6 +59,17 @@ export class EventCategoryComponent {
     ngOnInit() {
         this.titleService.setTitle('Event Categories');
         this.ecm.find(new EventCategory()).subscribe(result => { this.eventcategories = result }, error => this.ecm.ex.catchError(error));        
+    }
+
+    ngAfterViewChecked() {
+        if (this.eventcategories) {
+            var tbl = <HTMLTableElement>document.getElementById("tbl");
+            let tbl1: any;
+            tbl1 = $("table");
+            tbl.onscroll = function () {
+                $("table > *").width(tbl1.width() + tbl1.scrollLeft());
+            };
+        }
     }
 }
 

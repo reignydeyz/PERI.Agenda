@@ -50,12 +50,12 @@
 <small *ngIf="chunk">Found: {{ chunk.pager.totalItems }}</small>
 
 <div *ngIf="chunk">
-    <table class="table table-striped" id="tbl">
+    <table class="table table-striped table-hover" id="tbl">
         <thead>
             <tr>
-                <th width="1%" style="padding: 2px"></th>
-                <th width="5%"><input type="checkbox" (change)="checkAll()" id="checkall" /></th>
-                <th width="5%"></th>
+                <th></th>
+                <th><input type="checkbox" (change)="checkAll()" id="checkall" /></th>
+                <th></th>
                 <th>Name</th>
                 <th>Category</th>
                 <th>Location</th>
@@ -65,7 +65,7 @@
         </thead>
         <tbody style="padding-bottom: 50px">
             <tr *ngFor="let e of chunk.events; let i = index">
-                <td [ngClass]="{exclusive: e.isExclusive == true || e.isExclusive == 'true', open: e.isExclusive == false || e.isExclusive == 'false'}" style="padding: 2px"></td>
+                <td [ngClass]="{exclusive: e.isExclusive == true || e.isExclusive == 'true', open: e.isExclusive == false || e.isExclusive == 'false'}"></td>
                 <td><input type="checkbox" value="{{ e.id }}" class="checkBox" /></td>
                 <td>
                     <!--<button class="btn btn-default" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(e.id)">Edit</button>-->
