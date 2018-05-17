@@ -6,6 +6,9 @@
 
 <p *ngIf="eventcategories">
     <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modalNew" onclick='document.getElementById("frmNew").reset()'>New</a>
+    <button class="btn btn-default" (click)="onDeleteClick()">Delete</button>
+    <button class="btn btn-primary" (click)="onDownloadClick()">Download</button>
+    <button class="btn btn-success" onclick="location.reload();">Refresh</button>
 </p>
 
 <div *ngIf="eventcategories">
@@ -13,6 +16,7 @@
         <thead>
             <tr>
                 <th><input type="checkbox" (change)="checkAll()" id="checkall" /></th>
+                <th></th>
                 <th>Name</th>
                 <th>Events</th>
                 <th>Min Attendees</th>
@@ -23,6 +27,7 @@
         <tbody>
             <tr *ngFor="let e of eventcategories; let i = index">
                 <td><input type="checkbox" value="{{ e.id }}" class="checkBox" /></td>
+                <td><button class="btn btn-default" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(e.id)">Edit</button></td>
                 <td>{{ e.name }}</td>
                 <td>{{ e.events }}</td>
                 <td>{{ e.minAttendees }}</td>
@@ -41,11 +46,35 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">New Event Category</h4>
             </div>
-            <form class="form-group" #frmNew="ngForm" ngNativeValidate id="frmNew">
+            <form class="form-group" #frmNew="ngForm" (ngSubmit)="onNewSubmit(frmNew)" ngNativeValidate id="frmNew">
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Name*</label>
                         <input class="form-control" placeholder="Name" name="name" ngModel required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalEdit" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Edit Event Category</h4>
+            </div>
+            <form class="form-group" #frmNew="ngForm" (ngSubmit)="onEditSubmit(eventcategory)" ngNativeValidate id="frmEdit">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Name*</label>
+                        <input class="form-control" placeholder="Name" name="eventcategory.name" ngModel required [(ngModel)]="eventcategory.name">
                     </div>
                 </div>
                 <div class="modal-footer">

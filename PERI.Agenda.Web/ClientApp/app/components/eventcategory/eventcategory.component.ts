@@ -9,6 +9,8 @@ import { Title } from '@angular/platform-browser';
 
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
 
+import { saveAs } from 'file-saver';
+
 export class EventCategoryModule {
     public http: Http;
     public baseUrl: string;
@@ -19,6 +21,19 @@ export class EventCategoryModule {
         return this.http.post(this.baseUrl + 'api/eventcategory/find', {
             name: ec.name
         }).map(response => response.json());
+    }
+
+    public add(ec: EventCategory): Observable<number> {
+        return this.http.post(this.baseUrl + 'api/eventcategory/new', {
+            name: ec.name
+        }).map(response => response.json());
+    }
+
+    public edit(ec: EventCategory) {
+        return this.http.post(this.baseUrl + 'api/eventcategory/edit', {
+            id: ec.id,
+            name: ec.name
+        }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => this.ex.catchError(error));
     }
 
     public get(id: number): Observable<EventCategory> {
@@ -70,6 +85,83 @@ export class EventCategoryComponent {
                 $("table > *").width(tbl1.width() + tbl1.scrollLeft());
             };
         }
+    }
+
+    onNewSubmit(f: NgForm) {
+        var ec = new EventCategory();
+        ec.name = f.controls['name'].value;
+
+        this.ecm.add(ec).subscribe(
+            result => {
+                ec.id = result;
+                this.eventcategories.push(ec);
+
+                alert('Added!');
+                $('#modalNew').modal('toggle');
+            },
+            error => this.ecm.ex.catchError(error));
+    }
+
+    public onEditInit(id: number) {
+        this.http.get(this.baseUrl + 'api/eventcategory/get/' + id)
+            .subscribe(result => {
+                this.eventcategory = result.json();
+            }, error => this.ecm.ex.catchError(error));
+    }
+
+    public onEditSubmit(ec: EventCategory) {
+        this.ecm.edit(ec);
+
+        for (let e of this.eventcategories) {
+            if (e.id == ec.id) {
+                let index: number = this.eventcategories.indexOf(e);
+                this.eventcategories[index] = ec;
+            }
+        }
+    }
+
+    onDeleteClick() {
+        var flag = confirm('Are you sure you want to delete selected records?');
+
+        if (!flag)
+            return false;
+
+        var selectedIds = new Array();
+        $('input:checkbox.checkBox').each(function () {
+            if ($(this).prop('checked')) {
+                selectedIds.push($(this).val());
+            }
+        });
+
+        let body = JSON.stringify(selectedIds);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+
+        this.http.post(this.baseUrl + 'api/eventcategory/delete', body, options).subscribe(result => {
+
+            for (let id of selectedIds) {
+                for (let e of this.eventcategories) {
+                    if (e.id == id) {
+                        this.eventcategories.splice(this.eventcategories.indexOf(e), 1);
+                    }
+                }
+            }
+
+            alert('Success!');
+
+        }, error => this.ecm.ex.catchError(error));
+    }
+
+    downloadFile(data: any) {
+        var blob = new Blob([data], { type: 'text/csv' });
+        saveAs(blob, "data.csv");
+    }
+
+    onDownloadClick() {
+        this.http.get(this.baseUrl + 'api/eventcategory/download').subscribe(result => {
+            let parsedResponse = result.text();
+            this.downloadFile(parsedResponse);
+        }, error => this.ecm.ex.catchError(error));
     }
 }
 

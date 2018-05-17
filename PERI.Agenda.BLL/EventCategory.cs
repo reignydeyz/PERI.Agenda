@@ -39,9 +39,10 @@ namespace PERI.Agenda.BLL
             throw new NotImplementedException();
         }
 
-        public Task Delete(int[] ids)
+        public async Task Delete(int[] ids)
         {
-            throw new NotImplementedException();
+            context.EventCategory.RemoveRange(context.EventCategory.Where(x => ids.Contains(x.Id)));
+            await context.SaveChangesAsync();
         }
 
         public Task Delete(EF.EventCategory args)
@@ -77,6 +78,11 @@ namespace PERI.Agenda.BLL
                 .Include(x => x.Event).ThenInclude(x => x.Attendance)
                 .FirstOrDefaultAsync(x => x.Id == args.Id
                 && x.CommunityId == args.CommunityId);
+        }
+
+        public async Task<bool> IsSelectedIdsOk(int[] ids, EF.EndUser user)
+        {
+            return await context.EventCategory.Where(x => ids.Contains(x.Id) && x.CommunityId == user.Member.CommunityId).CountAsync() == ids.Count();
         }
     }
 }
