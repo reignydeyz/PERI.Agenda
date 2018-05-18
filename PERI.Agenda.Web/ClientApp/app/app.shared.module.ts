@@ -10,6 +10,7 @@ import { HomeComponent } from './components/home/home.component';
 import { FetchDataComponent } from './components/fetchdata/fetchdata.component';
 import { CounterComponent } from './components/counter/counter.component';
 
+import { AccountComponent } from './components/account/account.component';
 import { MemberComponent } from './components/member/member.component';
 import { EventComponent } from './components/event/event.component';
 import { EventCategoryComponent } from './components/eventcategory/eventcategory.component';
@@ -29,6 +30,7 @@ import { MyDatePickerModule } from 'mydatepicker';
         FetchDataComponent,
         HomeComponent,
 
+        AccountComponent,
         MemberComponent,
         EventComponent,
         EventCategoryComponent,
@@ -49,6 +51,7 @@ import { MyDatePickerModule } from 'mydatepicker';
             { path: 'counter', component: CounterComponent },
             { path: 'fetch-data', component: FetchDataComponent },
 
+            { path: 'account', component: AccountComponent },
             { path: 'member', component: MemberComponent },
             { path: 'event', component: EventComponent },
             { path: 'eventcategory', component: EventCategoryComponent },

@@ -1,0 +1,72 @@
+﻿<h1>Account</h1>
+
+<ul class="nav nav-pills">
+    <li class="active"><a data-toggle="pill" href="#home" >Profile</a></li>
+    <li><a data-toggle="pill" href="#menu1" >Change Password</a></li>
+    <li><a data-toggle="pill" href="#menu2" >Deactivate</a></li>
+</ul>
+
+<hr />
+
+<div class="tab-content">
+    <div id="home" class="tab-pane fade in active">
+        <form class="form-group" ngNativeValidate id="frmEdit">
+            <input type="hidden" id="index">
+            <input type="hidden" name="profile.id" [(ngModel)]="profile.id">
+            <div class="form-group">
+                <label>Name*</label>
+                <input class="form-control" placeholder="Name" name="profile.name" required [(ngModel)]="profile.name">
+            </div>
+            <div class="form-group">
+                <label>Nick</label>
+                <input class="form-control" placeholder="Nick" name="profile.nickName" [(ngModel)]="profile.nickName">
+            </div>
+            <div class="form-group">
+                <label>Birth date</label>
+                <my-date-picker name="birthDate" [options]="myDatePickerOptions"
+                                [(ngModel)]="profile.birthDate" required></my-date-picker>
+            </div>
+            <div class="form-group">
+                <label>Gender</label>
+                <!--https://stackoverflow.com/questions/35945001/binding-select-element-to-object-in-angular-->
+                <select class="form-control" [(ngModel)]="profile.gender" name="profile.gender">
+                    <option value="">--SELECT--</option>
+                    <option *ngFor="let g of genders" [value]="g.value">{{ g.name }}</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Email address</label>
+                <input type="email" class="form-control" placeholder="Email" name="profile.email" [(ngModel)]="profile.email">
+            </div>
+            <div class="form-group">
+                <label>Address</label>
+                <input class="form-control" placeholder="Address" name="profile.address" [(ngModel)]="profile.address">
+            </div>
+            <div class="form-group">
+                <label>Mobile</label>
+                <input class="form-control" placeholder="Mobile" name="profile.mobile" [(ngModel)]="profile.mobile">
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+    <div id="menu1" class="tab-pane fade">
+        <form class="form-group" ngNativeValidate>
+            <div class="form-group">
+                <label>Current Password*</label>
+                <input class="form-control" placeholder="Current Password" name="currentPassword" ngModel required type="password">
+            </div>
+            <div class="form-group">
+                <label>New Password*</label>
+                <input class="form-control" placeholder="New Password" name="newPassword" ngModel required type="password" id="newPassword">
+            </div>
+            <div class="form-group">
+                <label>Re-enter New Password*</label>
+                <input class="form-control" placeholder="Re-enter New Password" name="reNewPassword" ngModel required type="password">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+    <div id="menu2" class="tab-pane fade">
+    </div>
+</div>
