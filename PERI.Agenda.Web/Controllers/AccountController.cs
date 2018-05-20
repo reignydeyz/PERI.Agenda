@@ -57,7 +57,7 @@ namespace PERI.Agenda.Web.Controllers
                 var newSalt = Core.Crypto.GenerateSalt();
                 user.PasswordSalt = Convert.ToBase64String(newSalt);
                 user.PasswordHash = Core.Crypto.Hash(args.NewPassword, newSalt);
-
+                
                 await bll_user.Edit(user);
 
                 return Ok();

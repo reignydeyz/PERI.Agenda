@@ -84,15 +84,9 @@ namespace PERI.Agenda.BLL
         public async Task Edit(EF.EndUser args)
         {
             var rec = context.EndUser.First(x => x.UserId == args.UserId);
-
-            if (args.PasswordHash != rec.PasswordHash)
-            {
-                var salt = Core.Crypto.GenerateSalt();
-                var enc = Core.Crypto.Hash(args.PasswordHash, salt);
-
-                rec.PasswordHash = enc;
-                rec.PasswordSalt = Convert.ToBase64String(salt);
-            }
+            
+            rec.PasswordHash = args.PasswordHash;
+            rec.PasswordSalt = args.PasswordSalt;
             rec.RoleId = args.RoleId;
             rec.LastPasswordChanged = args.LastPasswordChanged;
             rec.DateConfirmed = args.DateConfirmed;

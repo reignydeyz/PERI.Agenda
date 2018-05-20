@@ -9,6 +9,7 @@ import { ErrorExceptionModule } from '../errorexception/errorexception.component
 import { IMyDpOptions } from 'mydatepicker';
 import { Title } from '@angular/platform-browser';
 import { Observable } from 'rxjs/Observable';
+import { NgForm } from '@angular/forms';
 
 export class AccountModule {
     public http: Http;
@@ -31,6 +32,7 @@ export class AccountComponent {
     public profile: Member;
 
     private am: AccountModule;
+    private ex: ErrorExceptionModule;
 
     public myDatePickerOptions: IMyDpOptions = {
         // other options...
@@ -43,6 +45,9 @@ export class AccountComponent {
         this.am.baseUrl = baseUrl;
 
         this.profile = new Member();
+
+        this.ex = new ErrorExceptionModule();
+        this.ex.baseUrl = this.baseUrl;
     }
 
     ngAfterViewInit() {
@@ -56,5 +61,16 @@ export class AccountComponent {
                 this.profile = r;
                 this.titleService.setTitle(r.name);
             });
+    }
+
+    public onChangePasswordSubmit(f: NgForm) {
+        this.http.post(this.baseUrl + 'api/account/changepassword', {
+            currentPassword: f.controls['currentPassword'].value,
+            newPassword: f.controls['newPassword'].value,
+            reEnterNewPassword: f.controls['reNewPassword'].value
+        }).subscribe(result => {
+            alert('Updated!');
+            window.location.replace(this.baseUrl + 'authentication/signout');
+        }, error => this.ex.catchError(error));
     }
 }

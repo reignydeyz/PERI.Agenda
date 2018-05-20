@@ -51,7 +51,7 @@
         </form>
     </div>
     <div id="menu1" class="tab-pane fade">
-        <form class="form-group" ngNativeValidate>
+        <form class="form-group" #frmChangePassword="ngForm" (ngSubmit)="onChangePasswordSubmit(frmChangePassword)" ngNativeValidate id="frmChangePassword">
             <div class="form-group">
                 <label>Current Password*</label>
                 <input class="form-control" placeholder="Current Password" name="currentPassword" ngModel required type="password">
