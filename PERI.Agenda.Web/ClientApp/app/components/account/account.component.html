@@ -10,7 +10,7 @@
 
 <div class="tab-content">
     <div id="home" class="tab-pane fade in active">
-        <form class="form-group" ngNativeValidate id="frmEdit">
+        <form class="form-group" (ngSubmit)="onEditSubmit(profile)" ngNativeValidate id="frmEdit">
             <input type="hidden" id="index">
             <input type="hidden" name="profile.id" [(ngModel)]="profile.id">
             <div class="form-group">

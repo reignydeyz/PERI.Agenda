@@ -2,11 +2,12 @@
 import { Http, Headers, RequestOptions } from '@angular/http';
 import * as $ from "jquery";
 
-import { Member } from '../member/member.component';
+import { Member, MemberModule } from '../member/member.component';
 import { LookUpModule, LookUp } from "../lookup/lookup.component";
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
 
 import { IMyDpOptions } from 'mydatepicker';
+import * as moment from 'moment';
 import { Title } from '@angular/platform-browser';
 import { Observable } from 'rxjs/Observable';
 import { NgForm } from '@angular/forms';
@@ -32,6 +33,7 @@ export class AccountComponent {
     public profile: Member;
 
     private am: AccountModule;
+    private mm: MemberModule;
     private ex: ErrorExceptionModule;
 
     public myDatePickerOptions: IMyDpOptions = {
@@ -43,6 +45,10 @@ export class AccountComponent {
         this.am = new AccountModule();
         this.am.http = http;
         this.am.baseUrl = baseUrl;
+
+        this.mm = new MemberModule();
+        this.mm.http = http;
+        this.mm.baseUrl = baseUrl;
 
         this.profile = new Member();
 
@@ -60,6 +66,10 @@ export class AccountComponent {
             .subscribe(r => {
                 this.profile = r;
                 this.titleService.setTitle(r.name);
+
+                if (moment(this.profile.birthDate).isValid() == true) {
+                    this.profile.birthDate = { date: { year: moment(this.profile.birthDate).format('YYYY'), month: moment(this.profile.birthDate).format('M'), day: moment(this.profile.birthDate).format('D') } };
+                }
             });
     }
 
@@ -72,5 +82,13 @@ export class AccountComponent {
             alert('Updated!');
             window.location.replace(this.baseUrl + 'authentication/signout');
         }, error => this.ex.catchError(error));
+    }
+
+    public onEditSubmit(m: Member) {
+        if (m.birthDate != null) {
+            m.birthDate = moment(m.birthDate.date.month + '/' + m.birthDate.date.day + '/' + m.birthDate.date.year).format('MM/DD/YYYY');
+        }
+
+        this.mm.edit(m);
     }
 }

@@ -30,6 +30,7 @@ namespace PERI.Agenda.Web.Controllers
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
             return new EF.Member
             {
+                Id = user.MemberId,
                 Name = user.Member.Name,
                 NickName = user.Member.NickName,
                 BirthDate = user.Member.BirthDate,

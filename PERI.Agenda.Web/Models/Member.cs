@@ -27,7 +27,7 @@ namespace PERI.Agenda.Web.Models
 
         [DisplayFormat(ConvertEmptyStringToNull = true)]
         [BLL.NoWhiteSpace]
-        [MinLength(5)]
+        //[MinLength(5)]
         [MaxLength(13)]
         public string Mobile { get; set; }
                 

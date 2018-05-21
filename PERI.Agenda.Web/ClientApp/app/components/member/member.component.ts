@@ -14,6 +14,41 @@ import { Observable } from 'rxjs/Observable';
 import { saveAs } from 'file-saver';
 import { IMyDpOptions } from 'mydatepicker';
 
+export class MemberModule {
+    public http: Http;
+    public baseUrl: string;
+    private ex: ErrorExceptionModule;
+
+    public add(m: Member): Observable<number> {
+        return this.http.post(this.baseUrl + 'api/member/new', {
+            name: m.name,
+            nickName: m.nickName,
+            birthDate: m.birthDate,
+            email: m.email,
+            address: m.address,
+            mobile: m.mobile,
+            isActive: m.isActive,
+            gender: m.gender
+        }).map(response => response.json());
+    }
+
+    public edit(m: Member) {
+        this.ex = new ErrorExceptionModule();
+
+        this.http.post(this.baseUrl + 'api/member/edit', {
+            id: m.id,
+            name: m.name,
+            nickName: m.nickName,
+            gender: m.gender,
+            birthDate: m.birthDate,
+            email: m.email,
+            address: m.address,
+            mobile: m.mobile,
+            isActive: m.isActive
+        }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => this.ex.catchError(error));
+    }
+}
+
 @Component({
     selector: 'member',
     templateUrl: './member.component.html',
@@ -21,7 +56,6 @@ import { IMyDpOptions } from 'mydatepicker';
         '../table/table.component.css'
     ]
 })
-
 export class MemberComponent {
     public total: number;
     public actives: number;
@@ -33,6 +67,8 @@ export class MemberComponent {
     public search: Member;
     public pager: Pager;
     public chunk: Chunk;
+
+    private mm: MemberModule;
 
     private ex: ErrorExceptionModule;
 
@@ -59,33 +95,6 @@ export class MemberComponent {
         }, error => this.ex.catchError(error));;
     }
 
-    private add(m: Member): Observable<number> {
-        return this.http.post(this.baseUrl + 'api/member/new', {
-            name: m.name,
-            nickName: m.nickName,
-            birthDate: m.birthDate,
-            email: m.email,
-            address: m.address,
-            mobile: m.mobile,
-            isActive: m.isActive,
-            gender: m.gender
-        }).map(response => response.json());
-    }
-
-    private edit(m: Member) {
-        this.http.post(this.baseUrl + 'api/member/edit', {
-            id: m.id,
-            name: m.name,
-            nickName: m.nickName,
-            gender: m.gender,
-            birthDate: m.birthDate,
-            email: m.email,
-            address: m.address,
-            mobile: m.mobile,
-            isActive: m.isActive
-        }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => this.ex.catchError(error));
-    }
-
     private getTotal() {
         this.http.get(this.baseUrl + 'api/member/total/all').subscribe(result => {
             this.total = result.json() as number;
@@ -103,6 +112,10 @@ export class MemberComponent {
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
         this.ex = new ErrorExceptionModule();
         this.ex.baseUrl = this.baseUrl;
+
+        this.mm = new MemberModule();
+        this.mm.http = http;
+        this.mm.baseUrl = baseUrl;
     }
 
     ngOnInit() {
@@ -153,7 +166,7 @@ export class MemberComponent {
         m.mobile = f.controls['mobile'].value;
         m.gender = f.controls['gender'].value;
 
-        this.add(m).subscribe(
+        this.mm.add(m).subscribe(
             result => {
                 m.id = result;
                 this.chunk.members.push(m);
@@ -183,7 +196,7 @@ export class MemberComponent {
             this.member.birthDate = moment(this.member.birthDate.date.month + '/' + this.member.birthDate.date.day + '/' + this.member.birthDate.date.year).format('MM/DD/YYYY');
         }
 
-        this.edit(member);  
+        this.mm.edit(member);  
 
         for (let m of this.chunk.members) {
             if (m.id == member.id) {
