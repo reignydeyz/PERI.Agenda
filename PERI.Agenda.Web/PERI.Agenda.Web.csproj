@@ -34,6 +34,7 @@
     <None Remove="ClientApp\app\components\errorexception\errorexception.component.ts" />
     <None Remove="ClientApp\app\components\eventcategory\eventcategory.component.ts" />
     <None Remove="ClientApp\app\components\event\event.component.ts" />
+    <None Remove="ClientApp\app\components\graph\graph.component.ts" />
     <None Remove="ClientApp\app\components\location\location.component.ts" />
   </ItemGroup>
 
@@ -49,6 +50,7 @@
     <TypeScriptCompile Include="ClientApp\app\components\errorexception\errorexception.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\eventcategory\eventcategory.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\event\event.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\graph\graph.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\location\location.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\pager\pager.component.ts" />
   </ItemGroup>

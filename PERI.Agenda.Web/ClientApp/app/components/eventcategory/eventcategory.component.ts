@@ -7,6 +7,7 @@ import 'rxjs/add/operator/map'
 import { Observable } from 'rxjs/Observable';
 import { Title } from '@angular/platform-browser';
 
+import { Statistics, GraphDataSet, GraphData } from '../graph/graph.component';
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
 
 import { saveAs } from 'file-saver';
@@ -52,6 +53,19 @@ export class EventCategoryComponent {
 
     public eventcategory = EventCategory;
     public eventcategories: EventCategory[];
+
+    public stats: GraphDataSet;
+    public chartType: string = 'line';
+    public chartLegend: boolean = true;
+    public chartOptions: any = {
+        responsive: true,
+        legend: {
+            display: false,
+            labels: {
+                display: false
+            }
+        }
+    };
 
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
         this.ecm = new EventCategoryModule();
@@ -162,6 +176,14 @@ export class EventCategoryComponent {
             let parsedResponse = result.text();
             this.downloadFile(parsedResponse);
         }, error => this.ecm.ex.catchError(error));
+    }
+
+    onStatsLoad(id: number) {
+        this.onEditInit(id);
+
+        this.http.get(this.baseUrl + 'api/eventcategory/stats/' + id).subscribe(result => {
+            this.stats = result.json() as GraphDataSet;
+        }, error => console.error(error));
     }
 }
 

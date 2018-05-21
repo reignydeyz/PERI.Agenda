@@ -27,7 +27,20 @@
         <tbody>
             <tr *ngFor="let e of eventcategories; let i = index">
                 <td><input type="checkbox" value="{{ e.id }}" class="checkBox" /></td>
-                <td><button class="btn btn-default" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(e.id)">Edit</button></td>
+                <td>
+                    <!--<button class="btn btn-default" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(e.id)">Edit</button>-->
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="z-index: 0;">
+                            Action
+                            <span class="fa fa-caret-down"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(e.id)">Edit</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#" data-toggle="modal" data-target="#modalStats" (click)="onStatsLoad(e.id)">Stats</a></li>
+                        </ul>
+                    </div>
+                </td>
                 <td>{{ e.name }}</td>
                 <td>{{ e.events }}</td>
                 <td>{{ e.minAttendees }}</td>
@@ -82,6 +95,28 @@
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalStats" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{ eventcategory.name }}</h4>
+            </div>
+            <div class="modal-body" *ngIf="stats">
+                <canvas baseChart
+                        [datasets]="stats.dataSet"
+                        [labels]="stats.chartLabels"
+                        [options]="chartOptions"
+                        [legend]="chartLegend"
+                        [chartType]="chartType"></canvas>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="location.reload()">Close</button>
+            </div>
         </div>
     </div>
 </div>

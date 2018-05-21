@@ -16,26 +16,8 @@ namespace PERI.Agenda.Web.Controllers
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        public class Statistics
-        {
-            public int[] Values { get; set; }
-            public string[] Labels { get; set; }
-        }
-
-        public class GraphData
-        {
-            public int[] Data { get; set; }
-            public string Label { get; set; }
-        }
-
-        public class GraphDataSet
-        {
-            public List<GraphData> DataSet { get; set; }
-            public string[] ChartLabels { get; set; }
-        }
-
         [HttpGet("[action]")]
-        public async Task<Statistics> Member()
+        public async Task<Models.Graph.Statistics> Member()
         {
             var context = new EF.AARSContext();
             var bll_member = new BLL.Member(context);
@@ -43,7 +25,7 @@ namespace PERI.Agenda.Web.Controllers
 
             var members = bll_member.Find(new EF.Member { CommunityId = user.Member.CommunityId });
 
-            return new Statistics
+            return new Models.Graph.Statistics
             {
                 Values = new int[] { await members.Where(x => !x.IsActive).CountAsync(), await members.Where(x => x.IsActive).CountAsync() },
                 Labels = new string[] { "Inactive", "Active" }
@@ -51,7 +33,7 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<Statistics> EventCategories()
+        public async Task<Models.Graph.Statistics> EventCategories()
         {
             var context = new EF.AARSContext();
             var bll_ec = new BLL.EventCategory(context);
@@ -70,7 +52,7 @@ namespace PERI.Agenda.Web.Controllers
 
             ecs = ecs.OrderByDescending(x => x.AverageAttendees).Take(10);
 
-            return new Statistics
+            return new Models.Graph.Statistics
             {
                 Values = await ecs.Select(x => x.AverageAttendees).ToArrayAsync(),
                 Labels = await ecs.Select(x => x.Name).ToArrayAsync()
@@ -78,7 +60,7 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<Statistics> Locations()
+        public async Task<Models.Graph.Statistics> Locations()
         {
             var context = new EF.AARSContext();
             var bll_loc = new BLL.Location(context);
@@ -97,7 +79,7 @@ namespace PERI.Agenda.Web.Controllers
 
             locs = locs.OrderByDescending(x => x.AverageAttendees).Take(10);
 
-            return new Statistics
+            return new Models.Graph.Statistics
             {
                 Values = await locs.Select(x => x.AverageAttendees).ToArrayAsync(),
                 Labels = await locs.Select(x => x.Name).ToArrayAsync()
@@ -105,7 +87,7 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<GraphDataSet> GroupCategories()
+        public async Task<Models.Graph.GraphDataSet> GroupCategories()
         {
             var context = new EF.AARSContext();
             var bll_gc = new BLL.GroupCategory(context);
@@ -119,10 +101,10 @@ namespace PERI.Agenda.Web.Controllers
                           Groups = r.Group.Count()
                       };
 
-            var list = new List<GraphData>();
-            list.Add(new GraphData { Label = "Groups", Data = await gcs.Select(x => x.Groups).ToArrayAsync() });
+            var list = new List<Models.Graph.GraphData>();
+            list.Add(new Models.Graph.GraphData { Label = "Groups", Data = await gcs.Select(x => x.Groups).ToArrayAsync() });
 
-            var res = new GraphDataSet
+            var res = new Models.Graph.GraphDataSet
             {
                 DataSet = list,
                 ChartLabels = await gcs.Select(x => x.Name).ToArrayAsync()

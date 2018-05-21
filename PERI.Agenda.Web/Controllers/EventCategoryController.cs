@@ -137,5 +137,25 @@ namespace PERI.Agenda.Web.Controllers
             result.FileDownloadName = "my-csv-file.csv";
             return result;
         }
+
+        [HttpGet("[action]")]
+        [Route("Stats/{id}")]
+        public async Task<Models.Graph.GraphDataSet> Stats(int id)
+        {
+            var context = new EF.AARSContext();
+            var bll_event = new BLL.Event(context);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            var res = bll_event.Find(new EF.Event { EventCategory = new EF.EventCategory { CommunityId = user.Member.CommunityId }, EventCategoryId = id }).Take(20);
+            
+            var list = new List<Models.Graph.GraphData>();
+            list.Add(new Models.Graph.GraphData { Label = "Attendance", Data = await res.OrderBy(x => x.DateTimeStart).Select(x => x.Attendance.Count).ToArrayAsync() });
+
+            return new Models.Graph.GraphDataSet
+            {
+                DataSet = list,
+                ChartLabels = await res.OrderBy(x => x.DateTimeStart).Select(x => x.Name).ToArrayAsync()
+            };
+        }
     }
 }

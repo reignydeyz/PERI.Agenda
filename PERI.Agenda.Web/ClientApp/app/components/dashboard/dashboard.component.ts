@@ -2,6 +2,8 @@
 import { Http } from '@angular/http';
 import { Title } from '@angular/platform-browser';
 
+import { Statistics, GraphDataSet } from '../graph/graph.component';
+
 @Component({
     selector: 'dashboard',
     templateUrl: './dashboard.component.html'
@@ -61,19 +63,4 @@ export class DashboardComponent {
             this.groupCategoryStats = result.json() as GraphDataSet; console.log(result.json());
         }, error => console.error(error));
     }
-}
-
-interface Statistics {
-    labels: Array<string>;
-    values: Array<number>;
-}
-
-interface GraphData {
-    data: Array<number>;
-    label: string;
-}
-
-interface GraphDataSet {
-    dataSet: GraphData[];
-    chartLabels: string[];
 }
