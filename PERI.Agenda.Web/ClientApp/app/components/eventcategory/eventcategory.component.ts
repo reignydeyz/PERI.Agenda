@@ -55,6 +55,7 @@ export class EventCategoryComponent {
     public eventcategories: EventCategory[];
 
     public stats: GraphDataSet;
+    public chartLabels: string[] = [];
     public chartType: string = 'line';
     public chartLegend: boolean = true;
     public chartOptions: any = {
@@ -181,8 +182,13 @@ export class EventCategoryComponent {
     onStatsLoad(id: number) {
         this.onEditInit(id);
 
+        // Updating lineChartLabels does not reflect on the chart
+        // https://github.com/valor-software/ng2-charts/issues/774
+        this.chartLabels.length = 0;
+
         this.http.get(this.baseUrl + 'api/eventcategory/stats/' + id).subscribe(result => {
             this.stats = result.json() as GraphDataSet;
+            this.chartLabels = this.stats.chartLabels;
         }, error => console.error(error));
     }
 }
