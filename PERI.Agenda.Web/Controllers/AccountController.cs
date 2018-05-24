@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using NLog;
 using PERI.Agenda.Core;
 using Microsoft.Extensions.Options;
+using System.Dynamic;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -71,6 +72,18 @@ namespace PERI.Agenda.Web.Controllers
                     Value = "Invalid password."
                 };
             }
+        }
+
+        [HttpGet("[action]")]
+        public IActionResult Role()
+        {
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            dynamic obj1 = new ExpandoObject();
+            obj1.RoleId = user.Role.RoleId;
+            obj1.Name = user.Role.Name;
+
+            return Json(obj1);
         }
     }
 }
