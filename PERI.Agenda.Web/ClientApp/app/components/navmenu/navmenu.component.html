@@ -10,53 +10,40 @@
             <a class='navbar-brand' [routerLink]="['/dashboard']">Agenda</a>
         </div>
         <div class='clearfix'></div>
-        <div class='navbar-collapse collapse'>
+        <div class='navbar-collapse collapse' *ngIf="role">
             <ul class='nav navbar-nav'>
-                <!--<li [routerLinkActive]="['link-active']">
-                    <a [routerLink]="['/home']">
-                        <span class='glyphicon glyphicon-home'></span> Home
-                    </a>
-                </li>-->
-                <li [routerLinkActive]="['link-active']">
-                    <a [routerLink]="['/dashboard']">
-                        <span class='glyphicon glyphicon-dashboard'></span> Dashboard
-                    </a>
-                </li>
-                <!--<li [routerLinkActive]="['link-active']">
-                    <a [routerLink]="['/counter']">
-                        <span class='glyphicon glyphicon-education'></span> Counter
-                    </a>
-                </li>
-                <li [routerLinkActive]="['link-active']">
-                    <a [routerLink]="['/fetch-data']">
-                        <span class='glyphicon glyphicon-th-list'></span> Fetch data
-                    </a>
-                </li>-->
-                <li [routerLinkActive]="['link-active']">
-                    <a [routerLink]="['/member']">
-                        <span class='glyphicon glyphicon-pawn'></span> Members
-                    </a>
-                </li>
-                <li [routerLinkActive]="['link-active']">
-                    <a [routerLink]="['/event']">
-                        <span class='glyphicon glyphicon-calendar'></span> Events
-                    </a>
-                </li>
-                <li [routerLinkActive]="['link-active']">
-                    <a [routerLink]="['/eventcategory']">
-                        <span class='glyphicon glyphicon-calendar'></span> Event Categories
-                    </a>
-                </li>
-                <li [routerLinkActive]="['link-active']">
-                    <a [routerLink]="['/group']">
-                        <span class='glyphicon glyphicon-list-alt'></span> Groups
-                    </a>
-                </li>
-                <li [routerLinkActive]="['link-active']">
-                    <a [routerLink]="['/groupcategory']">
-                        <span class='glyphicon glyphicon-list-alt'></span> Group Categories
-                    </a>
-                </li>
+                <ng-container *ngIf="allowedRoles('Admin,Developer')">
+                    <li [routerLinkActive]="['link-active']">
+                        <a [routerLink]="['/dashboard']">
+                            <span class='glyphicon glyphicon-dashboard'></span> Dashboard
+                        </a>
+                    </li>
+                    <li [routerLinkActive]="['link-active']" *ngIf="allowedRoles('Developer')">
+                        <a [routerLink]="['/member']">
+                            <span class='glyphicon glyphicon-pawn'></span> Members
+                        </a>
+                    </li>
+                    <li [routerLinkActive]="['link-active']">
+                        <a [routerLink]="['/event']">
+                            <span class='glyphicon glyphicon-calendar'></span> Events
+                        </a>
+                    </li>
+                    <li [routerLinkActive]="['link-active']">
+                        <a [routerLink]="['/eventcategory']">
+                            <span class='glyphicon glyphicon-calendar'></span> Event Categories
+                        </a>
+                    </li>
+                    <li [routerLinkActive]="['link-active']">
+                        <a [routerLink]="['/group']">
+                            <span class='glyphicon glyphicon-list-alt'></span> Groups
+                        </a>
+                    </li>
+                    <li [routerLinkActive]="['link-active']">
+                        <a [routerLink]="['/groupcategory']">
+                            <span class='glyphicon glyphicon-list-alt'></span> Group Categories
+                        </a>
+                    </li>
+                </ng-container>
                 <li [routerLinkActive]="['link-active']">
                     <a [routerLink]="['/account']">
                         <span class='glyphicon glyphicon-user'></span> Account

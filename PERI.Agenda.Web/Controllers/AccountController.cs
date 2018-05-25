@@ -80,8 +80,8 @@ namespace PERI.Agenda.Web.Controllers
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             dynamic obj1 = new ExpandoObject();
-            obj1.RoleId = user.Role.RoleId;
-            obj1.Name = user.Role.Name;
+            obj1.roleId = user.Role.RoleId;
+            obj1.name = user.Role.Name;
 
             return Json(obj1);
         }

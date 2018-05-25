@@ -22,6 +22,11 @@ export class AccountModule {
         return this.http.get(this.baseUrl + 'api/account/profile')
             .map(r => r.json());
     }
+
+    public getRole(): Observable<Role> {
+        return this.http.get(this.baseUrl + 'api/account/role')
+            .map(r => r.json());
+    }
 }
 
 @Component({
@@ -91,4 +96,9 @@ export class AccountComponent {
 
         this.mm.edit(m);
     }
+}
+
+export class Role {
+    roleId: string;
+    name: string;
 }
