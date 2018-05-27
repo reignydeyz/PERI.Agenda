@@ -17,7 +17,7 @@ using Newtonsoft.Json.Linq;
 
 namespace PERI.Agenda.Web.Controllers
 {
-    [BLL.VerifyUser(AllowedRoles ="Admin,Developer")]
+    [BLL.VerifyUser]
     [Produces("application/json")]
     [Route("api/Member")]
     public class MemberController : Controller
@@ -31,6 +31,7 @@ namespace PERI.Agenda.Web.Controllers
             smtp = settingsOptions.Value;
         }
 
+        [BLL.VerifyUser(AllowedRoles = "Admin,Developer")]
         [HttpPost("[action]")]
         public async Task<IEnumerable<EF.Member>> Find([FromBody] Models.Member obj)
         {
@@ -48,6 +49,7 @@ namespace PERI.Agenda.Web.Controllers
             return res;
         }
 
+        [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpPost("[action]")]
         [Route("Find/Page/{id}")]
         public async Task<IActionResult> Page([FromBody] Models.Member obj, int id)
@@ -149,7 +151,7 @@ namespace PERI.Agenda.Web.Controllers
             }
         }
 
-        [BLL.VerifyUser]
+        [BLL.VerifyUser(AllowedRoles = "Admin,Developer")]
         [HttpPost("[action]")]
         [BLL.ValidateModelState]
         public async Task<IActionResult> AddRange([FromBody] List<Models.Member> obj)
@@ -252,6 +254,7 @@ namespace PERI.Agenda.Web.Controllers
             }
         }
 
+        [BLL.VerifyUser(AllowedRoles = "Admin,Developer")]
         [HttpGet("[action]")]
         [Route("Get/{id}")]
         public async Task<EF.Member> Get(int id)
@@ -278,6 +281,7 @@ namespace PERI.Agenda.Web.Controllers
             await bll_member.Edit(o);
         }
 
+        [BLL.VerifyUser(AllowedRoles = "Admin,Developer")]
         [HttpPost("[action]")]
         public async Task<IActionResult> Delete([FromBody] int[] ids)
         {
@@ -293,6 +297,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json("Success!");
         }
 
+        [BLL.VerifyUser(AllowedRoles = "Admin,Developer")]
         [HttpPost("[action]")]
         public async Task<IActionResult> Activate([FromBody] int[] ids)
         {
@@ -308,6 +313,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json("Success!");
         }
 
+        [BLL.VerifyUser(AllowedRoles = "Admin,Developer")]
         [HttpPost("[action]")]
         public async Task<IActionResult> Deactivate([FromBody] int[] ids)
         {

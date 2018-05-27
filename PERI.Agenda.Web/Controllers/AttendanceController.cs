@@ -9,11 +9,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PERI.Agenda.Web.Controllers
 {
-    [BLL.VerifyUser]
+    [BLL.VerifyUser(AllowedRoles = "Admin,Developer")]
     [Produces("application/json")]
     [Route("api/Attendance")]
     public class AttendanceController : Controller
     {
+        /// <summary>
+        /// Gets the Registrants from Event Id
+        /// </summary>
+        /// <param name="id">Event Id</param>
+        /// <returns>List of registered Members</returns>
         [HttpGet("[action]")]
         [Route("{id}")]
         public async Task<IActionResult> Registrants(int id)
@@ -32,6 +37,12 @@ namespace PERI.Agenda.Web.Controllers
             return Json(await res.ToListAsync());
         }
 
+        /// <summary>
+        /// Search or filter Registrants
+        /// </summary>
+        /// <param name="member">Member Name</param>
+        /// <param name="id">Event Id</param>
+        /// <returns>List of registered Members</returns>
         [HttpPost("[action]")]
         [Route("{id}/Search")]
         public async Task<IActionResult> Search([FromBody] string member, int id)
@@ -49,7 +60,7 @@ namespace PERI.Agenda.Web.Controllers
 
             return Json(await res.ToListAsync());
         }
-
+        
         [HttpPost("[action]")]
         [Route("{id}/Search/Page/{p}")]
         public async Task<IActionResult> Page([FromBody] string member, int id, int p)
@@ -74,7 +85,7 @@ namespace PERI.Agenda.Web.Controllers
 
             return Json(obj1);
         }
-
+        
         [HttpPut("[action]")]
         [BLL.ValidateModelState]
         [Route("{id}/Add")]
@@ -85,7 +96,7 @@ namespace PERI.Agenda.Web.Controllers
 
             return await bll_a.Add(new EF.Attendance { EventId = id, MemberId = obj.MemberId.Value, DateTimeLogged = obj.DateTimeLogged ?? DateTime.Now });
         }
-
+        
         [HttpPost("[action]")]
         [Route("{id}/Delete")]
         public async Task Delete([FromBody] EF.Attendance obj, int id)
@@ -95,7 +106,7 @@ namespace PERI.Agenda.Web.Controllers
 
             await bll_a.Delete(new EF.Attendance { EventId = id, MemberId = obj.MemberId });
         }
-
+        
         [HttpGet("[action]")]
         [Route("{id}/Total/{status}")]
         public async Task<int> Total(int id, string status)

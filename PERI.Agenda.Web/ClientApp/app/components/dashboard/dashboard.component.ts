@@ -3,6 +3,7 @@ import { Http } from '@angular/http';
 import { Title } from '@angular/platform-browser';
 
 import { Statistics, GraphDataSet } from '../graph/graph.component';
+import { AccountModule, Role } from "../account/account.component";
 
 @Component({
     selector: 'dashboard',
@@ -31,7 +32,18 @@ export class DashboardComponent {
         }
     };
 
+    private am: AccountModule
+
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
+        this.am = new AccountModule();
+        this.am.http = http;
+        this.am.baseUrl = baseUrl;
+
+        this.am.getRole().subscribe(r => {
+            if (r.name != "Admin") {
+                window.location.replace(this.baseUrl + 'account');
+            }
+        });
     }
 
     ngOnInit() {

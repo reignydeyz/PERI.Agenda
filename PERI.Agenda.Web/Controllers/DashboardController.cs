@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PERI.Agenda.Web.Controllers
 {
-    [BLL.VerifyUser]
+    [BLL.VerifyUser(AllowedRoles = "Admin")]
     [Produces("application/json")]
     [Route("api/Dashboard")]
     public class DashboardController : Controller

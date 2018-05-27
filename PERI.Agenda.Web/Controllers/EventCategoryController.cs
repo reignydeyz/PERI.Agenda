@@ -63,6 +63,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json(obj);
         }
 
+        [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpPost("[action]")]
         [BLL.ValidateModelState]
         public async Task<IActionResult> New([FromBody] Models.EventCategory args)
@@ -81,6 +82,7 @@ namespace PERI.Agenda.Web.Controllers
             return Ok(id);
         }
 
+        [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpPost("[action]")]
         [BLL.ValidateModelState]
         public async Task Edit([FromBody] Models.EventCategory obj)
@@ -98,6 +100,7 @@ namespace PERI.Agenda.Web.Controllers
             await bll_ec.Edit(o);
         }
 
+        [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpPost("[action]")]
         public async Task<IActionResult> Delete([FromBody] int[] ids)
         {
@@ -113,6 +116,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json("Success!");
         }
 
+        [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpGet("[action]")]
         public async Task<IActionResult> Download()
         {
@@ -138,6 +142,7 @@ namespace PERI.Agenda.Web.Controllers
             return result;
         }
 
+        [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpGet("[action]")]
         [Route("Stats/{id}")]
         public async Task<Models.Graph.GraphDataSet> Stats(int id)
