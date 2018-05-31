@@ -25,7 +25,7 @@ export class NavMenuComponent {
         });
     }
 
-    ngAfterViewInit() {
+    ngAfterViewChecked() {
 
         // Collapse navbar when page redirects (mobile)
         // https://github.com/twbs/bootstrap/issues/12852

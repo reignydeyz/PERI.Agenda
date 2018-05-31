@@ -3,15 +3,15 @@
 }
 @model PERI.Agenda.Web.Models.Login
 
-
-<div class="container">
+<div class="container col-md-6 col-md-offset-3">
     <div class="panel-heading">
         <div class="panel-title text-center">
-            <h3><span class='glyphicon glyphicon-lock'></span>&nbsp;&nbsp;&nbsp;Please sign-in.</h3>
+            <h3><span class='glyphicon glyphicon-send'></span>&nbsp;&nbsp;&nbsp;Agenda</h3>
             <hr />
+            <h4>Please sign-in.</h4>
         </div>
     </div>
-
+    
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
