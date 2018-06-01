@@ -4,6 +4,7 @@ import { Title } from '@angular/platform-browser';
 
 import { Statistics, GraphDataSet } from '../graph/graph.component';
 import { AccountModule, Role } from "../account/account.component";
+import { ErrorExceptionModule } from '../errorexception/errorexception.component';
 
 @Component({
     selector: 'dashboard',
@@ -44,6 +45,9 @@ export class DashboardComponent {
                 window.location.replace(this.baseUrl + 'account');
             }
         });
+
+        this.am.ex = new ErrorExceptionModule();
+        this.am.ex.baseUrl = this.baseUrl;
     }
 
     ngOnInit() {
@@ -57,17 +61,17 @@ export class DashboardComponent {
     onAttendanceLoad() {
         this.http.get(this.baseUrl + 'api/dashboard/eventcategories').subscribe(result => {
             this.eventcategoryStats = result.json() as Statistics;
-        }, error => console.error(error));
+        }, error => this.am.ex.catchError(error));
 
         this.http.get(this.baseUrl + 'api/dashboard/locations').subscribe(result => {
             this.locationStats = result.json() as Statistics;
-        }, error => console.error(error));
+        }, error => this.am.ex.catchError(error));
     }
 
     onMemberLoad() {
         this.http.get(this.baseUrl + 'api/dashboard/member').subscribe(result => {
             this.memberStats = result.json() as Statistics;
-        }, error => console.error(error));
+        }, error => this.am.ex.catchError(error));
     }
 
     onGroupsLoad() {
