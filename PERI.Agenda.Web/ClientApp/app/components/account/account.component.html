@@ -70,7 +70,14 @@
     <div id="menu2" class="tab-pane fade">
         <div class="alert alert-warning alert-dismissible" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <strong>Warning!</strong> Better check yourself, you're not looking too good.
+            <strong>Warning!</strong> Deactivating your account is a serious decision, so make sure it’s something you really want to do.
         </div>
+        <form class="form-group" #frmDeactivate="ngForm" (ngSubmit)="onDeactivateSubmit(frmDeactivate)" ngNativeValidate id="frmDeactivate">
+            <div class="form-group">
+                <label>Current Password*</label>
+                <input class="form-control" placeholder="Current Password" name="currentPassword" ngModel required type="password">
+            </div>
+            <button type="submit" class="btn btn-primary">Deactivate</button>
+        </form>
     </div>
 </div>

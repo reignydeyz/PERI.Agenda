@@ -40,12 +40,6 @@ export class DashboardComponent {
         this.am.http = http;
         this.am.baseUrl = baseUrl;
 
-        this.am.getRole().subscribe(r => {
-            if (r.name != "Admin") {
-                window.location.replace(this.baseUrl + 'account');
-            }
-        });
-
         this.am.ex = new ErrorExceptionModule();
         this.am.ex.baseUrl = this.baseUrl;
     }
@@ -55,7 +49,15 @@ export class DashboardComponent {
     }
 
     ngAfterViewInit() {
-        this.onAttendanceLoad();
+
+        this.am.getRole().subscribe(r => {
+            if (r.name != "Admin") {
+                window.location.replace(this.baseUrl + 'account');
+            }
+            else {
+                this.onAttendanceLoad();
+            }
+        });
     }
 
     onAttendanceLoad() {

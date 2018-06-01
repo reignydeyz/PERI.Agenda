@@ -182,41 +182,81 @@ namespace PERI.Agenda.Web.Controllers
                     {
                         var bll_member = new BLL.Member(context);
 
-                        var m = new EF.Member
+                        var m = new EF.Member();
+
+                        // Validate Email
+                        m = await bll_member.Find(new EF.Member
                         {
-                            Name = (args.FirstName + " " + args.LastName).ToUpper(),
-                            NickName = args.NickName,
-                            Address = args.Address,
-                            Mobile = args.Mobile,
                             Email = args.Email,
-                            BirthDate = args.BirthDate,
                             CommunityId = args.CommunityId
-                        };
+                        }).FirstOrDefaultAsync();
 
-                        var id = await bll_member.Add(m);
-
-                        // Add to User
-                        if (args.Email != null)
+                        if (m == null)
                         {
-                            // Generate ConfirmationCode
-                            Guid g = Guid.NewGuid();
-                            string guidString = Convert.ToBase64String(g.ToByteArray());
-                            guidString = guidString.Replace("=", "");
-                            guidString = guidString.Replace("+", "");
-
-                            var bll_user = new BLL.EndUser(context);
-                            var newId = await bll_user.Add(new EF.EndUser
+                            // Validate Name
+                            m = await bll_member.Find(new EF.Member
                             {
-                                MemberId = id,
-                                ConfirmationCode = guidString
-                            });
-
-                            // Send email
-                            await smtp.SendEmail(args.Email,
-                                "Your Agenda Credentials",
-                                "Please click the link below to validate and change your password:<br/>http://" + Request.Host.Value + "/authentication/newpassword/?userid=" + newId + "&code=" + guidString);
+                                Name = (args.FirstName + " " + args.LastName).ToUpper(),
+                                CommunityId = args.CommunityId
+                            }).FirstOrDefaultAsync();
                         }
 
+                        if (m == null)
+                        {
+                            // Add to Member
+                            m = new EF.Member
+                            {
+                                Name = (args.FirstName + " " + args.LastName).ToUpper(),
+                                NickName = args.NickName,
+                                Address = args.Address,
+                                Mobile = args.Mobile,
+                                Email = args.Email,
+                                BirthDate = args.BirthDate,
+                                CommunityId = args.CommunityId
+                            };
+
+                            m.Id = await bll_member.Add(m);
+                        }
+                        else
+                        {
+                            // Is equal to New Member info Email?
+                            if (m.Email == null || m.Email == string.Empty)
+                            {
+                                // Update Email when Existing Member Info has no Email
+                                m.Email = args.Email;
+                                await bll_member.Edit(m);
+                            }
+                            else if (m.Email != args.Email)
+                            {
+                                txn.Rollback();
+
+                                logger.Warn("Oops. There's something wrong with your entry. Please contact admin.");
+
+                                ModelState.AddModelError(string.Empty, "Oops. There's something wrong with your entry. Please contact admin.");
+
+                                return View(args);
+                            }
+                        }
+
+                        // Add to User
+                        // Generate ConfirmationCode
+                        Guid g = Guid.NewGuid();
+                        string guidString = Convert.ToBase64String(g.ToByteArray());
+                        guidString = guidString.Replace("=", "");
+                        guidString = guidString.Replace("+", "");
+
+                        var bll_user = new BLL.EndUser(context);
+                        var newId = await bll_user.Add(new EF.EndUser
+                        {
+                            MemberId = m.Id,
+                            ConfirmationCode = guidString
+                        });
+
+                        // Send email
+                        await smtp.SendEmail(args.Email,
+                            "Your Agenda Credentials",
+                            "Please click the link below to validate and change your password:<br/>http://" + Request.Host.Value + "/authentication/newpassword/?userid=" + newId + "&code=" + guidString);
+                        
                         txn.Commit();
 
                         TempData["notice"] = "Thank you. Please check your email for confirmation.";

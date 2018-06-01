@@ -65,9 +65,10 @@ namespace PERI.Agenda.BLL
             await context.SaveChangesAsync();
         }
 
-        public Task Delete(int id)
+        public async Task Delete(int id)
         {
-            throw new NotImplementedException();
+            context.EndUser.Remove(context.EndUser.First(x => x.UserId == id));
+            await context.SaveChangesAsync();
         }
 
         public async Task Delete(int[] ids)
@@ -76,9 +77,10 @@ namespace PERI.Agenda.BLL
             await context.SaveChangesAsync();
         }
 
-        public Task Delete(EF.EndUser args)
+        public async Task Delete(EF.EndUser args)
         {
-            throw new NotImplementedException();
+            context.EndUser.Remove(args);
+            await context.SaveChangesAsync();
         }
 
         public async Task Edit(EF.EndUser args)

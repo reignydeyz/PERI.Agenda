@@ -96,6 +96,15 @@ export class AccountComponent {
 
         this.mm.edit(m);
     }
+
+    public onDeactivateSubmit(f: NgForm) {
+        this.http.post(this.baseUrl + 'api/account/deactivate', {
+            password: f.controls['currentPassword'].value
+        }).subscribe(result => {
+            alert('Deactivated!');
+            window.location.replace(this.baseUrl + 'authentication/signout');
+        }, error => this.ex.catchError(error));
+    }
 }
 
 export class Role {

@@ -85,5 +85,32 @@ namespace PERI.Agenda.Web.Controllers
 
             return Json(obj1);
         }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Deactivate([FromBody] Models.Login args)
+        {
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+            var context = new EF.AARSContext();
+            var bll_user = new BLL.EndUser(context);
+
+            // Validate current password
+            var salt = user.PasswordSalt;
+            var saltBytes = Convert.FromBase64String(salt);
+
+            if (Core.Crypto.Hash(args.Password, saltBytes) == user.PasswordHash)
+            {
+                await bll_user.Delete(user);
+
+                return Ok();
+            }
+            else
+            {
+                return new ObjectResult("Invalid password.")
+                {
+                    StatusCode = 403,
+                    Value = "Invalid password."
+                };
+            }
+        }
     }
 }
