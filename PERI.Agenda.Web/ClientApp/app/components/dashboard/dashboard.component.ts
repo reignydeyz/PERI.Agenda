@@ -57,7 +57,7 @@ export class DashboardComponent {
             else {
                 this.onAttendanceLoad();
             }
-        });
+        }, error => this.am.ex.catchError(error));
     }
 
     onAttendanceLoad() {
