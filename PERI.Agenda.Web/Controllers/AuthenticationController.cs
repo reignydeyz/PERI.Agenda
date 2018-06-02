@@ -102,8 +102,7 @@ namespace PERI.Agenda.Web.Controllers
             TempData["notice"] = "Access denied.";
             return View(args);
         }
-
-        [BLL.VerifyUser(AllowedRoles = "Admin,Developer")]
+        
         [HttpPost]
         public async Task<IActionResult> SignIn([FromBody] Models.Login args)
         {
