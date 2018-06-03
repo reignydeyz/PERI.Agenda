@@ -52,7 +52,7 @@ export class DashboardComponent {
 
         this.am.getRole().subscribe(r => {
             if (r.name != "Admin") {
-                window.location.replace(this.baseUrl + 'account');
+                window.location.replace(this.baseUrl + 'calendar');
             }
             else {
                 this.onAttendanceLoad();
