@@ -39,7 +39,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_ec = new BLL.EventCategory(context);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var ecs = from r in bll_ec.Find(new EF.EventCategory { CommunityId = user.Member.CommunityId })
+            var ecs = from r in await bll_ec.Find(new EF.EventCategory { CommunityId = user.Member.CommunityId }).ToListAsync()
                       select new
                       {
                           r.Id,
@@ -54,8 +54,8 @@ namespace PERI.Agenda.Web.Controllers
 
             return new Models.Graph.Statistics
             {
-                Values = await ecs.Select(x => x.AverageAttendees).ToArrayAsync(),
-                Labels = await ecs.Select(x => x.Name).ToArrayAsync()
+                Values = ecs.Select(x => x.AverageAttendees).ToArray(),
+                Labels = ecs.Select(x => x.Name).ToArray()
             };
         }
 
