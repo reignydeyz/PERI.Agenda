@@ -47,11 +47,17 @@ You may need to understand the nature of ASP-MVC before going through the entire
 
 ### Database
 
-TBA
+1. Create a database using SSMS.
+2. Execute the ff accordingly
+   - 01 - AARS tables.sql
+   - 02 - AARS.LookUp defaults.sql
+   - 10 - Agenda schema.sql
+   - 11 - Agenda tables.sql
+   - 12 - Agenda.Role defaults.sql
 
 ### Application Setting
 
-1.Create ```appsettings.json``` that contains your connection. Follow the format below and edit the parameter/s accordingly:
+1. Create ```appsettings.json``` that contains your connection. Follow the format below and edit the parameter/s accordingly:
 
 ```json
 {
@@ -88,4 +94,10 @@ TBA
 
 ```
 
-2.Place the setting inside ```PERI.Agenda.Web``` project.
+2. Place the setting inside ```PERI.Agenda.Web``` project.
+
+### Tips
+
+- The default role is ```User```.
+
+- Because there's no way to create ```Admin``` at first, you need to use SSMS and manually edit your role after signing-up. You can see your account info in ```prompt.EndUser``` table. Change the ```RoleId``` to ```1``` to make your account admin.
