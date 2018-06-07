@@ -14,7 +14,7 @@ namespace PERI.Agenda.Web.Controllers
     public class GroupCategoryController : Controller
     {
         [HttpPost("[action]")]
-        public async Task<IActionResult> Find(EF.GroupCategory args)
+        public async Task<IActionResult> Find([FromBody]EF.GroupCategory args)
         {
             var context = new EF.AARSContext();
             var bll_gc = new BLL.GroupCategory(context);
@@ -27,10 +27,23 @@ namespace PERI.Agenda.Web.Controllers
                       {
                           r.Id,
                           r.Name,
-                          Groups = r.Group.Count()
+                          Groups = r.Group.Count(),
+                          Members = r.Group.Sum(x => x.GroupMember.Select(y => y.MemberId).Distinct().Count())
                       };
 
             return Json(res);
+        }
+
+        [HttpPost("[action]")]
+        public async Task<int> New([FromBody]EF.GroupCategory args)
+        {
+            var context = new EF.AARSContext();
+            var bll_gc = new BLL.GroupCategory(context);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            args.CommunityId = user.Member.CommunityId;
+
+            return await bll_gc.Add(args);
         }
     }
 }

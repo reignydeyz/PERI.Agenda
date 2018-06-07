@@ -7,13 +7,23 @@ import 'rxjs/add/operator/map'
 import { Observable } from 'rxjs/Observable';
 import { Title } from '@angular/platform-browser';
 
+import { ErrorExceptionModule } from '../errorexception/errorexception.component';
+
 export class GroupCategoryModule {
     public http: Http;
     public baseUrl: string;
 
+    public ex: ErrorExceptionModule;
+
     public find(ec: GroupCategory): Observable<GroupCategory[]> {
         return this.http.post(this.baseUrl + 'api/groupcategory/find', {
             name: ec.name
+        }).map(response => response.json());
+    }
+
+    public add(gc: GroupCategory): Observable<number> {
+        return this.http.post(this.baseUrl + 'api/groupcategory/new', {
+            name: gc.name
         }).map(response => response.json());
     }
 }
@@ -34,6 +44,9 @@ export class GroupCategoryComponent {
         this.gcm = new GroupCategoryModule();
         this.gcm.http = http;
         this.gcm.baseUrl = baseUrl;
+
+        this.gcm.ex = new ErrorExceptionModule();
+        this.gcm.ex.baseUrl = this.baseUrl;
     }
 
     checkAll() {
@@ -60,6 +73,21 @@ export class GroupCategoryComponent {
                 $("table > *").width(tbl1.width() + tbl1.scrollLeft());
             };
         }
+    }
+
+    onNewSubmit(f: NgForm) {
+        var gc = new GroupCategory();
+        gc.name = f.controls['name'].value;
+
+        this.gcm.add(gc).subscribe(
+            result => {
+                gc.id = result;
+                this.groupcategories.push(gc);
+
+                alert('Added!');
+                $('#modalNew').modal('toggle');
+            },
+            error => this.gcm.ex.catchError(error));
     }
 }
 
