@@ -10,6 +10,7 @@ import { Title } from '@angular/platform-browser';
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
 import { Observable } from 'rxjs/Observable';
 import * as moment from 'moment';
+import * as $ from "jquery";
 
 import { Pager } from '../pager/pager.component';
 
@@ -106,6 +107,28 @@ export class AttendanceComponent {
 
     ngOnDestroy() {
         this.sub.unsubscribe();
+
+        let div: any;
+        div = document.getElementsByClassName("col-sm-9 body-content");
+
+        if (window.innerWidth >= 768) {
+            div[0].style.width = "75%";
+        }
+    }
+
+    toggleMenu() {
+        $('#sidebar').toggle();
+    }
+
+    initMenu() {
+        if (window.innerWidth >= 768) {
+            $('#sidebar').hide();
+            $('#sidebarCollapse').show();
+        }
+        else {
+            $('#sidebar').show();
+            $('#sidebarCollapse').hide();
+        }
     }
 
     ngAfterViewInit() {
@@ -122,6 +145,17 @@ export class AttendanceComponent {
         }, error => em.ex.catchError(error));
 
         this.getTotal();
+
+        let div: any;
+        div = document.getElementsByClassName("col-sm-9 body-content");
+
+        div[0].style.width = "100%";
+
+        this.initMenu();
+    }
+
+    showMenuButton(): boolean {
+        return window.innerWidth >= 768;
     }
 
     onStatsLoad() {
