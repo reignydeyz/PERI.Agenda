@@ -104,6 +104,6 @@ You may need to understand the nature of ASP-MVC before going through the entire
 
 - After generating all the DB scripts, you need to add a default ```Community```. To do this, open DB via SSMS and look for ```Community``` table and manually add your default community.
 
-- After signing-up, the newly registered user will have the role, ```User```.
+- The newly registered member will have the role, ```User```.
 
 - Because there's no way to create ```Admin``` at first, you need to use SSMS and manually edit your role after signing-up. You can see your account info in ```prompt.EndUser``` table. Change the ```RoleId``` to ```1``` to make your account admin.
