@@ -42,6 +42,8 @@ You may need to understand the nature of ASP-MVC before going through the entire
 - PERI.Agenda.EF
 	- Contains the EntityFramework module
 	- All of the data-manipulations were done here
+- PERI.Agenda.Repository
+    - Repository pattern
 - PERI.Agenda.Web
 	- The main project
 
@@ -98,6 +100,10 @@ You may need to understand the nature of ASP-MVC before going through the entire
 
 ### Tips
 
-- The default role is ```User```.
+- ```Community``` is an organization or main group that is required in sign-up page. Because the system supports multiple parties, it is important to identify the ```Community``` when signing-up.
+
+- After generating all the DB scripts, you need to add a default ```Community```. To do this, open DB via SSMS and look for ```Community``` table and manually add your default community.
+
+- After signing-up, the newly registered user will have the role, ```User```.
 
 - Because there's no way to create ```Admin``` at first, you need to use SSMS and manually edit your role after signing-up. You can see your account info in ```prompt.EndUser``` table. Change the ```RoleId``` to ```1``` to make your account admin.
