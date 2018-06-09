@@ -14,6 +14,7 @@ using NLog;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
+using PERI.Agenda.BLL;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -25,10 +26,14 @@ namespace PERI.Agenda.Web.Controllers
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly Emailer smtp;
+        private readonly EF.AARSContext context;
+        private readonly UnitOfWork unitOfWork;
 
         public MemberController(IOptions<Core.Emailer> settingsOptions)
         {
             smtp = settingsOptions.Value;
+            context = new EF.AARSContext();
+            unitOfWork = new UnitOfWork(context);
         }
 
         [BLL.VerifyUser(AllowedRoles = "Admin,Developer")]
@@ -37,8 +42,8 @@ namespace PERI.Agenda.Web.Controllers
         {
             obj = obj ?? new Models.Member();
 
-            var context = new EF.AARSContext();
-            var bll_member = new BLL.Member(context);
+            
+            var bll_member = new BLL.Member(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             obj.CommunityId = user.Member.CommunityId;
@@ -54,8 +59,8 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Find/Page/{id}")]
         public async Task<IActionResult> Page([FromBody] Models.Member obj, int id)
         {
-            var context = new EF.AARSContext();
-            var bll_member = new BLL.Member(context);
+            
+            var bll_member = new BLL.Member(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             obj.CommunityId = user.Member.CommunityId.Value;
@@ -78,13 +83,13 @@ namespace PERI.Agenda.Web.Controllers
         [BLL.ValidateModelState]
         public async Task<IActionResult> New([FromBody] Models.Member obj)
         {
-            var context = new EF.AARSContext();
+            
 
             using (var txn = context.Database.BeginTransaction())
             {
                 try
                 {
-                    var bll_member = new BLL.Member(context);
+                    var bll_member = new BLL.Member(unitOfWork);
                     var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
                     // Validate if existing
@@ -119,7 +124,7 @@ namespace PERI.Agenda.Web.Controllers
                         guidString = guidString.Replace("=", "");
                         guidString = guidString.Replace("+", "");
 
-                        var bll_user = new BLL.EndUser(context);
+                        var bll_user = new BLL.EndUser(unitOfWork);
                         var newId = await bll_user.Add(new EF.EndUser
                         {
                             MemberId = id,
@@ -170,13 +175,11 @@ namespace PERI.Agenda.Web.Controllers
                 };
             }
 
-            var context = new EF.AARSContext();
-
             using (var txn = context.Database.BeginTransaction())
             {
                 try
                 {
-                    var bll_member = new BLL.Member(context);
+                    var bll_member = new BLL.Member(unitOfWork);
                     var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
                     // Validate if existing
@@ -211,7 +214,7 @@ namespace PERI.Agenda.Web.Controllers
                     var members = await bll_member.Add(o);
 
                     // Add new users
-                    var bll_user = new BLL.EndUser(context);
+                    var bll_user = new BLL.EndUser(unitOfWork);
                     foreach (var member in members.Where(x => x.Email != null && x.Email != ""))
                     {
                         var salt = Core.Crypto.GenerateSalt();
@@ -259,8 +262,8 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Get/{id}")]
         public async Task<EF.Member> Get(int id)
         {
-            var context = new EF.AARSContext();
-            var bll_member = new BLL.Member(context);
+            
+            var bll_member = new BLL.Member(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             return await bll_member.Get(new EF.Member { Id = id, CommunityId = user.Member.CommunityId });
@@ -270,8 +273,8 @@ namespace PERI.Agenda.Web.Controllers
         [BLL.ValidateModelState]
         public async Task Edit([FromBody] Models.Member obj)
         {
-            var context = new EF.AARSContext();
-            var bll_member = new BLL.Member(context);
+            
+            var bll_member = new BLL.Member(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             obj.CommunityId = user.Member.CommunityId;
@@ -285,8 +288,8 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Delete([FromBody] int[] ids)
         {
-            var context = new EF.AARSContext();
-            var bll_member = new BLL.Member(context);
+            
+            var bll_member = new BLL.Member(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             if (!await bll_member.IsSelectedIdsOk(ids, user))
@@ -301,8 +304,8 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Activate([FromBody] int[] ids)
         {
-            var context = new EF.AARSContext();
-            var bll_member = new BLL.Member(context);
+            
+            var bll_member = new BLL.Member(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             if (!await bll_member.IsSelectedIdsOk(ids, user))
@@ -317,8 +320,8 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Deactivate([FromBody] int[] ids)
         {
-            var context = new EF.AARSContext();
-            var bll_member = new BLL.Member(context);
+            
+            var bll_member = new BLL.Member(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             if (!await bll_member.IsSelectedIdsOk(ids, user))
@@ -333,8 +336,8 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Total/{status}")]
         public async Task<int> Total(string status)
         {
-            var context = new EF.AARSContext();
-            var bll_member = new BLL.Member(context);
+            
+            var bll_member = new BLL.Member(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var members = bll_member.Find(new EF.Member { CommunityId = user.Member.CommunityId });
@@ -350,8 +353,8 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Download([FromBody] Models.Member obj)
         {
-            var context = new EF.AARSContext();
-            var bll_member = new BLL.Member(context);
+            
+            var bll_member = new BLL.Member(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             obj.CommunityId = user.Member.CommunityId;

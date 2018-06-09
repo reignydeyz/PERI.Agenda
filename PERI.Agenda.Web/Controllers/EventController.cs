@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PERI.Agenda.Core;
+using PERI.Agenda.BLL;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -14,11 +15,17 @@ namespace PERI.Agenda.Web.Controllers
     [Route("api/Event")]
     public class EventController : Controller
     {
+        private readonly UnitOfWork unitOfWork;
+
+        public EventController()
+        {
+            unitOfWork = new UnitOfWork(new EF.AARSContext());
+        }
+
         [HttpPost("[action]")]
         public async Task<IActionResult> Find([FromBody] EF.Event obj)
         {
-            var context = new EF.AARSContext();
-            var bll_event = new BLL.Event(context);
+            var bll_event = new BLL.Event(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             obj.EventCategory = new EF.EventCategory { CommunityId = user.Member.CommunityId };
@@ -44,8 +51,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Find/Page/{id}")]
         public async Task<IActionResult> Page([FromBody] EF.Event obj, int id)
         {
-            var context = new EF.AARSContext();
-            var bll_event = new BLL.Event(context);
+            var bll_event = new BLL.Event(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             obj.EventCategory = new EF.EventCategory { CommunityId = user.Member.CommunityId };
@@ -76,8 +82,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Download([FromBody] EF.Event obj)
         {
-            var context = new EF.AARSContext();
-            var bll_event = new BLL.Event(context);
+            var bll_event = new BLL.Event(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             obj.EventCategory = new EF.EventCategory { CommunityId = user.Member.CommunityId };
@@ -108,8 +113,7 @@ namespace PERI.Agenda.Web.Controllers
         [BLL.ValidateModelState]
         public async Task<int> New([FromBody] Models.Event obj)
         {
-            var context = new EF.AARSContext();
-            var bll_event = new BLL.Event(context);
+            var bll_event = new BLL.Event(unitOfWork);
 
             var o = AutoMapper.Mapper.Map<EF.Event>(obj);
 
@@ -120,8 +124,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Get/{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var context = new EF.AARSContext();
-            var bll_event = new BLL.Event(context);
+            var bll_event = new BLL.Event(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var r = await bll_event.Get(new EF.Event { Id = id, EventCategory = new EF.EventCategory { CommunityId = user.Member.CommunityId } });
@@ -144,8 +147,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task Edit([FromBody] EF.Event obj)
         {
-            var context = new EF.AARSContext();
-            var bll_event = new BLL.Event(context);
+            var bll_event = new BLL.Event(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             obj.EventCategory = new EF.EventCategory { CommunityId = user.Member.CommunityId };
@@ -157,8 +159,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Delete([FromBody] int[] ids)
         {
-            var context = new EF.AARSContext();
-            var bll_event = new BLL.Event(context);
+            var bll_event = new BLL.Event(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             if (!await bll_event.IsSelectedIdsOk(ids, user))

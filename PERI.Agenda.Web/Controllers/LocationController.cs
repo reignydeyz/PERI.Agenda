@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PERI.Agenda.BLL;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -13,11 +14,17 @@ namespace PERI.Agenda.Web.Controllers
     [Route("api/Location")]
     public class LocationController : Controller
     {
+        private readonly UnitOfWork unitOfWork;
+
+        public LocationController()
+        {
+            unitOfWork = new UnitOfWork(new EF.AARSContext());
+        }
+
         [HttpPost("[action]")]
         public async Task<IActionResult> Find(EF.Location args)
         {
-            var context = new EF.AARSContext();
-            var bll_location = new BLL.Location(context);
+            var bll_location = new BLL.Location(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             args.CommunityId = user.Member.CommunityId;

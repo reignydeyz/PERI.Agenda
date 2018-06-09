@@ -8,13 +8,14 @@ using System.Linq;
 
 namespace PERI.Agenda.BLL
 {
-    public class GroupCategory : IRepository<EF.GroupCategory>
+    public class GroupCategory
     {
-        AARSContext context;
 
-        public GroupCategory(AARSContext dbcontext)
+        private readonly UnitOfWork unitOfWork;
+
+        public GroupCategory(UnitOfWork _unitOfWork)
         {
-            context = dbcontext;
+            unitOfWork = _unitOfWork;
         }
 
         public Task Activate(int[] ids)
@@ -24,8 +25,8 @@ namespace PERI.Agenda.BLL
 
         public async Task<int> Add(EF.GroupCategory args)
         {
-            await context.GroupCategory.AddAsync(args);
-            context.SaveChanges();
+            await unitOfWork.GroupCategoryRepository.AddAsync(args);
+            unitOfWork.Commit();
             return args.Id;
         }
 
@@ -56,7 +57,7 @@ namespace PERI.Agenda.BLL
 
         public IQueryable<EF.GroupCategory> Find(EF.GroupCategory args)
         {
-            return context.GroupCategory
+            return unitOfWork.GroupCategoryRepository.Entities
                 .Where(x => x.Name.Contains(args.Name ?? x.Name)
                 && x.CommunityId == args.CommunityId)
                 .Include(x => x.Group).ThenInclude(x => x.GroupMember)
@@ -65,7 +66,7 @@ namespace PERI.Agenda.BLL
 
         public async Task<EF.GroupCategory> Get(EF.GroupCategory args)
         {
-            return await context.GroupCategory
+            return await unitOfWork.GroupCategoryRepository.Entities
                 .Include(x => x.Group)
                 .FirstOrDefaultAsync(x => x.Id == args.Id
                 && x.CommunityId == args.CommunityId);

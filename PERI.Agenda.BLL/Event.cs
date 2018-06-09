@@ -8,13 +8,14 @@ using PERI.Agenda.EF;
 
 namespace PERI.Agenda.BLL
 {
-    public class Event : IEvent
+    public class Event
     {
-        EF.AARSContext context;
 
-        public Event(AARSContext dbcontext)
+        private readonly UnitOfWork unitOfWork;
+
+        public Event(UnitOfWork _unitOfWork)
         {
-            context = dbcontext;
+            unitOfWork = _unitOfWork;
         }
 
         public Task Activate(int[] ids)
@@ -25,8 +26,8 @@ namespace PERI.Agenda.BLL
         public async Task<int> Add(EF.Event args)
         {
             args.IsActive = true;
-            var id = await context.Event.AddAsync(args);
-            context.SaveChanges();
+            await unitOfWork.EventRepository.AddAsync(args);
+            unitOfWork.Commit();
             return args.Id;
         }
 
@@ -42,8 +43,8 @@ namespace PERI.Agenda.BLL
 
         public async Task Delete(int[] ids)
         {
-            context.Event.RemoveRange(context.Event.Where(x => ids.Contains(x.Id)));
-            await context.SaveChangesAsync();
+            unitOfWork.EventRepository.RemoveRange(unitOfWork.EventRepository.Entities.Where(x => ids.Contains(x.Id)));
+            await unitOfWork.CommitAsync();
         }
 
         public Task Delete(EF.Event args)
@@ -53,7 +54,7 @@ namespace PERI.Agenda.BLL
 
         public async Task Edit(EF.Event args)
         {
-            var e = await context.Event.FirstAsync(x => x.Id == args.Id
+            var e = await unitOfWork.EventRepository.Entities.FirstAsync(x => x.Id == args.Id
             && x.EventCategory.CommunityId == args.EventCategory.CommunityId);
 
             e.Name = args.Name;
@@ -61,12 +62,12 @@ namespace PERI.Agenda.BLL
             e.EventCategoryId = args.EventCategoryId;
             e.DateTimeStart = args.DateTimeStart;
 
-            context.SaveChanges();
+            unitOfWork.Commit();
         }
 
         public IQueryable<EF.Event> Find(EF.Event args)
         {
-            return context.Event
+            return unitOfWork.EventRepository.Entities
             .Include(x => x.EventCategory)
             .Include(x => x.Attendance)
             .Include(x => x.Location)
@@ -80,7 +81,7 @@ namespace PERI.Agenda.BLL
 
         public async Task<EF.Event> Get(EF.Event args)
         {
-            return await context.Event
+            return await unitOfWork.EventRepository.Entities
                 .Include(x => x.EventCategory)
                 .Include(x => x.Attendance)
                 .Include(x => x.Location)
@@ -90,7 +91,7 @@ namespace PERI.Agenda.BLL
 
         public async Task<bool> IsSelectedIdsOk(int[] ids, EF.EndUser user)
         {
-            return await context.Event.Where(x => ids.Contains(x.Id) && x.EventCategory.CommunityId == user.Member.CommunityId).CountAsync() == ids.Count();
+            return await unitOfWork.EventRepository.Entities.Where(x => ids.Contains(x.Id) && x.EventCategory.CommunityId == user.Member.CommunityId).CountAsync() == ids.Count();
         }
     }
 }

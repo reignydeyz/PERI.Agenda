@@ -8,22 +8,22 @@ using PERI.Agenda.EF;
 
 namespace PERI.Agenda.BLL
 {
-    public class EndUser : IEndUser
+    public class EndUser
     {
-        EF.AARSContext context;
+        private readonly UnitOfWork unitOfWork;
 
-        public EndUser(AARSContext dbcontext)
+        public EndUser(UnitOfWork _unitOfWork)
         {
-            context = dbcontext;
+            unitOfWork = _unitOfWork;
         }
 
         public async Task Activate(int[] ids)
         {
-            var res = context.EndUser.Where(x => ids.Contains(x.UserId));
+            var res = unitOfWork.EndUserRepository.Entities.Where(x => ids.Contains(x.UserId));
 
             await res.ForEachAsync(x => x.DateInactive = null);
 
-            await context.SaveChangesAsync();
+            await unitOfWork.CommitAsync();
         }
 
         public async Task<int> Add(EF.EndUser args)
@@ -50,42 +50,42 @@ namespace PERI.Agenda.BLL
             args.ConfirmationCode = args.ConfirmationCode ?? guidString;
             args.ConfirmationExpiry = DateTime.Now.AddHours(12);
 
-            context.EndUser.Add(args);
-            await context.SaveChangesAsync();
+            unitOfWork.EndUserRepository.Add(args);
+            await unitOfWork.CommitAsync();
 
             return args.UserId;
         }
 
         public async Task Deactivate(int[] ids)
         {
-            var res = context.EndUser.Where(x => ids.Contains(x.UserId));
+            var res = unitOfWork.EndUserRepository.Entities.Where(x => ids.Contains(x.UserId));
 
             await res.ForEachAsync(x => x.DateInactive = DateTime.Now);
 
-            await context.SaveChangesAsync();
+            await unitOfWork.CommitAsync();
         }
 
         public async Task Delete(int id)
         {
-            context.EndUser.Remove(context.EndUser.First(x => x.UserId == id));
-            await context.SaveChangesAsync();
+            unitOfWork.EndUserRepository.Remove(unitOfWork.EndUserRepository.Entities.First(x => x.UserId == id));
+            await unitOfWork.CommitAsync();
         }
 
         public async Task Delete(int[] ids)
         {
-            context.EndUser.RemoveRange(context.EndUser.Where(x => ids.Contains(x.UserId)));
-            await context.SaveChangesAsync();
+            unitOfWork.EndUserRepository.RemoveRange(unitOfWork.EndUserRepository.Entities.Where(x => ids.Contains(x.UserId)));
+            await unitOfWork.CommitAsync();
         }
 
         public async Task Delete(EF.EndUser args)
         {
-            context.EndUser.Remove(args);
-            await context.SaveChangesAsync();
+            unitOfWork.EndUserRepository.Remove(args);
+            await unitOfWork.CommitAsync();
         }
 
         public async Task Edit(EF.EndUser args)
         {
-            var rec = context.EndUser.First(x => x.UserId == args.UserId);
+            var rec = unitOfWork.EndUserRepository.Entities.First(x => x.UserId == args.UserId);
             
             rec.PasswordHash = args.PasswordHash;
             rec.PasswordSalt = args.PasswordSalt;
@@ -96,7 +96,7 @@ namespace PERI.Agenda.BLL
             rec.ConfirmationExpiry = args.ConfirmationExpiry;
             rec.DateInactive = args.DateInactive;
 
-            await context.SaveChangesAsync();
+            await unitOfWork.CommitAsync();
         }
 
         public IQueryable<EF.EndUser> Find(EF.EndUser args)
@@ -108,7 +108,7 @@ namespace PERI.Agenda.BLL
         {
             args.Member = args.Member ?? new EF.Member();
 
-            var rec = await context.EndUser
+            var rec = await unitOfWork.EndUserRepository.Entities
                 .Include(x => x.Member)
                 .Include(x => x.Role)
                 .FirstOrDefaultAsync(x => x.UserId == (args.UserId == 0 ? x.UserId : args.UserId)

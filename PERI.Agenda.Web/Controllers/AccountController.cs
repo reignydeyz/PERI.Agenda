@@ -8,6 +8,7 @@ using NLog;
 using PERI.Agenda.Core;
 using Microsoft.Extensions.Options;
 using System.Dynamic;
+using PERI.Agenda.BLL;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -19,10 +20,12 @@ namespace PERI.Agenda.Web.Controllers
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly Emailer smtp;
+        private readonly UnitOfWork unitOfWork; 
 
         public AccountController(IOptions<Core.Emailer> settingsOptions)
         {
             smtp = settingsOptions.Value;
+            unitOfWork = new UnitOfWork(new EF.AARSContext());
         }
 
         [HttpGet("[action]")]
@@ -47,8 +50,7 @@ namespace PERI.Agenda.Web.Controllers
         public async Task<IActionResult> ChangePassword([FromBody] Models.ChangePassword args)
         {
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
-            var context = new EF.AARSContext();
-            var bll_user = new BLL.EndUser(context);
+            var bll_user = new BLL.EndUser(unitOfWork);
 
             // Validate current password
             var salt = user.PasswordSalt;
@@ -90,8 +92,7 @@ namespace PERI.Agenda.Web.Controllers
         public async Task<IActionResult> Deactivate([FromBody] Models.Login args)
         {
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
-            var context = new EF.AARSContext();
-            var bll_user = new BLL.EndUser(context);
+            var bll_user = new BLL.EndUser(unitOfWork);
 
             // Validate current password
             var salt = user.PasswordSalt;

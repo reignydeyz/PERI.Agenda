@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PERI.Agenda.BLL;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -13,11 +14,17 @@ namespace PERI.Agenda.Web.Controllers
     [Route("api/GroupCategory")]
     public class GroupCategoryController : Controller
     {
+        private readonly UnitOfWork unitOfWork;
+
+        public GroupCategoryController()
+        {
+            unitOfWork = new UnitOfWork(new EF.AARSContext());
+        }
+
         [HttpPost("[action]")]
         public async Task<IActionResult> Find([FromBody]EF.GroupCategory args)
         {
-            var context = new EF.AARSContext();
-            var bll_gc = new BLL.GroupCategory(context);
+            var bll_gc = new BLL.GroupCategory(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             args.CommunityId = user.Member.CommunityId;
@@ -37,8 +44,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task<int> New([FromBody]EF.GroupCategory args)
         {
-            var context = new EF.AARSContext();
-            var bll_gc = new BLL.GroupCategory(context);
+            var bll_gc = new BLL.GroupCategory(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             args.CommunityId = user.Member.CommunityId;

@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using NLog;
+using PERI.Agenda.BLL;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -19,11 +20,15 @@ namespace PERI.Agenda.Web.Controllers
 
         private readonly Core.Emailer smtp;
         private readonly Core.GoogleReCaptcha captcha;
+        private readonly UnitOfWork unitOfWork;
+        private readonly EF.AARSContext context;
 
         public AuthenticationController(IOptions<Core.Emailer> settingsOptions, IOptions<Core.GoogleReCaptcha> options)
         {
             smtp = settingsOptions.Value;
             captcha = options.Value;
+            context = new EF.AARSContext();
+            unitOfWork = new UnitOfWork(context);
         }
 
         private async Task AddClaimsAndSignIn(EF.EndUser args)
@@ -64,10 +69,8 @@ namespace PERI.Agenda.Web.Controllers
         public async Task<IActionResult> Index(Models.Login args)
         {
             ViewData["Title"] = "Sign-in";
-
-            var context = new EF.AARSContext();
-
-            var buser = new BLL.EndUser(context);
+            
+            var buser = new BLL.EndUser(unitOfWork);
 
             var user = await buser.Get(new EF.EndUser { Member = new EF.Member { Email = args.Email } });
 
@@ -106,9 +109,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> SignIn([FromBody] Models.Login args)
         {
-            var context = new EF.AARSContext();
-
-            var buser = new BLL.EndUser(context);
+            var buser = new BLL.EndUser(unitOfWork);
 
             var user = await buser.Get(new EF.EndUser { Member = new EF.Member { Email = args.Email } });
 
@@ -150,10 +151,8 @@ namespace PERI.Agenda.Web.Controllers
         public async Task<IActionResult> SignUp()
         {
             ViewData["Title"] = "Sign-up";
-
-            var context = new EF.AARSContext();
-
-            ViewBag.Communities = new SelectList(await new BLL.Community(context).Get(), "Id", "Name");
+            
+            ViewBag.Communities = new SelectList(await new BLL.Community(unitOfWork).Get(), "Id", "Name");
             ViewBag.ReCaptcha = captcha;
 
             return View();
@@ -165,12 +164,10 @@ namespace PERI.Agenda.Web.Controllers
         public async Task<IActionResult> SignUp(Models.SignUp args)
         {
             ViewData["Title"] = "Sign-up";
-
-            var context = new EF.AARSContext();
-
+            
             using (var txn = context.Database.BeginTransaction())
             {
-                ViewBag.Communities = new SelectList(await new BLL.Community(context).Get(), "Id", "Name");
+                ViewBag.Communities = new SelectList(await new BLL.Community(unitOfWork).Get(), "Id", "Name");
                 ViewBag.ReCaptcha = captcha;
 
                 try
@@ -179,7 +176,7 @@ namespace PERI.Agenda.Web.Controllers
                         return View(args);
                     else
                     {
-                        var bll_member = new BLL.Member(context);
+                        var bll_member = new BLL.Member(unitOfWork);
 
                         var m = new EF.Member();
 
@@ -244,7 +241,7 @@ namespace PERI.Agenda.Web.Controllers
                         guidString = guidString.Replace("=", "");
                         guidString = guidString.Replace("+", "");
 
-                        var bll_user = new BLL.EndUser(context);
+                        var bll_user = new BLL.EndUser(unitOfWork);
                         var newId = await bll_user.Add(new EF.EndUser
                         {
                             MemberId = m.Id,
@@ -303,9 +300,9 @@ namespace PERI.Agenda.Web.Controllers
             if (!ModelState.IsValid)
                 return View();
 
-            var context = new EF.AARSContext();
+            
 
-            var bll_user = new BLL.EndUser(context);
+            var bll_user = new BLL.EndUser(unitOfWork);
 
             var user = await bll_user.Get(new EF.EndUser { Member = new EF.Member { Email = args.Email } });
 
@@ -344,23 +341,20 @@ namespace PERI.Agenda.Web.Controllers
 
             var userId = Request.Query["userid"].ToString();
             var code = Request.Query["code"].ToString();
+            
+            var bll_user = new BLL.EndUser(unitOfWork);
 
-            using (var context = new EF.AARSContext())
+            var user = await bll_user.Get(new EF.EndUser { UserId = Convert.ToInt32(userId) });
+
+            if (user != null)
             {
-                var bll_user = new BLL.EndUser(context);
-
-                var user = await bll_user.Get(new EF.EndUser { UserId = Convert.ToInt32(userId) });
-
-                if (user != null)
-                {
-                    if (user.ConfirmationCode == code && user.ConfirmationExpiry > DateTime.Now)
-                        return View(new Models.NewPassword() { EndUser = new EF.EndUser { UserId = user.UserId } });
-                    else
-                        return new NotFoundResult();
-                }
+                if (user.ConfirmationCode == code && user.ConfirmationExpiry > DateTime.Now)
+                    return View(new Models.NewPassword() { EndUser = new EF.EndUser { UserId = user.UserId } });
                 else
                     return new NotFoundResult();
             }
+            else
+                return new NotFoundResult();
         }
 
         [HttpPost]
@@ -372,9 +366,7 @@ namespace PERI.Agenda.Web.Controllers
             if (!ModelState.IsValid)
                 return View();
 
-            var context = new EF.AARSContext();
-
-            var bll_user = new BLL.EndUser(context);
+            var bll_user = new BLL.EndUser(unitOfWork);
 
             var user = await bll_user.Get(new EF.EndUser { UserId = args.EndUser.UserId });
 

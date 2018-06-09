@@ -8,13 +8,14 @@ using System.Linq;
 
 namespace PERI.Agenda.BLL
 {
-    public class Group : IGroup
+    public class Group
     {
-        AARSContext context;
 
-        public Group(EF.AARSContext dbcontext)
+        private readonly UnitOfWork unitOfWork;
+
+        public Group(UnitOfWork _unitOfWork)
         {
-            context = dbcontext;
+            unitOfWork = _unitOfWork;
         }
 
         public Task Activate(int[] ids)
@@ -54,14 +55,14 @@ namespace PERI.Agenda.BLL
 
         public IQueryable<EF.Group> Find(EF.Group args)
         {
-            return context.Group
+            return unitOfWork.GroupRepository.Entities
                 .Include(x => x.GroupMember).ThenInclude(x => x.Member)
                 .OrderBy(x => x.Name).AsQueryable();
         }
 
         public async Task<EF.Group> Get(EF.Group args)
         {
-            return await context.Group
+            return await unitOfWork.GroupRepository.Entities
                 .Include(x => x.GroupCategory)
                 .Where(x => x.Id == args.Id).FirstOrDefaultAsync();
         }

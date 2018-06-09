@@ -8,13 +8,13 @@ using PERI.Agenda.EF;
 
 namespace PERI.Agenda.BLL
 {
-    public class Location : ILocation
+    public class Location
     {
-        EF.AARSContext context;
+        private readonly UnitOfWork unitOfWork;
 
-        public Location(AARSContext dbcontext)
+        public Location(UnitOfWork _unitOfWork)
         {
-            context = dbcontext;
+            unitOfWork = _unitOfWork;
         }
 
         public Task Activate(int[] ids)
@@ -54,7 +54,7 @@ namespace PERI.Agenda.BLL
 
         public IQueryable<EF.Location> Find(EF.Location args)
         {
-            return context.Location
+            return unitOfWork.LocationRepository.Entities
                 .Include(x => x.Event).ThenInclude(x => x.Attendance)
                 .Where(x => x.Name.Contains(args.Name ?? "")
                 && x.CommunityId == args.CommunityId)

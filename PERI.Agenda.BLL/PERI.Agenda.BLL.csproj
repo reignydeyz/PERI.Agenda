@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PERI.Agenda.Core\PERI.Agenda.Core.csproj" />
     <ProjectReference Include="..\PERI.Agenda.EF\PERI.Agenda.EF.csproj" />
+    <ProjectReference Include="..\PERI.Agenda.Repository\PERI.Agenda.Repository.csproj" />
   </ItemGroup>
 
 </Project>

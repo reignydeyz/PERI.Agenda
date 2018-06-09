@@ -8,18 +8,18 @@ using PERI.Agenda.EF;
 
 namespace PERI.Agenda.BLL
 {
-    public class Community : ICommunity
+    public class Community
     {
-        EF.AARSContext context;
+        private readonly UnitOfWork unitOfWork;
 
-        public Community(AARSContext dbcontext)
+        public Community(UnitOfWork _unitOfWork)
         {
-            context = dbcontext;
+            unitOfWork = _unitOfWork;
         }
 
         public async Task<IEnumerable<EF.Community>> Get()
         {
-            return await context.Community.OrderBy(x => x.Name).ToListAsync();
+            return await unitOfWork.CommunityRepository.Entities.OrderBy(x => x.Name).ToListAsync();
         }
     }
 }

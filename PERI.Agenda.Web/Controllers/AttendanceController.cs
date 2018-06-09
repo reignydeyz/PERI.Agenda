@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PERI.Agenda.BLL;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -14,6 +15,13 @@ namespace PERI.Agenda.Web.Controllers
     [Route("api/Attendance")]
     public class AttendanceController : Controller
     {
+        private readonly UnitOfWork unitOfWork;
+
+        public AttendanceController()
+        {
+            unitOfWork = new UnitOfWork(new EF.AARSContext());
+        }
+
         /// <summary>
         /// Gets the Registrants from Event Id
         /// </summary>
@@ -23,8 +31,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Registrants(int id)
         {
-            var context = new EF.AARSContext();
-            var bll_a = new BLL.Attendance(context);
+            var bll_a = new BLL.Attendance(unitOfWork);
 
             var res = from r in (await bll_a.Registrants(id))
                       select new
@@ -47,8 +54,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/Search")]
         public async Task<IActionResult> Search([FromBody] string member, int id)
         {
-            var context = new EF.AARSContext();
-            var bll_a = new BLL.Attendance(context);
+            var bll_a = new BLL.Attendance(unitOfWork);
 
             var res = from r in (await bll_a.Registrants(id, member))
                       select new
@@ -65,8 +71,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/Search/Page/{p}")]
         public async Task<IActionResult> Page([FromBody] string member, int id, int p)
         {
-            var context = new EF.AARSContext();
-            var bll_a = new BLL.Attendance(context);
+            var bll_a = new BLL.Attendance(unitOfWork);
 
             var res = from r in (await bll_a.Registrants(id, member))
                       select new
@@ -91,8 +96,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/Add")]
         public async Task<int> Add([FromBody] Models.Attendance obj, int id)
         {
-            var context = new EF.AARSContext();
-            var bll_a = new BLL.Attendance(context);
+            var bll_a = new BLL.Attendance(unitOfWork);
 
             return await bll_a.Add(new EF.Attendance { EventId = id, MemberId = obj.MemberId.Value, DateTimeLogged = obj.DateTimeLogged ?? DateTime.Now });
         }
@@ -101,8 +105,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/Delete")]
         public async Task Delete([FromBody] EF.Attendance obj, int id)
         {
-            var context = new EF.AARSContext();
-            var bll_a = new BLL.Attendance(context);
+            var bll_a = new BLL.Attendance(unitOfWork);
 
             await bll_a.Delete(new EF.Attendance { EventId = id, MemberId = obj.MemberId });
         }
@@ -111,8 +114,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/Total/{status}")]
         public async Task<int> Total(int id, string status)
         {
-            var context = new EF.AARSContext();
-            var bll_a = new BLL.Attendance(context);
+            var bll_a = new BLL.Attendance(unitOfWork);
             var res = await bll_a.Registrants(id);
 
             if (status.ToLower() == "attendees")

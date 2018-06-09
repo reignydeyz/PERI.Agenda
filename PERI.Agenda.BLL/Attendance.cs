@@ -8,24 +8,19 @@ using PERI.Agenda.EF;
 
 namespace PERI.Agenda.BLL
 {
-    public class Attendance : IAttendance
+    public class Attendance
     {
-        EF.AARSContext context;
+        private readonly UnitOfWork unitOfWork;
 
-        public Attendance(AARSContext dbcontext)
+        public Attendance(UnitOfWork _unitOfWork)
         {
-            context = dbcontext;
-        }
-
-        public Task Activate(int[] ids)
-        {
-            throw new NotImplementedException();
+            unitOfWork = _unitOfWork;
         }
 
         public async Task<int> Add(EF.Attendance args)
         {
-            var id = await context.Attendance.AddAsync(args);
-            context.SaveChanges();
+            await unitOfWork.AttendanceRepository.AddAsync(args);
+            await unitOfWork.CommitAsync();
 
             return args.Id;
         }
@@ -47,9 +42,9 @@ namespace PERI.Agenda.BLL
 
         public async Task Delete(EF.Attendance args)
         {
-            var a = await context.Attendance.FirstAsync(x => x.MemberId == args.MemberId && x.EventId == args.EventId);
-            context.Attendance.Remove(a);
-            context.SaveChanges();
+            var a = await unitOfWork.AttendanceRepository.Entities.FirstAsync(x => x.MemberId == args.MemberId && x.EventId == args.EventId);
+            unitOfWork.AttendanceRepository.Remove(a);
+            unitOfWork.Commit();
         }
 
         public Task Edit(EF.Attendance args)
@@ -59,7 +54,7 @@ namespace PERI.Agenda.BLL
 
         public IQueryable<EF.Attendance> Find(EF.Attendance args)
         {
-            return context.Attendance
+            return unitOfWork.AttendanceRepository.Entities
                 .Include(x => x.Member)
                 .Where(x => x.EventId == args.EventId
             && x.EventSectionId == (args.EventSectionId ?? x.EventSectionId)).AsQueryable();
@@ -72,11 +67,11 @@ namespace PERI.Agenda.BLL
 
         public async Task<IQueryable<EF.Attendance>> Registrants(int eventId)
         {
-            var ev = await context.Event.FirstAsync(x => x.Id == eventId);
+            var ev = await unitOfWork.EventRepository.Entities.FirstAsync(x => x.Id == eventId);
 
-            var members = context.Member.Where(x => x.IsActive);
-            var registrants = context.Registrant.Where(x => x.EventId == eventId);
-            var attendance = context.Attendance.Where(x => x.EventId == eventId);
+            var members = unitOfWork.MemberRepository.Entities.Where(x => x.IsActive);
+            var registrants = unitOfWork.RegistrantRepository.Entities.Where(x => x.EventId == eventId);
+            var attendance = unitOfWork.AttendanceRepository.Entities.Where(x => x.EventId == eventId);
 
             if (ev.IsExclusive == false || ev.IsExclusive == null)
             {
@@ -113,11 +108,11 @@ namespace PERI.Agenda.BLL
         {
             member = member == null ? string.Empty : member.ToLower();
 
-            var ev = await context.Event.FirstAsync(x => x.Id == eventId);
+            var ev = await unitOfWork.EventRepository.Entities.FirstAsync(x => x.Id == eventId);
 
-            var members = context.Member.Where(x => x.IsActive);
-            var registrants = context.Registrant.Where(x => x.EventId == eventId);
-            var attendance = context.Attendance.Where(x => x.EventId == eventId);
+            var members = unitOfWork.MemberRepository.Entities.Where(x => x.IsActive);
+            var registrants = unitOfWork.RegistrantRepository.Entities.Where(x => x.EventId == eventId);
+            var attendance = unitOfWork.AttendanceRepository.Entities.Where(x => x.EventId == eventId);
 
             if (ev.IsExclusive == false || ev.IsExclusive == null)
             {

@@ -8,18 +8,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PERI.Agenda.BLL
 {
-    public class LookUp : ILookUp
+    public class LookUp
     {
-        EF.AARSContext context;
-
-        public LookUp(AARSContext dbcontext)
+        private readonly UnitOfWork unitOfWork;
+        public LookUp(UnitOfWork _unitOfWork)
         {
-            context = dbcontext;
+            unitOfWork = _unitOfWork;
         }
 
         public async Task<IEnumerable<EF.LookUp>> GetByGroup(string group)
         {
-            return await context.LookUp.Where(x => x.Group == group).OrderBy(x => x.Weight).ToListAsync();
+            return await unitOfWork.LookUpRepository.Entities.Where(x => x.Group == group).OrderBy(x => x.Weight).ToListAsync();
         }
     }
 }

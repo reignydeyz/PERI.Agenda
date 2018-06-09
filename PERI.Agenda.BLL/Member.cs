@@ -1,36 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using PERI.Agenda.EF;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace PERI.Agenda.BLL
 {
-    public class Member : IMember
+    public class Member
     {
-        EF.AARSContext context;
+        private UnitOfWork _unitOfWork;
 
-        public Member(AARSContext dbcontext)
+        public Member(UnitOfWork unitOfWork)
         {
-            context = dbcontext;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task Activate(int[] ids)
         {
             foreach (var id in ids)
             {
-                (await context.Member.FirstAsync(x => x.Id == id)).IsActive = true;
+                (await _unitOfWork.MemberRepository.Entities.FirstAsync(x => x.Id == id)).IsActive = true;
             }
-            context.SaveChanges();
+
+            await _unitOfWork.CommitAsync();
         }
 
         public async Task<int> Add(EF.Member args)
         {
             args.IsActive = true;
-            var id = await context.Member.AddAsync(args);
-            context.SaveChanges();
+            await _unitOfWork.MemberRepository.AddAsync(args);
+            await _unitOfWork.CommitAsync();
             return args.Id;
         }
 
@@ -39,8 +39,8 @@ namespace PERI.Agenda.BLL
             foreach (var r in args)
                 r.IsActive = true;
 
-            await context.Member.AddRangeAsync(args);
-            context.SaveChanges();
+            await _unitOfWork.MemberRepository.AddRangeAsync(args);
+            await _unitOfWork.CommitAsync();
 
             return args;
         }
@@ -49,30 +49,20 @@ namespace PERI.Agenda.BLL
         {
             foreach (var id in ids)
             {
-                (await context.Member.FirstAsync(x => x.Id == id)).IsActive = false;
+                (await _unitOfWork.MemberRepository.Entities.FirstAsync(x => x.Id == id)).IsActive = false;
             }
-            context.SaveChanges();
-        }
-
-        public Task Delete(int id)
-        {
-            throw new NotImplementedException();
+            await _unitOfWork.CommitAsync();
         }
 
         public async Task Delete(int[] ids)
         {
-            context.Member.RemoveRange(context.Member.Where(x => ids.Contains(x.Id)));
-            await context.SaveChangesAsync();
-        }
-
-        public Task Delete(EF.Member args)
-        {
-            throw new NotImplementedException();
+            _unitOfWork.MemberRepository.RemoveRange(_unitOfWork.MemberRepository.Entities.Where(x => ids.Contains(x.Id)));
+            await _unitOfWork.CommitAsync();
         }
 
         public async Task Edit(EF.Member args)
         {
-            var user = await context.Member.FirstAsync(x => x.Id == args.Id
+            var user = await _unitOfWork.MemberRepository.Entities.FirstAsync(x => x.Id == args.Id
             && x.CommunityId == args.CommunityId);
 
             user.Name = args.Name;
@@ -84,12 +74,12 @@ namespace PERI.Agenda.BLL
             user.Mobile = args.Mobile;
             user.IsActive = args.IsActive;
 
-            context.SaveChanges();
+            await _unitOfWork.CommitAsync();
         }
 
         public IQueryable<EF.Member> Find(EF.Member args)
         {
-            var res = context.Member.Where(x => x.Name.Contains(args.Name ?? "")
+            var res = _unitOfWork.MemberRepository.Entities.Where(x => x.Name.Contains(args.Name ?? "")
             && ((x.Email ?? "").Contains(args.Email ?? ""))
             && x.CommunityId == args.CommunityId)
                 .OrderBy(x => x.Name).AsQueryable();
@@ -99,7 +89,7 @@ namespace PERI.Agenda.BLL
 
         public IQueryable<EF.Member> Search(EF.Member args)
         {
-            var res = context.Member.Where(x => x.Name.Contains(args.Name ?? "")
+            var res = _unitOfWork.MemberRepository.Entities.Where(x => x.Name.Contains(args.Name ?? "")
             || ((x.Email ?? "").Contains(args.Email ?? ""))
             && x.CommunityId == args.CommunityId)
                 .OrderBy(x => x.Name).AsQueryable();
@@ -109,7 +99,7 @@ namespace PERI.Agenda.BLL
 
         public IQueryable<EF.Member> Search(EF.Member[] args)
         {
-            var res = context.Member.Where(x => (args.Select(y => y.Name ?? "").Contains(x.Name ?? "")
+            var res = _unitOfWork.MemberRepository.Entities.Where(x => (args.Select(y => y.Name ?? "").Contains(x.Name ?? "")
             || args.Select(y => y.Email ?? "").Contains(x.Email ?? ""))            
             && args.Select(y => y.CommunityId).Contains(x.CommunityId))
                 .OrderBy(x => x.Name).AsQueryable();
@@ -119,13 +109,13 @@ namespace PERI.Agenda.BLL
 
         public async Task<EF.Member> Get(EF.Member args)
         {
-            return await context.Member.FirstOrDefaultAsync(x => x.Id == args.Id
+            return await _unitOfWork.MemberRepository.Entities.FirstOrDefaultAsync(x => x.Id == args.Id
             && x.CommunityId == args.CommunityId);
         }
 
         public async Task<bool> IsSelectedIdsOk(int[] ids, EF.EndUser user)
         {
-            return await context.Member.Where(x => ids.Contains(x.Id) && x.CommunityId == user.Member.CommunityId).CountAsync() == ids.Count();
+            return await _unitOfWork.MemberRepository.Entities.Where(x => ids.Contains(x.Id) && x.CommunityId == user.Member.CommunityId).CountAsync() == ids.Count();
         }
     }
 }

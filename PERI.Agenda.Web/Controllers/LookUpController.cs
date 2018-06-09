@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PERI.Agenda.BLL;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -12,12 +13,18 @@ namespace PERI.Agenda.Web.Controllers
     [Route("api/LookUp")]
     public class LookUpController : Controller
     {
+        private readonly UnitOfWork unitOfWork;
+
+        public LookUpController()
+        {
+            unitOfWork = new UnitOfWork(new EF.AARSContext());
+        }
+
         [HttpGet("[action]")]
         [Route("Get/{group}")]
         public async Task<IEnumerable<EF.LookUp>> Get(string group)
         {
-            var context = new EF.AARSContext();
-            var bll_lookup = new BLL.LookUp(context);
+            var bll_lookup = new BLL.LookUp(unitOfWork);
 
             return await bll_lookup.GetByGroup(group);
         }

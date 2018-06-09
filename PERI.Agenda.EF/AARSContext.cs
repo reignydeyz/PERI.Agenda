@@ -34,7 +34,7 @@ namespace PERI.Agenda.EF
         public virtual DbSet<Registrant> Registrant { get; set; }
         public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<User> User { get; set; }
-
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

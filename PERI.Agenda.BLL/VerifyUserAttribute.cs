@@ -50,8 +50,8 @@ namespace PERI.Agenda.BLL
                 var userId = Convert.ToInt32(payload["id"]);
 
                 // Verifiy user
-                var context = new EF.AARSContext();
-                var bll_u = new BLL.EndUser(context);
+                var unitOfWork = new UnitOfWork(new EF.AARSContext());
+                var bll_u = new BLL.EndUser(unitOfWork);
                 var user = bll_u.Get(new EF.EndUser { UserId = userId }).Result;
 
                 // Allowed Roles

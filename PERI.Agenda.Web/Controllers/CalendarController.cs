@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PERI.Agenda.BLL;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -13,11 +14,17 @@ namespace PERI.Agenda.Web.Controllers
     [Route("api/Calendar")]
     public class CalendarController : Controller
     {
+        private readonly UnitOfWork unitOfWork;
+
+        public CalendarController()
+        {
+            unitOfWork = new UnitOfWork(new EF.AARSContext());
+        }
+
         [HttpGet("[action]")]
         public async Task<IActionResult> Events()
         {
-            var context = new EF.AARSContext();
-            var bll_e = new BLL.Event(context);
+            var bll_e = new BLL.Event(unitOfWork);
 
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
