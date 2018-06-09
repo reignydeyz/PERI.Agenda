@@ -150,8 +150,13 @@ export class MemberComponent {
     }
 
     public onNewSubmit(f: NgForm) {
+        var middleInitial = (f.controls['middleInitial'].value == ''
+            || f.controls['middleInitial'].value == null
+            || f.controls['middleInitial'].value == undefined) ? ' ' : ' ' + f.controls['middleInitial'].value + '. ';
+        var name = f.controls['firstName'].value.trim() + middleInitial + f.controls['lastName'].value.trim();
+
         var m = new Member();
-        m.name = f.controls['firstName'].value + ' ' + f.controls['lastName'].value;
+        m.name = name;
         m.nickName = f.controls['nickName'].value;
 
         if (f.controls['birthDate'].value != null) {

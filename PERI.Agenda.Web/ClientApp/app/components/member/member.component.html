@@ -147,7 +147,10 @@
                         <label>First name*</label>
                         <input class="form-control" placeholder="First name" name="firstName" ngModel required>
                     </div>
-                    
+                    <div class="form-group">
+                        <label>Middle initial <small>(1 letter)</small></label>
+                        <input class="form-control" placeholder="Middle initial" name="middleInitial" pattern="[A-Za-z]{1}" ngModel>
+                    </div>
                     <div class="form-group">
                         <label>Last name*</label>
                         <input class="form-control" placeholder="Last name" name="lastName" ngModel required>

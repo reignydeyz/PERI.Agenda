@@ -180,10 +180,13 @@ namespace PERI.Agenda.Web.Controllers
 
                         var m = new EF.Member();
 
+                        var midlleInitial = String.IsNullOrEmpty(args.MiddleInitial) ? " " : $" {args.MiddleInitial}. ";
+                        var name = args.FirstName.Trim() + midlleInitial + args.LastName.Trim();
+
                         // Validate Email
                         m = await bll_member.Find(new EF.Member
                         {
-                            Email = args.Email,
+                            Email = args.Email.Trim(),
                             CommunityId = args.CommunityId
                         }).FirstOrDefaultAsync();
 
@@ -192,7 +195,7 @@ namespace PERI.Agenda.Web.Controllers
                             // Validate Name
                             m = await bll_member.Find(new EF.Member
                             {
-                                Name = (args.FirstName + " " + args.LastName).ToUpper(),
+                                Name = (name).ToUpper(),
                                 CommunityId = args.CommunityId
                             }).FirstOrDefaultAsync();
                         }
@@ -202,11 +205,11 @@ namespace PERI.Agenda.Web.Controllers
                             // Add to Member
                             m = new EF.Member
                             {
-                                Name = (args.FirstName + " " + args.LastName).ToUpper(),
+                                Name = (name).ToUpper(),
                                 NickName = args.NickName,
                                 Address = args.Address,
                                 Mobile = args.Mobile,
-                                Email = args.Email,
+                                Email = args.Email.Trim(),
                                 BirthDate = args.BirthDate,
                                 CommunityId = args.CommunityId
                             };
@@ -219,7 +222,7 @@ namespace PERI.Agenda.Web.Controllers
                             if (m.Email == null || m.Email == string.Empty)
                             {
                                 // Update Email when Existing Member Info has no Email
-                                m.Email = args.Email;
+                                m.Email = args.Email.Trim();
                                 await bll_member.Edit(m);
                             }
                             else if (m.Email != args.Email)

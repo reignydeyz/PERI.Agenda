@@ -16,6 +16,9 @@ namespace PERI.Agenda.Web.Models
         [MinLength(2)]
         public string FirstName { get; set; }
 
+        [MaxLength(1)]
+        public string MiddleInitial { get; set; }
+
         [Required(AllowEmptyStrings = false)]
         [MinLength(2)]
         public string LastName { get; set; }

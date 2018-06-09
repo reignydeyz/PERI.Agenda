@@ -83,8 +83,6 @@ namespace PERI.Agenda.Web.Controllers
         [BLL.ValidateModelState]
         public async Task<IActionResult> New([FromBody] Models.Member obj)
         {
-            
-
             using (var txn = context.Database.BeginTransaction())
             {
                 try
