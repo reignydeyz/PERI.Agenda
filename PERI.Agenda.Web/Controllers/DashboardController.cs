@@ -70,7 +70,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_loc = new BLL.Location(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var locs = from r in bll_loc.Find(new EF.Location { CommunityId = user.Member.CommunityId })
+            var locs = from r in await bll_loc.Find(new EF.Location { CommunityId = user.Member.CommunityId }).ToListAsync()
                        select new
                        {
                            r.Id,
@@ -85,8 +85,8 @@ namespace PERI.Agenda.Web.Controllers
 
             return new Models.Graph.Statistics
             {
-                Values = await locs.Select(x => x.AverageAttendees).ToArrayAsync(),
-                Labels = await locs.Select(x => x.Name).ToArrayAsync()
+                Values = locs.Select(x => x.AverageAttendees).ToArray(),
+                Labels = locs.Select(x => x.Name).ToArray()
             };
         }
 
