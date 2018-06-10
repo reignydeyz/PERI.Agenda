@@ -71,7 +71,7 @@ namespace PERI.Agenda.BLL
             .Include(x => x.EventCategory)
             .Include(x => x.Attendance)
             .Include(x => x.Location)
-            .Where(x => (x.DateTimeStart >= (args.DateTimeStart ?? x.DateTimeStart) && x.DateTimeStart <= (args.DateTimeEnd ?? DateTime.MaxValue))
+            .Where(x => (x.DateTimeStart >= (args.DateTimeStart ?? x.DateTimeStart) && x.DateTimeStart <= (args.DateTimeEnd ?? DateTime.Now.AddYears(100)))
             && x.Name.Contains(args.Name ?? "")
             && x.EventCategoryId == (args.EventCategoryId == 0 ? x.EventCategoryId : args.EventCategoryId)
             && x.LocationId == ((args.LocationId ?? 0) == 0 ? x.LocationId : args.LocationId)
