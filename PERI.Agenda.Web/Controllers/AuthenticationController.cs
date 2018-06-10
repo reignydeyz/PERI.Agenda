@@ -178,64 +178,15 @@ namespace PERI.Agenda.Web.Controllers
                     {
                         var bll_member = new BLL.Member(unitOfWork);
 
-                        var m = new EF.Member();
-
                         var midlleInitial = String.IsNullOrEmpty(args.MiddleInitial) ? " " : $" {args.MiddleInitial}. ";
                         var name = args.FirstName.Trim() + midlleInitial + args.LastName.Trim();
 
-                        // Validate Email
-                        m = await bll_member.Find(new EF.Member
-                        {
-                            Email = args.Email.Trim(),
-                            CommunityId = args.CommunityId
-                        }).FirstOrDefaultAsync();
+                        var m = AutoMapper.Mapper.Map<EF.Member>(args);
+                        m.Name = name;
+                        m.IsActive = true;
+                        m.DateCreated = DateTime.Now;
 
-                        if (m == null)
-                        {
-                            // Validate Name
-                            m = await bll_member.Find(new EF.Member
-                            {
-                                Name = (name).ToUpper(),
-                                CommunityId = args.CommunityId
-                            }).FirstOrDefaultAsync();
-                        }
-
-                        if (m == null)
-                        {
-                            // Add to Member
-                            m = new EF.Member
-                            {
-                                Name = (name).ToUpper(),
-                                NickName = args.NickName,
-                                Address = args.Address,
-                                Mobile = args.Mobile,
-                                Email = args.Email.Trim(),
-                                BirthDate = args.BirthDate,
-                                CommunityId = args.CommunityId
-                            };
-
-                            m.Id = await bll_member.Add(m);
-                        }
-                        else
-                        {
-                            // Is equal to New Member info Email?
-                            if (m.Email == null || m.Email == string.Empty)
-                            {
-                                // Update Email when Existing Member Info has no Email
-                                m.Email = args.Email.Trim();
-                                await bll_member.Edit(m);
-                            }
-                            else if (m.Email != args.Email)
-                            {
-                                txn.Rollback();
-
-                                logger.Warn("Oops. There's something wrong with your entry. Please contact admin.");
-
-                                ModelState.AddModelError(string.Empty, "Oops. There's something wrong with your entry. Please contact admin.");
-
-                                return View(args);
-                            }
-                        }
+                        var memberId = await bll_member.Add(m);
 
                         // Add to User
                         // Generate ConfirmationCode
@@ -247,7 +198,7 @@ namespace PERI.Agenda.Web.Controllers
                         var bll_user = new BLL.EndUser(unitOfWork);
                         var newId = await bll_user.Add(new EF.EndUser
                         {
-                            MemberId = m.Id,
+                            MemberId = memberId,
                             ConfirmationCode = guidString
                         });
 
@@ -261,6 +212,16 @@ namespace PERI.Agenda.Web.Controllers
                         TempData["notice"] = "Thank you. Please check your email for confirmation.";
                         return Redirect("~/");
                     }
+                }
+                catch (ArgumentException ex)
+                {
+                    txn.Rollback();
+
+                    logger.Error(ex);
+
+                    ModelState.AddModelError(string.Empty, "Oops. There's something wrong with your entry. Please contact admin.");
+
+                    return View(args);
                 }
                 catch (DbUpdateException ex)
                 {

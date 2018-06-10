@@ -11,8 +11,10 @@ import { ErrorExceptionModule } from '../errorexception/errorexception.component
 import { Observable } from 'rxjs/Observable';
 import * as moment from 'moment';
 import * as $ from "jquery";
+import { IMyDpOptions } from 'mydatepicker';
 
 import { Pager } from '../pager/pager.component';
+import { MemberModule, Member } from '../member/member.component';
 
 export class AttendanceModule {
     public http: Http;
@@ -57,6 +59,7 @@ export class AttendanceModule {
 })
 export class AttendanceComponent {
     private am: AttendanceModule;
+    private mm: MemberModule;
 
     id: number;
     event: Event;
@@ -74,6 +77,11 @@ export class AttendanceComponent {
 
     private sub: any;
 
+    public myDatePickerOptions: IMyDpOptions = {
+        // other options...
+        dateFormat: 'mm/dd/yyyy',
+    };
+
     constructor(private route: ActivatedRoute, private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
         this.am = new AttendanceModule();
         this.am.http = http;
@@ -81,6 +89,10 @@ export class AttendanceComponent {
 
         this.am.ex = new ErrorExceptionModule();
         this.am.ex.baseUrl = this.baseUrl;
+
+        this.mm = new MemberModule();
+        this.mm.http = http;
+        this.mm.baseUrl = baseUrl;
     }
 
     private paginate(obj: string, page: number) {
@@ -113,6 +125,7 @@ export class AttendanceComponent {
 
         if (window.innerWidth >= 768) {
             div[0].style.width = "75%";
+            $('#sidebar').show();
         }
     }
 
@@ -225,6 +238,45 @@ export class AttendanceComponent {
                 alert('Success');
             }, error => this.am.ex.catchError(error));
         }        
+    }
+
+    public onNewSubmit(f: NgForm) {
+        var middleInitial = (f.controls['middleInitial'].value == ''
+            || f.controls['middleInitial'].value == null
+            || f.controls['middleInitial'].value == undefined) ? ' ' : ' ' + f.controls['middleInitial'].value + '. ';
+        var name = f.controls['firstName'].value.trim() + middleInitial + f.controls['lastName'].value.trim();
+
+        var m = new Member();
+        m.name = name;
+        m.nickName = f.controls['nickName'].value;
+
+        if (f.controls['birthDate'].value != null) {
+            m.birthDate = f.controls['birthDate'].value.formatted;
+        }
+        else {
+            m.birthDate = '';
+        }
+
+        m.email = f.controls['email'].value;
+        m.address = f.controls['address'].value;
+        m.mobile = f.controls['mobile'].value;
+        m.gender = f.controls['gender'].value;
+
+        this.mm.add(m).subscribe(
+            result => {
+                m.id = result;
+
+                let frm: any;
+                frm = document.getElementById("frmNew");
+                frm.reset();
+
+                var a = new Attendance();
+                a.memberId = m.id;
+                this.am.add(this.id, a).subscribe(r => { alert('Added!'); });
+
+                this.totalAttendees++;
+            },
+            error => this.am.ex.catchError(error));
     }
 }
 

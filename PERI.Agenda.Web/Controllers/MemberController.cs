@@ -81,7 +81,7 @@ namespace PERI.Agenda.Web.Controllers
         [BLL.VerifyUser]
         [HttpPost("[action]")]
         [BLL.ValidateModelState]
-        public async Task<IActionResult> New([FromBody] Models.Member obj)
+        public async Task<IActionResult> New([FromBody] Models.Member args)
         {
             using (var txn = context.Database.BeginTransaction())
             {
@@ -90,31 +90,16 @@ namespace PERI.Agenda.Web.Controllers
                     var bll_member = new BLL.Member(unitOfWork);
                     var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-                    // Validate if existing
-                    var exist = await bll_member.Search(new EF.Member {
-                        Name = obj.Name,
-                        Email = String.IsNullOrEmpty(obj.Email) ? "email" : obj.Email,
-                        CommunityId = user.Member.CommunityId
-                    }).CountAsync();
-                    
-                    if (exist > 0)
-                    {
-                        return new ObjectResult("Existing name or email")
-                        {
-                            StatusCode = 403,
-                            Value = "Existing name or email"
-                        };
-                    }
+                    var m = AutoMapper.Mapper.Map<EF.Member>(args);
+                    m.IsActive = true;
+                    m.CommunityId = user.Member.CommunityId.Value;
+                    m.CreatedBy = user.Member.Name;
+                    m.DateCreated = DateTime.Now;
 
-                    obj.Name = obj.Name.ToUpper();
-                    obj.CommunityId = user.Member.CommunityId;
-
-                    var o = AutoMapper.Mapper.Map<EF.Member>(obj);
-
-                    var id = await bll_member.Add(o);
+                    var memberId = await bll_member.Add(m);
 
                     // Add to User
-                    if (obj.Email != null)
+                    if (args.Email != null && args.Email != "")
                     {
                         // Generate ConfirmationCode
                         Guid g = Guid.NewGuid();
@@ -125,120 +110,39 @@ namespace PERI.Agenda.Web.Controllers
                         var bll_user = new BLL.EndUser(unitOfWork);
                         var newId = await bll_user.Add(new EF.EndUser
                         {
-                            MemberId = id,
+                            MemberId = memberId,
                             ConfirmationCode = guidString
                         });
 
                         // Send email
-                        await smtp.SendEmail(obj.Email,
+                        await smtp.SendEmail(args.Email,
                             "Your Agenda Credentials",
                             "Please click the link below to validate and change your password:<br/>http://" + Request.Host.Value + "/authentication/newpassword/?userid=" + newId + "&code=" + guidString);
                     }
 
                     txn.Commit();
 
-                    return Ok(id);
+                    return Ok(memberId);
                 }
-                catch (Exception ex)
+                catch (ArgumentException ex)
                 {
                     txn.Rollback();
 
                     logger.Error(ex);
 
-                    return new ObjectResult(ex.Message)
-                    {
-                        StatusCode = 403,
-                        Value = "Entry is invalid."
-                    };
+                    ModelState.AddModelError(string.Empty, "Oops. There's something wrong with your entry.");
+
+                    return View(args);
                 }
-            }
-        }
-
-        [BLL.VerifyUser(AllowedRoles = "Admin,Developer")]
-        [HttpPost("[action]")]
-        [BLL.ValidateModelState]
-        public async Task<IActionResult> AddRange([FromBody] List<Models.Member> obj)
-        {
-            // Email must be unique
-            var duplicateEmails = obj.Select(x => x.Email).GroupBy(x => x)
-                        .Where(group => group.Count() > 1)
-                        .Select(group => group.Key);
-            
-            if (duplicateEmails.Count() > 0)
-            {
-                return new ObjectResult("Duplicate email found")
+                catch (DbUpdateException ex)
                 {
-                    StatusCode = 403,
-                    Value = "Duplicate email found"
-                };
-            }
+                    txn.Rollback();
 
-            using (var txn = context.Database.BeginTransaction())
-            {
-                try
-                {
-                    var bll_member = new BLL.Member(unitOfWork);
-                    var user = HttpContext.Items["EndUser"] as EF.EndUser;
+                    logger.Error(ex);
 
-                    // Validate if existing
-                    var map = AutoMapper.Mapper.Map<List<EF.Member>>(obj);
+                    ModelState.AddModelError(string.Empty, "Existing name or email");
 
-                    var list = from x in map
-                               select new EF.Member
-                               {
-                                   Name = x.Name,
-                                   Email = String.IsNullOrEmpty(x.Email) ? "email" : x.Email,
-                                   CommunityId = user.Member.CommunityId
-                               };
-                    var exist = await bll_member.Search(list.ToArray()).CountAsync();
-                    if (exist > 0)
-                    {
-                        return new ObjectResult("Existing name or email")
-                        {
-                            StatusCode = 403,
-                            Value = "Existing name or email"
-                        };
-                    }
-
-                    foreach (var ob in obj)
-                    {
-                        ob.Name = ob.Name.ToUpper();
-                        ob.CommunityId = user.Member.CommunityId;
-                    }
-
-                    var o = AutoMapper.Mapper.Map<List<EF.Member>>(obj);
-
-                    // Gets the newly added members
-                    var members = await bll_member.Add(o);
-
-                    // Add new users
-                    var bll_user = new BLL.EndUser(unitOfWork);
-                    foreach (var member in members.Where(x => x.Email != null && x.Email != ""))
-                    {
-                        var salt = Core.Crypto.GenerateSalt();
-                        var enc = Core.Crypto.Hash(Guid.NewGuid().ToString(), salt);
-
-                        // Generate ConfirmationCode
-                        Guid g = Guid.NewGuid();
-                        string guidString = Convert.ToBase64String(g.ToByteArray());
-                        guidString = guidString.Replace("=", "");
-                        guidString = guidString.Replace("+", "");
-
-                        var newId = await bll_user.Add(new EF.EndUser
-                        {
-                            MemberId = member.Id,
-                            ConfirmationCode = guidString
-                        });
-
-                        // Send email
-                        await smtp.SendEmail(member.Email,
-                            "Your Agenda Credentials",
-                            "Please click the link below to validate and change your password:<br/>http://" + Request.Host.Value + "/authentication/newpassword/?userid=" + newId + "&code=" + guidString);
-                    }
-
-                    txn.Commit();
-
-                    return Ok();
+                    return View(args);
                 }
                 catch (Exception ex)
                 {

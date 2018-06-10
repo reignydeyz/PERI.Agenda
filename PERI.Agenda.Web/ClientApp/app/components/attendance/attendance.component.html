@@ -80,8 +80,8 @@
                     <input class="form-control" placeholder="First name" name="firstName" ngModel required>
                 </div>
                 <div class="form-group">
-                    <label>Middle name</label>
-                    <input class="form-control" placeholder="Middle name" name="middleName" ngModel required>
+                    <label>Middle initial <small>(1 letter)</small></label>
+                    <input class="form-control" placeholder="Middle initial" name="middleInitial" pattern="[A-Za-z]{1}" ngModel>
                 </div>
                 <div class="form-group">
                     <label>Last name*</label>
@@ -89,15 +89,17 @@
                 </div>
                 <div class="form-group">
                     <label>Nick</label>
-                    <input class="form-control" placeholder="Nick" name="nickName" ngModel required>
+                    <input class="form-control" placeholder="Nick" name="nickName" ngModel>
                 </div>
                 <div class="form-group">
                     <label>Birth date</label>
-                    <input type="date" class="form-control" name="birthDate" ngModel>
+                    <!--<input type="date" class="form-control" name="birthDate" ngModel>-->
+                    <my-date-picker name="birthDate" [options]="myDatePickerOptions"
+                                    ngModel></my-date-picker>
                 </div>
                 <div class="form-group">
                     <label>Gender</label>
-                    <select class="form-control" name="gender" ngModel required>
+                    <select class="form-control" name="gender" ngModel>
                         <option value="">--SELECT--</option>
                     </select>
                 </div>

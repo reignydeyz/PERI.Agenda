@@ -28,21 +28,61 @@ namespace PERI.Agenda.BLL
 
         public async Task<int> Add(EF.Member args)
         {
-            args.IsActive = true;
-            await _unitOfWork.MemberRepository.AddAsync(args);
-            await _unitOfWork.CommitAsync();
-            return args.Id;
-        }
+            var m = new EF.Member();
 
-        public async Task<List<EF.Member>> Add(List<EF.Member> args)
-        {
-            foreach (var r in args)
-                r.IsActive = true;
+            // Validate Email
+            m = await Find(new EF.Member
+            {
+                Email = String.IsNullOrEmpty(args.Email) ? "email" : args.Email.Trim(),
+                CommunityId = args.CommunityId
+            }).FirstOrDefaultAsync();
 
-            await _unitOfWork.MemberRepository.AddRangeAsync(args);
-            await _unitOfWork.CommitAsync();
+            if (m == null)
+            {
+                // Validate Name
+                m = await Find(new EF.Member
+                {
+                    Name = (args.Name).ToUpper(),
+                    CommunityId = args.CommunityId
+                }).FirstOrDefaultAsync();
+            }
 
-            return args;
+            if (m == null)
+            {
+                // Add to Member
+                m = new EF.Member
+                {
+                    Name = (args.Name).ToUpper(),
+                    NickName = args.NickName,
+                    Address = args.Address,
+                    Mobile = args.Mobile,
+                    Email = args.Email,
+                    BirthDate = args.BirthDate,
+                    CommunityId = args.CommunityId,
+                    IsActive = args.IsActive,
+                    CreatedBy = args.CreatedBy,
+                    DateCreated = args.DateCreated
+                };
+
+                await _unitOfWork.MemberRepository.AddAsync(m);
+                _unitOfWork.Commit();
+            }
+            else
+            {
+                // Is equal to New Member info Email?
+                if (m.Email == null || m.Email == string.Empty)
+                {
+                    // Update Email when Existing Member Info has no Email
+                    m.Email = args.Email.Trim();
+                    await Edit(m);
+                }
+                else if (m.Email != args.Email)
+                {
+                    throw new ArgumentException("Oops. There's something wrong with your entry. Please contact admin.");
+                }
+            }
+
+            return m.Id;
         }
 
         public async Task Deactivate(int[] ids)
