@@ -5,3 +5,9 @@
 div.available {
     background-color: none;
 }
+
+thead tr th:nth-child(1),
+tr td:nth-child(1) {
+    min-width: 300px;
+    max-width: 300px;
+}

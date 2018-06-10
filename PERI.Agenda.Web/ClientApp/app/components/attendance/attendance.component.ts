@@ -55,7 +55,9 @@ export class AttendanceModule {
 @Component({
     selector: 'attendance',
     templateUrl: './attendance.component.html',
-    styleUrls: ['./attendance.component.css']
+    styleUrls: ['./attendance.component.css',
+        '../table/table.component.css'
+    ]
 })
 export class AttendanceComponent {
     private am: AttendanceModule;
@@ -74,6 +76,10 @@ export class AttendanceComponent {
     public search: string;
     public pager: Pager;
     public chunk: Chunk;
+
+    public searchAttendees: string;
+    public pagerAttendees: Pager;
+    public chunkAttendees: ChunkAttendees;
 
     private sub: any;
 
@@ -105,6 +111,12 @@ export class AttendanceComponent {
         }, error => this.am.ex.catchError(error));
     }
 
+    private paginateAttendees(page: number) {
+        this.http.get(this.baseUrl + 'api/attendance/' + this.id + '/attendees/page/' + page).subscribe(result => {
+            this.chunkAttendees = result.json() as ChunkAttendees;
+        }, error => this.am.ex.catchError(error));
+    }
+
     ngOnInit() {
         this.sub = this.route.params.subscribe(params => {
             this.id = +params['id']; // (+) converts string 'id' to a number
@@ -115,6 +127,8 @@ export class AttendanceComponent {
         this.search = "";
         this.pager = new Pager();
         this.paginate(this.search, 1);
+
+        this.pagerAttendees = new Pager();
     }
 
     ngOnDestroy() {
@@ -207,6 +221,10 @@ export class AttendanceComponent {
         this.paginate(this.search, page);
     }
 
+    public onPaginateAttendees(page: number) {
+        this.paginateAttendees(page);
+    }
+
     public toggle(a: Attendance) {
         if (a.dateTimeLogged != null && a.dateTimeLogged != '') {
             this.am.delete(this.id, a).subscribe(r => {
@@ -278,6 +296,17 @@ export class AttendanceComponent {
             },
             error => this.am.ex.catchError(error));
     }
+
+    ngAfterViewChecked() {
+        if (this.chunkAttendees) {
+            var tbl = <HTMLTableElement>document.getElementById("tbl");
+            let tbl1: any;
+            tbl1 = $("table");
+            tbl.onscroll = function () {
+                $("table > *").width(tbl1.width() + tbl1.scrollLeft());
+            };
+        }
+    }
 }
 
 export class Attendance {
@@ -288,5 +317,10 @@ export class Attendance {
 
 class Chunk {
     registrants: Attendance[];
+    pager: Pager;
+}
+
+class ChunkAttendees {
+    attendees: Attendance[];
     pager: Pager;
 }

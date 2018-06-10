@@ -15,7 +15,7 @@
     <br />
     <ul class="nav nav-pills">
         <li class="active"><a data-toggle="pill" href="#home">Checklist</a></li>
-        <li><a data-toggle="pill" href="#menu1">Attendees</a></li>
+        <li><a data-toggle="pill" href="#menu1" (click)="onPaginateAttendees(1)">Attendees</a></li>
         <li><a data-toggle="pill" href="#menu2">First-timer Registration</a></li>
         <li><a data-toggle="pill" href="#menu3">RSVP</a></li>
         <li><a data-toggle="pill" href="#menu4" (click)="onStatsLoad()">Stats</a></li>
@@ -71,7 +71,42 @@
 
         </div>
         <div id="menu1" class="tab-pane fade">
+            <p *ngIf="!chunkAttendees"><em>Loading...</em></p>
+            <small *ngIf="chunkAttendees">Found: {{ chunkAttendees.pager.totalItems }}</small>
+            <table id="tbl" class="table table-striped table-hover" *ngIf="chunkAttendees">
+                <thead>
+                    <tr>
+                        <th>Member</th>
+                        <th>Time Logged</th>
+                    </tr>
+                </thead>
+                <tbody style="padding-bottom: 50px">
+                    <tr *ngFor="let e of chunkAttendees.attendees; let i = index">
+                        <td>{{ e.name }}</td>
+                        <td>{{ e.dateTimeLogged |  date: 'MM/dd/yyyy hh:mm a' }}</td>
+                    </tr>
+                </tbody>
+            </table>
 
+            <ng-container *ngIf="chunkAttendees && chunkAttendees.pager.endPage > 1">
+                <ul class="pagination" *ngIf="chunkAttendees">
+                    <li *ngIf="chunkAttendees.pager.currentPage > 1">
+                        <a style="cursor:pointer" (click)="paginateAttendees(1)">First</a>
+                    </li>
+                    <li *ngIf="chunkAttendees.pager.currentPage > 1">
+                        <a style="cursor:pointer" (click)="paginateAttendees(chunkAttendees.pager.currentPage - 1)">Previous</a>
+                    </li>
+                    <li *ngFor="let p of chunkAttendees.pager.pageIndices" [ngClass]="{active: chunkAttendees.pager.currentPage == p}">
+                        <a style="cursor:pointer" (click)="paginateAttendees(p)">{{ p }}</a>
+                    </li>
+                    <li *ngIf="chunkAttendees.pager.currentPage < chunkAttendees.pager.totalPages">
+                        <a style="cursor:pointer" (click)="paginateAttendees(chunkAttendees.pager.currentPage + 1)">Next</a>
+                    </li>
+                    <li *ngIf="chunkAttendees.pager.currentPage < chunkAttendees.pager.totalPages">
+                        <a style="cursor:pointer" (click)="paginateAttendees(chunkAttendees.pager.totalPages)">Last</a>
+                    </li>
+                </ul>
+            </ng-container>
         </div>
         <div id="menu2" class="tab-pane fade">
             <form class="form-group" #frmNew="ngForm" (ngSubmit)="onNewSubmit(frmNew)" ngNativeValidate id="frmNew">

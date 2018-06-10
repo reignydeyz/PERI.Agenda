@@ -44,6 +44,23 @@ namespace PERI.Agenda.Web.Controllers
             return Json(await res.ToListAsync());
         }
 
+        [HttpGet("[action]")]
+        [Route("{id}/Attendees")]
+        public async Task<IActionResult> Attendees(int id)
+        {
+            var bll_a = new BLL.Attendance(unitOfWork);
+
+            var res = from r in bll_a.Find(new EF.Attendance { EventId = id }).OrderBy(x => x.Member.Name)
+                      select new
+                      {
+                          r.Member.Name,
+                          r.MemberId,
+                          r.DateTimeLogged
+                      };
+
+            return Json(await res.ToListAsync());
+        }
+
         /// <summary>
         /// Search or filter Registrants
         /// </summary>
@@ -90,7 +107,31 @@ namespace PERI.Agenda.Web.Controllers
 
             return Json(obj1);
         }
-        
+
+        [HttpGet("[action]")]
+        [Route("{id}/Attendees/Page/{p}")]
+        public async Task<IActionResult> PageAttendees(int id, int p)
+        {
+            var bll_a = new BLL.Attendance(unitOfWork);
+
+            var res = from r in bll_a.Find(new EF.Attendance { EventId = id }).OrderBy(x => x.Member.Name)
+                      select new
+                      {
+                          r.Member.Name,
+                          r.MemberId,
+                          r.DateTimeLogged
+                      };
+
+            var page = p;
+            var pager = new Core.Pager(await res.CountAsync(), page == 0 ? 1 : page, 100);
+
+            dynamic obj1 = new ExpandoObject();
+            obj1.attendees = await res.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize).ToListAsync();
+            obj1.pager = pager;
+
+            return Json(obj1);
+        }
+
         [HttpPut("[action]")]
         [BLL.ValidateModelState]
         [Route("{id}/Add")]
