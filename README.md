@@ -105,11 +105,11 @@ You may need to understand the nature of ASP-MVC before going through the entire
 
 You can test the business logics in the project,```PERI.Agenda.Test```. A good knowledge in performing unit testing is required, especially in XUnit.
 
-#### Configuration
+**Configuration**
 
 The ```appsettings.json``` must be placed in the project folder. In ```Configuration Properties``` make sure ```Copy to Output Directory``` is set to ```Copy if newer```.
 
-#### Sample Data
+**Sample Data**
 
 Sample data can be found in ```TestDataGenerator.cs``` and is used by several test classes.
 
