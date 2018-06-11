@@ -32,6 +32,7 @@ You may need to understand the nature of ASP-MVC before going through the entire
 - [ASP.Net Identity](https://www.asp.net/identity)
 - [Angular 4](https://angular.io)
 - [Chart.js](https://www.chartjs.org/)
+- [XUnit](https://xunit.github.io)
 
 ### Solution Structure
 
@@ -44,6 +45,8 @@ You may need to understand the nature of ASP-MVC before going through the entire
 	- All of the data-manipulations were done here
 - PERI.Agenda.Repository
     - Repository pattern
+- PERI.Agenda.Test
+    - Unit test project
 - PERI.Agenda.Web
 	- The main project
 
