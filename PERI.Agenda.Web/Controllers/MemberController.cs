@@ -130,9 +130,11 @@ namespace PERI.Agenda.Web.Controllers
 
                     logger.Error(ex);
 
-                    ModelState.AddModelError(string.Empty, "Oops. There's something wrong with your entry.");
-
-                    return View(args);
+                    return new ObjectResult(ex.Message)
+                    {
+                        StatusCode = 403,
+                        Value = "Existing name or email."
+                    };
                 }
                 catch (DbUpdateException ex)
                 {
@@ -140,9 +142,11 @@ namespace PERI.Agenda.Web.Controllers
 
                     logger.Error(ex);
 
-                    ModelState.AddModelError(string.Empty, "Existing name or email");
-
-                    return View(args);
+                    return new ObjectResult(ex.Message)
+                    {
+                        StatusCode = 403,
+                        Value = "Existing name or email."
+                    };
                 }
                 catch (Exception ex)
                 {
