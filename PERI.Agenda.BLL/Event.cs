@@ -93,5 +93,25 @@ namespace PERI.Agenda.BLL
         {
             return await unitOfWork.EventRepository.Entities.Where(x => ids.Contains(x.Id) && x.EventCategory.CommunityId == user.Member.CommunityId).CountAsync() == ids.Count();
         }
+
+        /// <summary>
+        /// Gets upcoming events
+        /// </summary>
+        /// <param name="memberId"></param>
+        /// <param name="communityId"></param>
+        /// <returns>List of events</returns>
+        public IQueryable<EF.Event> Calendar(int memberId, int communityId)
+        {
+            return unitOfWork.EventRepository.Entities
+            .Include(x => x.Registrant)
+            .Include(x => x.EventCategory)
+            .Include(x => x.Attendance)
+            .Include(x => x.Location)
+            .Where(x => (x.DateTimeStart >= DateTime.Today && x.DateTimeStart <= DateTime.Now.AddMonths(3))
+            && (x.IsExclusive == false 
+                || x.IsExclusive == null
+                || x.IsExclusive == true && x.Registrant.Select(y => y.MemberId).Contains(memberId))
+            && x.EventCategory.CommunityId == communityId);
+        }
     }
 }

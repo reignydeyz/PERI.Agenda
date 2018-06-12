@@ -263,7 +263,7 @@ export class Event {
     locationId: number;
     location: string;
     attendance: number;
-    isExlusive: boolean;
+    isExclusive: boolean;
 }
 
 class Chunk {

@@ -28,28 +28,17 @@ namespace PERI.Agenda.Web.Controllers
 
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var ev = new EF.Event
-            {
-                DateTimeStart = DateTime.Today,
-                DateTimeEnd = DateTime.Today.AddDays(30),
-                EventCategory = new EF.EventCategory { CommunityId = user.Member.CommunityId }
-            };
-
-            var res = from r in (await bll_e.Find(ev).ToListAsync())
+            var res = from r in bll_e.Calendar(user.Member.Id, user.Member.CommunityId.Value)
                       select new
                       {
                           r.Id,
-                          r.EventCategoryId,
-                          Category = r.EventCategory.Name,
-                          r.Name,
-                          r.IsActive,
                           r.DateTimeStart,
-                          Location = (r.Location == null ? "" : r.Location.Name),
-                          Attendance = r.Attendance.Count,
-                          r.IsExclusive
+                          r.Name,
+                          Category = r.EventCategory.Name,
+                          Location = r.Location.Name
                       };
 
-            return Json(res);
+            return Json(await res.OrderBy(x => x.DateTimeStart).ToListAsync());
         }
     }
 }

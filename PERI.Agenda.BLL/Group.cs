@@ -63,6 +63,7 @@ namespace PERI.Agenda.BLL
         public async Task<EF.Group> Get(EF.Group args)
         {
             return await unitOfWork.GroupRepository.Entities
+                .Include(x => x.GroupMember)
                 .Include(x => x.GroupCategory)
                 .Where(x => x.Id == args.Id).FirstOrDefaultAsync();
         }
