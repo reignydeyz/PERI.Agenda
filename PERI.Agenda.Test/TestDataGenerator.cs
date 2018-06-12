@@ -7,6 +7,7 @@ namespace PERI.Agenda.Test
 {
     public class TestDataGenerator
     {
+        #region MemberTests
         public static IEnumerable<object[]> FindMember_HasResultParams()
         {
             yield return new object[] { new EF.Member { Name = "ALVIN", CommunityId = 1 } };
@@ -26,5 +27,15 @@ namespace PERI.Agenda.Test
             yield return new object[] { new EF.Member { Name = "BRAD PIT", CommunityId = 1 } };
             yield return new object[] { new EF.Member { Name = "Erika Arellano", CommunityId = 1 } };
         }
+        #endregion
+
+        #region EventTests
+        public static IEnumerable<object[]> AddExclusiveEvent_SuccessParams()
+        {
+            yield return new object[] { new EF.Event { Name = "EVENT0001", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(1), IsExclusive = true, IsActive = true } };
+            yield return new object[] { new EF.Event { Name = "EVENT0002", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(2), IsExclusive = true, IsActive = true } };
+            yield return new object[] { new EF.Event { Name = "EVENT0003", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(3), IsExclusive = true, IsActive = true } };
+        }
+        #endregion
     }
 }
