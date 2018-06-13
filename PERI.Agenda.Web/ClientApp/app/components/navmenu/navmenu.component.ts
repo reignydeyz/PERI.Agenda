@@ -26,13 +26,17 @@ export class NavMenuComponent {
     }
 
     ngAfterViewChecked() {
+        $(".navbar-collapse").collapse('hide');
+    }
+
+    /*ngAfterViewChecked() {
 
         // Collapse navbar when page redirects (mobile)
         // https://github.com/twbs/bootstrap/issues/12852
         $(".navbar-nav li a").click(function (event) {
             $(".navbar-collapse").collapse('hide');
         });
-    }
+    }*/
 
     allowedRoles(roles: string): boolean {
         return roles.indexOf(this.role.name) >= 0;

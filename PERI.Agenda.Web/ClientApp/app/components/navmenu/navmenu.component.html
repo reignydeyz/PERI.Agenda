@@ -12,45 +12,61 @@
             </a>
         </div>
         <div class='clearfix'></div>
-        <div class='navbar-collapse collapse' *ngIf="role">
+        <div class='navbar-collapse collapse' *ngIf="role" style="overflow:auto">
             <ul class='nav navbar-nav'>
                 <ng-container *ngIf="allowedRoles('Admin,Developer')">
-                    <li [routerLinkActive]="['link-active']">
-                        <a [routerLink]="['/dashboard']">
-                            <span class='glyphicon glyphicon-dashboard'></span> Dashboard
-                        </a>
-                    </li>
-                    <li [routerLinkActive]="['link-active']">
-                        <a [routerLink]="['/member']">
-                            <span class='glyphicon glyphicon-pawn'></span> Members
-                        </a>
-                    </li>
-                    <li [routerLinkActive]="['link-active']">
-                        <a [routerLink]="['/event']">
-                            <span class='glyphicon glyphicon-calendar'></span> Events
-                        </a>
-                    </li>
-                    <li [routerLinkActive]="['link-active']">
-                        <a [routerLink]="['/eventcategory']">
-                            <span class='glyphicon glyphicon-calendar'></span> Event Categories
-                        </a>
-                    </li>
-                    <li [routerLinkActive]="['link-active']">
-                        <a [routerLink]="['/group']">
-                            <span class='glyphicon glyphicon-list-alt'></span> Groups
-                        </a>
-                    </li>
-                    <li [routerLinkActive]="['link-active']">
-                        <a [routerLink]="['/groupcategory']">
-                            <span class='glyphicon glyphicon-list-alt'></span> Group Categories
-                        </a>
+                    <li>
+                        <a class="nav-link collapsed" data-toggle="collapse" data-target="#submenu1" style="cursor:pointer"><span class='glyphicon glyphicon-lock'></span> Administration</a>
+                        <div class="collapse" id="submenu1" aria-expanded="false">
+                            <ul class="nav">
+                                <li [routerLinkActive]="['link-active']">
+                                    <a [routerLink]="['/dashboard']">
+                                        <span class='glyphicon glyphicon-dashboard'></span> Dashboard
+                                    </a>
+                                </li>
+                                <li [routerLinkActive]="['link-active']">
+                                    <a [routerLink]="['/member']">
+                                        <span class='glyphicon glyphicon-pawn'></span> Members
+                                    </a>
+                                </li>
+                                <li [routerLinkActive]="['link-active']">
+                                    <a [routerLink]="['/event']">
+                                        <span class='glyphicon glyphicon-calendar'></span> Events
+                                    </a>
+                                </li>
+                                <li [routerLinkActive]="['link-active']">
+                                    <a [routerLink]="['/eventcategory']">
+                                        <span class='glyphicon glyphicon-calendar'></span> Event Categories
+                                    </a>
+                                </li>
+                                <li [routerLinkActive]="['link-active']">
+                                    <a [routerLink]="['/group']">
+                                        <span class='glyphicon glyphicon-list-alt'></span> Groups
+                                    </a>
+                                </li>
+                                <li [routerLinkActive]="['link-active']">
+                                    <a [routerLink]="['/groupcategory']">
+                                        <span class='glyphicon glyphicon-list-alt'></span> Group Categories
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
                 </ng-container>
-                <li [routerLinkActive]="['link-active']">
-                    <a [routerLink]="['/calendar']">
-                        <span class='glyphicon glyphicon-calendar'></span> Calendar
-                    </a>
+
+                <li>
+                    <a class="nav-link collapsed" data-toggle="collapse" data-target="#submenu2" style="cursor:pointer"><span class='glyphicon glyphicon-send'></span> My Agenda</a>
+                    <div class="collapse" id="submenu2" aria-expanded="false">
+                        <ul class="nav">
+                            <li [routerLinkActive]="['link-active']">
+                                <a [routerLink]="['/calendar']">
+                                    <span class='glyphicon glyphicon-calendar'></span> Calendar
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
+
                 <li [routerLinkActive]="['link-active']">
                     <a [routerLink]="['/account']">
                         <span class='glyphicon glyphicon-user'></span> Account
