@@ -14,6 +14,7 @@ import { AccountComponent } from './components/account/account.component';
 import { MemberComponent } from './components/member/member.component';
 import { EventComponent } from './components/event/event.component';
 import { EventCategoryComponent } from './components/eventcategory/eventcategory.component';
+import { LocationComponent } from './components/location/location.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AttendanceComponent } from './components/attendance/attendance.component';
 import { GroupComponent } from './components/group/group.component';
@@ -35,6 +36,7 @@ import { MyDatePickerModule } from 'mydatepicker';
         MemberComponent,
         EventComponent,
         EventCategoryComponent,
+        LocationComponent,
         DashboardComponent,
         AttendanceComponent,
         GroupComponent,
@@ -57,6 +59,7 @@ import { MyDatePickerModule } from 'mydatepicker';
             { path: 'member', component: MemberComponent },
             { path: 'event', component: EventComponent },
             { path: 'eventcategory', component: EventCategoryComponent },
+            { path: 'location', component: LocationComponent },
             { path: 'dashboard', component: DashboardComponent },
             { path: 'attendance/:id', component: AttendanceComponent },
             { path: 'group', component: GroupComponent },

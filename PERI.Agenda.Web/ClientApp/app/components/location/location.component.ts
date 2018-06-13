@@ -16,6 +16,14 @@ export class LocationModule {
     }
 }
 
+@Component({
+    selector: 'location',
+    templateUrl: './location.component.html'
+})
+export class LocationComponent {
+
+}
+
 export class Location {
     id: number;
     name: string;
