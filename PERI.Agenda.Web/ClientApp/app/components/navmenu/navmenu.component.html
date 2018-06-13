@@ -12,7 +12,7 @@
             </a>
         </div>
         <div class='clearfix'></div>
-        <div class='navbar-collapse collapse' *ngIf="role" style="overflow:auto">
+        <div class='navbar-collapse collapse' *ngIf="role">
             <ul class='nav navbar-nav'>
                 <ng-container *ngIf="allowedRoles('Admin,Developer')">
                     <li>
