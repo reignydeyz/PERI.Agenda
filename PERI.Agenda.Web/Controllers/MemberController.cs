@@ -181,6 +181,7 @@ namespace PERI.Agenda.Web.Controllers
         {
             
             var bll_member = new BLL.Member(unitOfWork);
+            var bll_user = new BLL.EndUser(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             obj.CommunityId = user.Member.CommunityId;
@@ -188,6 +189,27 @@ namespace PERI.Agenda.Web.Controllers
             var o = AutoMapper.Mapper.Map<EF.Member>(obj);
 
             await bll_member.Edit(o);
+
+            // Add to User if member is not yet User
+            if (!String.IsNullOrEmpty(obj.Email) && bll_user.Get(new EF.EndUser { Member = new EF.Member { Email = obj.Email } }) != null)
+            {
+                // Generate ConfirmationCode
+                Guid g = Guid.NewGuid();
+                string guidString = Convert.ToBase64String(g.ToByteArray());
+                guidString = guidString.Replace("=", "");
+                guidString = guidString.Replace("+", "");
+                
+                var newId = await bll_user.Add(new EF.EndUser
+                {
+                    MemberId = obj.Id,
+                    ConfirmationCode = guidString
+                });
+
+                // Send email
+                await smtp.SendEmail(obj.Email,
+                    "Your Agenda Credentials",
+                    "Please click the link below to validate and change your password:<br/>http://" + Request.Host.Value + "/authentication/newpassword/?userid=" + newId + "&code=" + guidString);
+            }
         }
 
         [BLL.VerifyUser(AllowedRoles = "Admin,Developer")]

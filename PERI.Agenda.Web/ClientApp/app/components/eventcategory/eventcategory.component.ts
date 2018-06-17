@@ -72,9 +72,7 @@ export class EventCategoryComponent {
         this.ecm = new EventCategoryModule();
         this.ecm.http = http;
         this.ecm.baseUrl = baseUrl;
-
         this.ecm.ex = new ErrorExceptionModule();
-        this.ecm.ex.baseUrl = this.baseUrl;
     }
 
     checkAll() {
