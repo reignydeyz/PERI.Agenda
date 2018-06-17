@@ -22,9 +22,11 @@ namespace PERI.Agenda.BLL
             throw new NotImplementedException();
         }
 
-        public Task<int> Add(EF.Location args)
+        public async Task<int> Add(EF.Location args)
         {
-            throw new NotImplementedException();
+            await unitOfWork.LocationRepository.AddAsync(args);
+            unitOfWork.Commit();
+            return args.Id;
         }
 
         public Task Deactivate(int[] ids)
@@ -37,9 +39,10 @@ namespace PERI.Agenda.BLL
             throw new NotImplementedException();
         }
 
-        public Task Delete(int[] ids)
+        public async Task Delete(int[] ids)
         {
-            throw new NotImplementedException();
+            unitOfWork.LocationRepository.RemoveRange(unitOfWork.LocationRepository.Entities.Where(x => ids.Contains(x.Id)));
+            await unitOfWork.CommitAsync();
         }
 
         public Task Delete(EF.Location args)
@@ -47,9 +50,17 @@ namespace PERI.Agenda.BLL
             throw new NotImplementedException();
         }
 
-        public Task Edit(EF.Location args)
+        public async Task Edit(EF.Location args)
         {
-            throw new NotImplementedException();
+            var l = await unitOfWork.LocationRepository.Entities.FirstAsync(x => x.Id == args.Id
+            && x.CommunityId == args.CommunityId);
+
+            l.Name = args.Name;
+            l.Address = args.Address;
+            l.DateTimeModified = DateTime.Now;
+            l.ModifiedBy = args.ModifiedBy;
+
+            unitOfWork.Commit();
         }
 
         public IQueryable<EF.Location> Find(EF.Location args)
@@ -61,9 +72,17 @@ namespace PERI.Agenda.BLL
                 .OrderBy(x => x.Name).AsQueryable();
         }
 
-        public Task<EF.Location> Get(EF.Location args)
+        public async Task<EF.Location> Get(EF.Location args)
         {
-            throw new NotImplementedException();
+            return await unitOfWork.LocationRepository.Entities
+                .Include(x => x.Event).ThenInclude(x => x.Attendance)
+                .FirstOrDefaultAsync(x => x.Id == args.Id
+                && x.CommunityId == args.CommunityId);
+        }
+
+        public async Task<bool> IsSelectedIdsOk(int[] ids, EF.EndUser user)
+        {
+            return await unitOfWork.LocationRepository.Entities.Where(x => ids.Contains(x.Id) && x.CommunityId == user.Member.CommunityId).CountAsync() == ids.Count();
         }
     }
 }
