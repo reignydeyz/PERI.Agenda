@@ -59,7 +59,7 @@ namespace PERI.Agenda.BLL
             ec.Name = args.Name;
             ec.Description = args.Description;
             ec.DateTimeModified = DateTime.Now;
-            ec.ModifiedBy = ec.ModifiedBy;
+            ec.ModifiedBy = args.ModifiedBy;
 
             unitOfWork.Commit();
         }
