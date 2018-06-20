@@ -60,6 +60,13 @@ namespace PERI.Agenda.BLL
             && x.EventSectionId == (args.EventSectionId ?? x.EventSectionId)).AsQueryable();
         }
 
+        public IQueryable<EF.Attendance> FindByEventCategoryIds(int[] ids)
+        {
+            return unitOfWork.AttendanceRepository.Entities
+                .Include(x => x.Member)
+                .Where(x => ids.Contains(x.Event.EventCategoryId)).AsQueryable();
+        }
+
         public Task<EF.Attendance> Get(EF.Attendance args)
         {
             throw new NotImplementedException();

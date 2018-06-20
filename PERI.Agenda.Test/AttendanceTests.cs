@@ -28,5 +28,16 @@ namespace PERI.Agenda.Test
 
             Assert.True(res.Count > 0);
         }
+
+        [Theory]
+        [InlineData(new object[] { new int[] { 1, 2 } })]
+        public void FindAttendanceByEventCategoryIds_HasResults(int[] eventCategoryIds)
+        {
+            var bll_a = new BLL.Attendance(unitOfWork);
+
+            var res = bll_a.FindByEventCategoryIds(eventCategoryIds);
+
+            Assert.True(res.Count() > 0);
+        }
     }
 }
