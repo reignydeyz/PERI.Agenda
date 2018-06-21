@@ -6,12 +6,12 @@ using Xunit;
 
 namespace PERI.Agenda.Test
 {
-    public class AttendanceTests
+    public class EventCategoryTests
     {
         private readonly EF.AARSContext context;
         private readonly BLL.UnitOfWork unitOfWork;
 
-        public AttendanceTests()
+        public EventCategoryTests()
         {
             TestHelper.GetApplicationConfiguration();
             context = new EF.AARSContext();
@@ -19,27 +19,14 @@ namespace PERI.Agenda.Test
         }
 
         [Theory]
-        [InlineData(12530)]
-        [InlineData(12531)]
-        [InlineData(12532)]
-        public void FindRegistrantsByEventId_Exclusive_Success(int eventId)
-        {
-            var bll_a = new BLL.Attendance(unitOfWork);
-
-            var res = bll_a.Registrants(eventId).Result.ToList();
-
-            Assert.True(res.Count > 0);
-        }
-
-        [Theory]
         [InlineData(new object[] { new int[] { 1, 2 } })]
         [InlineData(new object[] { new int[] { 3, 4 } })]
         [InlineData(new object[] { new int[] { 5, 6 } })]
-        public void FindAttendanceByEventCategoryIds_HasResults(int[] eventCategoryIds)
+        public void GetEventCategoriesByIds_HasResults(int[] eventCategoryIds)
         {
-            var bll_a = new BLL.Attendance(unitOfWork);
+            var bll_ec = new BLL.EventCategory(unitOfWork);
 
-            var res = bll_a.FindByEventCategoryIds(eventCategoryIds);
+            var res = bll_ec.GetByIds(eventCategoryIds).Result;
 
             Assert.True(res.Count() > 0);
         }

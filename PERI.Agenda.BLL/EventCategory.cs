@@ -81,6 +81,13 @@ namespace PERI.Agenda.BLL
                 && x.CommunityId == args.CommunityId);
         }
 
+        public async Task<IEnumerable<EF.EventCategory>> GetByIds(int[] ids)
+        {
+            return await unitOfWork.EventCategoryRepository.Entities
+                .Include(x => x.Event).ThenInclude(x => x.Attendance)
+                .Where(x => ids.Contains(x.Id)).ToListAsync();
+        }
+
         public async Task<bool> IsSelectedIdsOk(int[] ids, EF.EndUser user)
         {
             return await unitOfWork.EventCategoryRepository.Entities.Where(x => ids.Contains(x.Id) && x.CommunityId == user.Member.CommunityId).CountAsync() == ids.Count();
