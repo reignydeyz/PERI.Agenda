@@ -163,5 +163,30 @@ namespace PERI.Agenda.Web.Controllers
                 ChartLabels = await res.OrderBy(x => x.DateTimeStart).Select(x => x.Name).ToArrayAsync()
             };
         }
+
+        [BLL.VerifyUser(AllowedRoles = "Admin")]
+        [HttpGet("[action]")]
+        [Route("Events/{id}")]
+        public async Task<IActionResult> Events(int id)
+        {
+            var bll_event = new BLL.Event(unitOfWork);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            var res = from r in (await bll_event.Find(new EF.Event { EventCategory = new EF.EventCategory { CommunityId = user.Member.CommunityId }, EventCategoryId = id }).Take(20).ToListAsync())
+                      select new
+                      {
+                          r.Id,
+                          r.EventCategoryId,
+                          Category = r.EventCategory.Name,
+                          r.Name,
+                          r.IsActive,
+                          r.DateTimeStart,
+                          Location = (r.Location == null ? "" : r.Location.Name),
+                          Attendance = r.Attendance.Count,
+                          r.IsExclusive
+                      };
+
+            return Json(res);
+        }
     }
 }

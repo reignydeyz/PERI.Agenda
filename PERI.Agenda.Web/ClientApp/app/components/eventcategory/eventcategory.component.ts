@@ -9,6 +9,7 @@ import { Title } from '@angular/platform-browser';
 
 import { Statistics, GraphDataSet, GraphData } from '../graph/graph.component';
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
+import { Event } from '../event/event.component';
 
 import { saveAs } from 'file-saver';
 
@@ -53,6 +54,7 @@ export class EventCategoryComponent {
 
     public eventcategory = EventCategory;
     public eventcategories: EventCategory[];
+    events: Event[];
 
     public stats: GraphDataSet;
     public chartLabels: string[] = [];
@@ -93,10 +95,21 @@ export class EventCategoryComponent {
         if (this.eventcategories) {
             var tbl = <HTMLTableElement>document.getElementById("tbl");
             let tbl1: any;
-            tbl1 = $("table");
+            tbl1 = $("#tbl");
             tbl.onscroll = function () {
-                $("table > *").width(tbl1.width() + tbl1.scrollLeft());
+                $("#tbl > *").width(tbl1.width() + tbl1.scrollLeft());
             };
+        }
+
+        if (this.events) {
+            var tbl = <HTMLTableElement>document.getElementById("tbl1");
+            if (tbl != null && tbl != undefined) {
+                let tbl1: any;
+                tbl1 = $("#tbl1");
+                tbl.onscroll = function () {
+                    $("#tbl1 > *").width(tbl1.width() + tbl1.scrollLeft());
+                };
+            }
         }
     }
 
@@ -187,6 +200,12 @@ export class EventCategoryComponent {
         this.http.get(this.baseUrl + 'api/eventcategory/stats/' + id).subscribe(result => {
             this.stats = result.json() as GraphDataSet;
             this.chartLabels = this.stats.chartLabels;
+        }, error => console.error(error));
+    }
+
+    onEventsLoad(id: number) {
+        this.http.get(this.baseUrl + 'api/eventcategory/events/' + id).subscribe(result => {
+            this.events = result.json()
         }, error => console.error(error));
     }
 }

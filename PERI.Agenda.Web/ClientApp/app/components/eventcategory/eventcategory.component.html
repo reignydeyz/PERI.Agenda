@@ -12,7 +12,7 @@
 </p>
 
 <div *ngIf="eventcategories">
-    <table class="table table-striped table-hover" id="tbl">
+    <table class="table table-striped table-hover tbl" id="tbl">
         <thead>
             <tr>
                 <th><input type="checkbox" (change)="checkAll()" id="checkall" /></th>
@@ -108,12 +108,47 @@
                 <h4 class="modal-title">{{ eventcategory.name }}</h4>
             </div>
             <div class="modal-body" *ngIf="chartLabels.length > 0">
-                <canvas baseChart
-                        [datasets]="stats.dataSet"
-                        [labels]="chartLabels"
-                        [options]="chartOptions"
-                        [legend]="chartLegend"
-                        [chartType]="chartType"></canvas>
+                <ul class="nav nav-pills">
+                    <li class="active"><a data-toggle="pill" href="#home">Chart</a></li>
+                    <li><a data-toggle="pill" href="#menu1" (click)="onEventsLoad(eventcategory.id)">List</a></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div id="home" class="tab-pane fade in active">
+                        <br />
+                        <br />
+                        <canvas baseChart
+                                [datasets]="stats.dataSet"
+                                [labels]="chartLabels"
+                                [options]="chartOptions"
+                                [legend]="chartLegend"
+                                [chartType]="chartType"></canvas>
+                    </div>
+                    <div id="menu1" class="tab-pane fade">
+                        <div *ngIf="events">
+                            <table class="table table-striped table-hover tbl1" id="tbl1">
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Event</th>
+                                        <th>Location</th>
+                                        <th>Date</th>
+                                        <th>Attendance</th>
+                                    </tr>
+                                </thead>
+                                <tbody style="padding-bottom: 50px">
+                                    <tr *ngFor="let e of events; let i = index">
+                                        <td>{{ e.category }}</td>
+                                        <td>{{ e.name }}</td>
+                                        <td>{{ e.location }}</td>
+                                        <td>{{ e.dateTimeStart |  date: 'MM/dd/yyyy hh:mm a' }}</td>
+                                        <td>{{ e.attendance }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
