@@ -19,8 +19,8 @@ namespace PERI.Agenda.Test
         }
 
         [Theory]
-        //[InlineData(2)]
-        //[InlineData(30)]
+        [InlineData(2)]
+        [InlineData(30)]
         [InlineData(79)]
         public void FindEvents_HasResult(int groupId)
         {
