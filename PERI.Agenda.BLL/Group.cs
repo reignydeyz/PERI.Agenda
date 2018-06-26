@@ -67,5 +67,16 @@ namespace PERI.Agenda.BLL
                 .Include(x => x.GroupCategory)
                 .Where(x => x.Id == args.Id).FirstOrDefaultAsync();
         }
+
+        /// <summary>
+        /// Gets the list of attendance from events attended by any member of the group
+        /// </summary>
+        /// <param name="id">Group Id</param>
+        /// <returns>List of attendance</returns>
+        public IQueryable<EF.Attendance> Activities(int id)
+        {
+            return unitOfWork.AttendanceRepository.Entities
+                .Where(x => x.Member.GroupMember.Any(y => y.GroupId == id));
+        }
     }
 }
