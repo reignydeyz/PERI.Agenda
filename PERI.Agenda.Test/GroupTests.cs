@@ -53,5 +53,32 @@ namespace PERI.Agenda.Test
 
             Assert.True(events.Count() > 0);
         }
+
+        [Theory]
+        [MemberData(nameof(TestDataGenerator.FindGroup_HasResultParams), MemberType = typeof(TestDataGenerator))]
+        public void FindGroup_HasResult(EF.Group args)
+        {
+            var bll_g = new BLL.Group(unitOfWork);
+
+            var groups = bll_g.Find(args).ToList();
+
+            Assert.True(groups.Count > 0);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void GetGroupsByGroupCategoryId_HasResult(int groupCategoryId)
+        {
+            var bll_g = new BLL.Group(unitOfWork);
+
+            // CommunityId
+            var gc = new EF.GroupCategory { CommunityId = 1 };
+
+            var groups = bll_g.Find(new EF.Group { GroupCategoryId = groupCategoryId, GroupCategory = gc }).ToList();
+
+            Assert.True(groups.Count > 0);
+        }
     }
 }

@@ -37,5 +37,13 @@ namespace PERI.Agenda.Test
             yield return new object[] { new EF.Event { Name = "EVENT0003", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(3), IsExclusive = true, IsActive = true } };
         }
         #endregion
+
+        #region GroupTests
+        public static IEnumerable<object[]> FindGroup_HasResultParams()
+        {
+            yield return new object[] { new EF.Group { Name = "CELL", GroupCategory = new EF.GroupCategory { CommunityId = 1 } } };
+            yield return new object[] { new EF.Group { Name = "NETWORK", GroupCategory = new EF.GroupCategory { CommunityId = 1 } } };
+        }
+        #endregion
     }
 }

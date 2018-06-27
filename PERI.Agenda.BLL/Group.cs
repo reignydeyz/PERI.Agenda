@@ -23,14 +23,17 @@ namespace PERI.Agenda.BLL
             throw new NotImplementedException();
         }
 
-        public Task<int> Add(EF.Group args)
+        public async Task<int> Add(EF.Group args)
         {
-            throw new NotImplementedException();
+            await unitOfWork.GroupRepository.AddAsync(args);
+            unitOfWork.Commit();
+            return args.Id;
         }
 
-        public Task Deactivate(int[] ids)
+        public async Task Deactivate(int[] ids)
         {
-            throw new NotImplementedException();
+            unitOfWork.GroupRepository.RemoveRange(unitOfWork.GroupRepository.Entities.Where(x => ids.Contains(x.Id)));
+            await unitOfWork.CommitAsync();
         }
 
         public Task Delete(int id)
@@ -48,15 +51,25 @@ namespace PERI.Agenda.BLL
             throw new NotImplementedException();
         }
 
-        public Task Edit(EF.Group args)
+        public async Task Edit(EF.Group args)
         {
-            throw new NotImplementedException();
+            var g = await unitOfWork.GroupRepository.Entities.FirstAsync(x => x.Id == args.Id);
+
+            g.Name = args.Name;
+            g.Description = args.Description;
+            g.GroupCategoryId = args.GroupCategoryId;
+            g.GroupLeader = args.GroupLeader;
+
+            unitOfWork.Commit();
         }
 
         public IQueryable<EF.Group> Find(EF.Group args)
         {
             return unitOfWork.GroupRepository.Entities
                 .Include(x => x.GroupMember).ThenInclude(x => x.Member)
+                .Where(x => x.Name.Contains(args.Name ?? "")
+                && x.GroupCategoryId == (args.GroupCategoryId == null || args.GroupCategoryId == 0 ? x.GroupCategoryId : args.GroupCategoryId)
+                && x.GroupCategory.CommunityId == args.GroupCategory.CommunityId)
                 .OrderBy(x => x.Name).AsQueryable();
         }
 
