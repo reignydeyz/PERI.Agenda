@@ -11,5 +11,6 @@ namespace PERI.Agenda.Web.Controllers
     [ApiController]
     public class GroupController : ControllerBase
     {
+
     }
 }
