@@ -107,11 +107,13 @@ namespace PERI.Agenda.BLL
             .Include(x => x.EventCategory)
             .Include(x => x.Attendance)
             .Include(x => x.Location)
+            .Include(x => x.Rsvp)
             .Where(x => (x.DateTimeStart >= DateTime.Today && x.DateTimeStart <= DateTime.Now.AddMonths(3))
             && (x.IsExclusive == false 
                 || x.IsExclusive == null
                 || x.IsExclusive == true && x.Registrant.Select(y => y.MemberId).Contains(memberId))
-            && x.EventCategory.CommunityId == communityId);
+            && x.EventCategory.CommunityId == communityId
+            && x.Attendance.Count(y => y.MemberId == memberId) <= 0);
         }
     }
 }

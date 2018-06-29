@@ -22,7 +22,7 @@ namespace PERI.Agenda.BLL
         IRepository<EF.Member> MemberRepository { get; }
         IRepository<EF.Registrant> RegistrantRepository { get; }
         IRepository<EF.Role> RoleRepository { get; }
-        
+        IRepository<EF.Rsvp> RsvpRepository { get; }
         /// <summary>
         /// Commits all changes
         /// </summary>

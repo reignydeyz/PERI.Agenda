@@ -2,17 +2,20 @@
 
 <hr />
 
-<p *ngIf="!events"><em>Loading...</em></p>
-<div *ngIf="events">
+<p *ngIf="!calendarEvents"><em>Loading...</em></p>
+<div *ngIf="calendarEvents">
     <div class="row">
-        <div *ngFor="let e of events; let i = index" class="col-xs-12 col-sm-6 col-lg-4">
+        <div *ngFor="let e of calendarEvents; let i = index" class="col-xs-12 col-sm-6 col-lg-4">
             <div class="thumbnail">
                 <div class="caption">
                     <p>{{ e.dateTimeStart |  date: 'EEEE, MMM dd, hh:mm a' }}</p>
-                    <h4>{{ e.name }}</h4>
+                    <h4>{{ e.event }}</h4>
                     <p><i>{{ e.category }}</i></p>
                     <p>{{ e.location }}</p>
-                    <p><a href="#" class="btn btn-primary" role="button">Going</a> <a href="#" class="btn btn-default" role="button">Not interested</a></p>
+                    <p>
+                        <a href="#" class="btn btn-primary" role="button" *ngIf="e.isGoing == false || e.isGoing == null || e.isGoing == undefined">Going</a> 
+                        <a href="#" class="btn btn-default" role="button" *ngIf="e.isGoing == true || e.isGoing == null || e.isGoing == undefined">Not interested</a>
+                    </p>
                 </div>
             </div>
         </div>

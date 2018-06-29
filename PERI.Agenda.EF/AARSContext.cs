@@ -7,6 +7,15 @@ namespace PERI.Agenda.EF
 {
     public partial class AARSContext : DbContext
     {
+        public AARSContext()
+        {
+        }
+
+        public AARSContext(DbContextOptions<AARSContext> options)
+            : base(options)
+        {
+        }
+
         public virtual DbSet<Attendance> Attendance { get; set; }
         public virtual DbSet<Community> Community { get; set; }
         public virtual DbSet<EndUser> EndUser { get; set; }
@@ -22,6 +31,7 @@ namespace PERI.Agenda.EF
         public virtual DbSet<Recurrence> Recurrence { get; set; }
         public virtual DbSet<Registrant> Registrant { get; set; }
         public virtual DbSet<Role> Role { get; set; }
+        public virtual DbSet<Rsvp> Rsvp { get; set; }
         public virtual DbSet<User> User { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -456,6 +466,29 @@ namespace PERI.Agenda.EF
                     .IsRequired()
                     .HasMaxLength(20)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Rsvp>(entity =>
+            {
+                entity.HasKey(e => new { e.EventId, e.MemberId });
+
+                entity.ToTable("RSVP", "prompt");
+
+                entity.HasIndex(e => new { e.EventId, e.MemberId })
+                    .HasName("UQ_RSVP_EventId_MemberId")
+                    .IsUnique();
+
+                entity.Property(e => e.DateCreated).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Event)
+                    .WithMany(p => p.Rsvp)
+                    .HasForeignKey(d => d.EventId)
+                    .HasConstraintName("FK_RSVP_Event");
+
+                entity.HasOne(d => d.Member)
+                    .WithMany(p => p.Rsvp)
+                    .HasForeignKey(d => d.MemberId)
+                    .HasConstraintName("FK_RSVP_Member");
             });
 
             modelBuilder.Entity<User>(entity =>

@@ -9,6 +9,7 @@ namespace PERI.Agenda.EF
         {
             Attendance = new HashSet<Attendance>();
             Registrant = new HashSet<Registrant>();
+            Rsvp = new HashSet<Rsvp>();
         }
 
         public int Id { get; set; }
@@ -31,5 +32,6 @@ namespace PERI.Agenda.EF
         public Location Location { get; set; }
         public ICollection<Attendance> Attendance { get; set; }
         public ICollection<Registrant> Registrant { get; set; }
+        public ICollection<Rsvp> Rsvp { get; set; }
     }
 }

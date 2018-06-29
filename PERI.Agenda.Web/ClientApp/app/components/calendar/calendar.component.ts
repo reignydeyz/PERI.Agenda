@@ -1,7 +1,6 @@
 ﻿import { Component, Inject, AfterViewInit } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
 
-import { Event } from '../event/event.component';
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
 
 import { Title } from '@angular/platform-browser';
@@ -12,7 +11,7 @@ import * as moment from "moment";
     templateUrl: './calendar.component.html'
 })
 export class CalendarComponent {
-    public events: Event[];
+    public calendarEvents: CalendarEvent[];
 
     private ex: ErrorExceptionModule;
 
@@ -22,7 +21,16 @@ export class CalendarComponent {
 
     ngAfterViewInit() {
         this.http.get(this.baseUrl + 'api/calendar/events').subscribe(result => {
-            this.events = result.json() as Event[];
+            this.calendarEvents = result.json() as CalendarEvent[];
         }, error => this.ex.catchError(error));
     }
+}
+
+export class CalendarEvent {
+    id: number;
+    eventCategoryId: number;
+    category: string;
+    event: string;
+    dateTimeStart: string;
+    isGoing: boolean;
 }

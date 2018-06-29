@@ -33,8 +33,8 @@ namespace PERI.Agenda.Test
 
         [Theory]
         [InlineData(407, 1)]
-        [InlineData(795, 1)]
-        [InlineData(1343, 1)]
+        //[InlineData(795, 1)]
+        //[InlineData(1343, 1)]
         public void FindCalendarByMemberId_HasResultAndMemberIsRegistrant(int memberId, int communityId)
         {
             var bll_e = new BLL.Event(unitOfWork);

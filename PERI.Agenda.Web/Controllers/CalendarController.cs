@@ -21,6 +21,17 @@ namespace PERI.Agenda.Web.Controllers
             unitOfWork = new UnitOfWork(new EF.AARSContext());
         }
 
+        [NonAction]
+        private bool? IsGoing(EF.Rsvp args)
+        {
+            if (args == null)
+                return null;
+            else
+            {
+                return args.IsGoing;
+            }
+        }
+
         [HttpGet("[action]")]
         public async Task<IActionResult> Events()
         {
@@ -33,9 +44,10 @@ namespace PERI.Agenda.Web.Controllers
                       {
                           r.Id,
                           r.DateTimeStart,
-                          r.Name,
+                          Event = r.Name,
                           Category = r.EventCategory.Name,
-                          Location = r.Location.Name
+                          Location = r.Location.Name,
+                          IsGoing = IsGoing(r.Rsvp.FirstOrDefault(x => x.MemberId == user.Member.Id))
                       };
 
             return Json(await res.OrderBy(x => x.DateTimeStart).ToListAsync());
