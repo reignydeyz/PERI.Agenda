@@ -74,14 +74,22 @@ namespace PERI.Agenda.Test
                     // Gets members from a group
                     // Example: I selected group Id: 30
                     var gr = bll_g.Get(new EF.Group { Id = 30 }).Result;
-                    var registrants = from r in gr.GroupMember
+                    var registrants = (from r in gr.GroupMember
                                       select new EF.Registrant
                                       {
                                           EventId = eventId,
                                           MemberId = r.MemberId.Value,
                                           DateCreated = DateTime.Now,
                                           CreatedBy = "TEST"
-                                      };
+                                      }).ToList();
+
+                    // Also add the group leader
+                    registrants.Add(new EF.Registrant {
+                        EventId = eventId,
+                        MemberId = gr.GroupLeader.Value,
+                        DateCreated = DateTime.Now,
+                        CreatedBy = "TEST"
+                    });
 
                     // Add registrants
                     bll_r.Add(registrants).Wait();
