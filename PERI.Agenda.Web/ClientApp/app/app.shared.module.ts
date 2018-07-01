@@ -19,6 +19,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AttendanceComponent } from './components/attendance/attendance.component';
 import { GroupComponent } from './components/group/group.component';
 import { GroupCategoryComponent } from './components/groupcategory/groupcategory.component';
+import { GroupMemberComponent } from './components/groupmember/groupmember.component';
 import { CalendarComponent } from './components/calendar/calendar.component';
 
 import { ChartsModule } from 'ng2-charts';
@@ -41,6 +42,7 @@ import { MyDatePickerModule } from 'mydatepicker';
         AttendanceComponent,
         GroupComponent,
         GroupCategoryComponent,
+        GroupMemberComponent,
         CalendarComponent
     ],
     imports: [
@@ -64,6 +66,7 @@ import { MyDatePickerModule } from 'mydatepicker';
             { path: 'attendance/:id', component: AttendanceComponent },
             { path: 'group', component: GroupComponent },
             { path: 'groupcategory', component: GroupCategoryComponent },
+            { path: 'groupmember', component: GroupMemberComponent },
             { path: 'calendar', component: CalendarComponent },
 
             { path: '**', redirectTo: 'dashboard' }

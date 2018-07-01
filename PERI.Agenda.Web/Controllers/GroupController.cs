@@ -70,5 +70,24 @@ namespace PERI.Agenda.Web.Controllers
 
             return Json(obj1);
         }
+        
+        [HttpGet("[action]")]
+        [Route("Get/{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            var bll_g = new BLL.Group(unitOfWork);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            var r = await bll_g.Get(new EF.Group { Id = id });
+
+            dynamic obj = new ExpandoObject();
+            obj.id = r.Id;
+            obj.groupCategoryId = r.GroupCategoryId;
+            obj.category = r.GroupCategory.Name;
+            obj.name = r.Name;
+            obj.members = r.GroupMember.Count;
+
+            return Json(obj);
+        }
     }
 }

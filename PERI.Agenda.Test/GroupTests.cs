@@ -80,5 +80,16 @@ namespace PERI.Agenda.Test
 
             Assert.True(groups.Count > 0);
         }
+
+        [Theory]
+        [MemberData(nameof(TestDataGenerator.FindMembers_HasResultParams), MemberType = typeof(TestDataGenerator))]
+        public void FindMembers_HasResult(EF.Member obj, int groupId)
+        {
+            var bll_g = new BLL.Group(unitOfWork);
+
+            var members = bll_g.Members(obj, groupId);
+
+            Assert.True(members.Count() > 0);
+        }
     }
 }

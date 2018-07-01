@@ -44,6 +44,12 @@ namespace PERI.Agenda.Test
             yield return new object[] { new EF.Group { Name = "CELL", GroupCategory = new EF.GroupCategory { CommunityId = 1 } } };
             yield return new object[] { new EF.Group { Name = "NETWORK", GroupCategory = new EF.GroupCategory { CommunityId = 1 } } };
         }
+
+        public static IEnumerable<object[]> FindMembers_HasResultParams()
+        {
+            yield return new object[] { new EF.Member { Name = "JHE" }, 30 };
+            yield return new object[] { new EF.Member { Name = "JOEL" }, 40 };
+        }
         #endregion
     }
 }

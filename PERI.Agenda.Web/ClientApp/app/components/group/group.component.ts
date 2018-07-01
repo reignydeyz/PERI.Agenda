@@ -7,6 +7,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { GroupCategoryModule, GroupCategory } from '../groupcategory/groupcategory.component';
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
+import { Member } from '../member/member.component';
 import { Pager } from '../pager/pager.component';
 import { Title } from '@angular/platform-browser';
 
@@ -56,6 +57,20 @@ export class GroupComponent {
         }, error => this.gm.ex.catchError(error));
     }
 
+    public onMembersLoad(groupId: number) {
+        // https://stackoverflow.com/questions/19589053/how-to-open-specific-tab-of-bootstrap-nav-tabs-on-click-of-a-particuler-link-usi
+        $('.nav-pills a[href="#home"]').tab('show');
+
+        this.onEditInit(groupId);
+    }
+
+    public onEditInit(groupId: number) {
+        this.http.get(this.baseUrl + 'api/group/get/' + groupId)
+            .subscribe(result => {
+                this.group = result.json();
+            }, error => this.gm.ex.catchError(error));
+    }
+
     public onPaginate(page: number) {
         this.paginate(this.search, page);
     }
@@ -66,7 +81,7 @@ export class GroupComponent {
         this.pager = new Pager();
         this.paginate(this.group, 1);
 
-        this.titleService.setTitle('Events');
+        this.titleService.setTitle('Groups');
     }
 
     checkAll() {
@@ -90,9 +105,9 @@ export class GroupComponent {
         if (this.chunk) {
             var tbl = <HTMLTableElement>document.getElementById("tbl");
             let tbl1: any;
-            tbl1 = $("table");
+            tbl1 = $("#tbl");
             tbl.onscroll = function () {
-                $("table > *").width(tbl1.width() + tbl1.scrollLeft());
+                $("#tbl > *").width(tbl1.width() + tbl1.scrollLeft());
             };
         }
     }
