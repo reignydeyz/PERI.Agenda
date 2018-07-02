@@ -29,5 +29,22 @@ namespace PERI.Agenda.BLL
                 && x.Member.Name.Contains(args.Name ?? ""))
                 .Select(x => x.Member).OrderBy(x => x.Name);
         }
+
+        public IQueryable<EF.GroupMember> Checklist(EF.Member args, int id)
+        {
+            return from m in unitOfWork.MemberRepository.Entities
+                   join gm in unitOfWork.GroupMemberRepository.Entities on m.Id equals gm.MemberId into left
+                   from gm in left.DefaultIfEmpty()
+                   where gm.GroupId == id
+                   && m.Id != gm.Group.GroupLeader
+                   && m.Name.Contains(args.Name ?? "")
+                   select new EF.GroupMember
+                   {
+                       Member = m,
+                       Group = gm.Group,
+                       GroupId = gm == null ? 0 : gm.GroupId,
+                       MemberId = m.Id
+                   };
+        }
     }
 }

@@ -51,5 +51,19 @@ namespace PERI.Agenda.Test
             yield return new object[] { new EF.Member { Name = "JOEL" }, 40 };
         }
         #endregion
+
+        #region GroupMemberTests
+        public static IEnumerable<object[]> Checklist_IsMemberParams()
+        {
+            yield return new object[] { new EF.Member { Name = "JHE" }, 30 };
+            yield return new object[] { new EF.Member { Name = "JOEL" }, 40 };
+        }
+
+        public static IEnumerable<object[]> Checklist_IsNotMemberParams()
+        {
+            yield return new object[] { new EF.Member { Name = "JONATHAN" }, 30 };
+            yield return new object[] { new EF.Member { Name = "LEBRON" }, 40 };
+        }
+        #endregion
     }
 }
