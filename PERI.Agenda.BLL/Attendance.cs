@@ -74,9 +74,11 @@ namespace PERI.Agenda.BLL
 
         public async Task<IQueryable<EF.Attendance>> Registrants(int eventId)
         {
-            var ev = await unitOfWork.EventRepository.Entities.FirstAsync(x => x.Id == eventId);
+            var ev = await unitOfWork.EventRepository.Entities
+                .Include(x => x.EventCategory)
+                .FirstAsync(x => x.Id == eventId);
 
-            var members = unitOfWork.MemberRepository.Entities.Where(x => x.IsActive);
+            var members = unitOfWork.MemberRepository.Entities.Where(x => x.IsActive && x.CommunityId == ev.EventCategory.CommunityId);
             var registrants = unitOfWork.RegistrantRepository.Entities.Where(x => x.EventId == eventId);
             var attendance = unitOfWork.AttendanceRepository.Entities.Where(x => x.EventId == eventId);
 
@@ -115,9 +117,11 @@ namespace PERI.Agenda.BLL
         {
             member = member == null ? string.Empty : member.ToLower();
 
-            var ev = await unitOfWork.EventRepository.Entities.FirstAsync(x => x.Id == eventId);
+            var ev = await unitOfWork.EventRepository.Entities
+                .Include(x => x.EventCategory)
+                .FirstAsync(x => x.Id == eventId);
 
-            var members = unitOfWork.MemberRepository.Entities.Where(x => x.IsActive);
+            var members = unitOfWork.MemberRepository.Entities.Where(x => x.IsActive && x.CommunityId  == ev.EventCategory.CommunityId);
             var registrants = unitOfWork.RegistrantRepository.Entities.Where(x => x.EventId == eventId);
             var attendance = unitOfWork.AttendanceRepository.Entities.Where(x => x.EventId == eventId);
 
