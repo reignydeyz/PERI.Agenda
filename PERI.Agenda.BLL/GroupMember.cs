@@ -38,6 +38,7 @@ namespace PERI.Agenda.BLL
                    where gm.GroupId == id
                    && m.Id != gm.Group.GroupLeader
                    && m.Name.Contains(args.Name ?? "")
+                   && m.CommunityId == args.CommunityId
                    select new EF.GroupMember
                    {
                        Member = m,
