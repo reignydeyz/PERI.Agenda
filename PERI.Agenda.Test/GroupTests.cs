@@ -85,9 +85,9 @@ namespace PERI.Agenda.Test
         [MemberData(nameof(TestDataGenerator.FindMembers_HasResultParams), MemberType = typeof(TestDataGenerator))]
         public void FindMembers_HasResult(EF.Member obj, int groupId)
         {
-            var bll_g = new BLL.Group(unitOfWork);
+            var bll_gm = new BLL.GroupMember(unitOfWork);
 
-            var members = bll_g.Members(obj, groupId);
+            var members = bll_gm.Members(obj, groupId);
 
             Assert.True(members.Count() > 0);
         }
