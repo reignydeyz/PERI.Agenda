@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace PERI.Agenda.BLL
 {
@@ -13,6 +14,21 @@ namespace PERI.Agenda.BLL
         public GroupMember(UnitOfWork _unitOfWork)
         {
             unitOfWork = _unitOfWork;
+        }
+
+        public async Task<int> Add(EF.GroupMember args)
+        {
+            await unitOfWork.GroupMemberRepository.AddAsync(args);
+            await unitOfWork.CommitAsync();
+
+            return args.Id;
+        }
+
+        public async Task Delete(EF.GroupMember args)
+        {
+            var a = await unitOfWork.GroupMemberRepository.Entities.FirstAsync(x => x.MemberId == args.MemberId && x.GroupId == args.GroupId);
+            unitOfWork.GroupMemberRepository.Remove(a);
+            unitOfWork.Commit();
         }
 
         /// <summary>
@@ -32,20 +48,27 @@ namespace PERI.Agenda.BLL
 
         public IQueryable<EF.GroupMember> Checklist(EF.Member args, int id)
         {
-            return from m in unitOfWork.MemberRepository.Entities
-                   join gm in unitOfWork.GroupMemberRepository.Entities on m.Id equals gm.MemberId into left
-                   from gm in left.DefaultIfEmpty()
-                   where gm.GroupId == id
-                   && m.Id != gm.Group.GroupLeader
-                   && m.Name.Contains(args.Name ?? "")
-                   && m.CommunityId == args.CommunityId
+            var bll_g = new BLL.Group(unitOfWork);
+            var g = bll_g.Get(new EF.Group { Id = id }).Result;
+
+            var res = from m in unitOfWork.MemberRepository.Entities
+                        .Where(x => x.IsActive == true 
+                        && x.CommunityId == args.CommunityId
+                        && x.Id != g.GroupLeader)
+                   join gm in unitOfWork.GroupMemberRepository.Entities
+                        .Where(x => x.GroupId == id) on m.Id equals gm.MemberId into left
+                    from rec in left.DefaultIfEmpty()
+                    where m.Name.Contains(args.Name ?? "")
+                    && m.Id != rec.Group.GroupLeader
                    select new EF.GroupMember
                    {
                        Member = m,
-                       Group = gm.Group,
-                       GroupId = gm == null ? 0 : gm.GroupId,
+                       Group = rec.Group,
+                       GroupId = rec == null ? 0 : rec.GroupId,
                        MemberId = m.Id
                    };
+
+            return res.OrderBy(x => x.Member.Name);
         }
     }
 }

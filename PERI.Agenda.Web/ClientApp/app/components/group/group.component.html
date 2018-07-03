@@ -85,4 +85,7 @@
     </ul>
 </ng-container>
 
-<groupmember [group]="group" *ngIf="group"></groupmember>
+<groupmember [group]="group" 
+             (change)="onGroupInfoChange($event)"
+             *ngIf="group">
+</groupmember>

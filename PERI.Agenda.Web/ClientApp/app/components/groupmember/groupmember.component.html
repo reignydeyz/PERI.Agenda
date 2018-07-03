@@ -43,7 +43,48 @@
                         </div>
                     </div>
                     <div id="menu1" class="tab-pane fade">
+                        <br />
+                        <form class="form-group" #frmSearchChecklist="ngForm" (ngSubmit)="onChecklistSearchSubmit(frmSearchChecklist)" ngNativeValidate id="frmSearchChecklist">
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input class="form-control" placeholder="Name" name="name" ngModel autocomplete="off">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Search</button>
+                            <a class="btn btn-default" onclick='document.getElementById("frmSearchChecklist").reset()'>Clear</a>
+                        </form>
+                        <hr />
 
+                        <p *ngIf="chunk"><small>Found: {{ chunk.pager.totalItems }}</small></p>
+
+                        <div class="row" *ngIf="chunk" style="height:70vh; overflow:auto">
+                            <div *ngFor="let r of chunk.checklist; let i = index" class="col-xs-12 col-sm-6 col-lg-4">
+                                <div class="thumbnail" [ngClass]="{member: r.groupId > 0, available: r.groupId == 0}" style="cursor: pointer" (click)="toggle(r)">
+                                    <div class="caption">
+                                        <h4>{{ r.name }}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ng-container *ngIf="chunk && chunk.pager.endPage > 1">
+                            <ul class="pagination" *ngIf="chunk">
+                                <li *ngIf="chunk.pager.currentPage > 1">
+                                    <a style="cursor:pointer" (click)="onPaginate(1)">First</a>
+                                </li>
+                                <li *ngIf="chunk.pager.currentPage > 1">
+                                    <a style="cursor:pointer" (click)="onPaginate(chunk.pager.currentPage - 1)">Previous</a>
+                                </li>
+                                <li *ngFor="let p of chunk.pager.pageIndices" [ngClass]="{active: chunk.pager.currentPage == p}">
+                                    <a style="cursor:pointer" (click)="onPaginate(p)">{{ p }}</a>
+                                </li>
+                                <li *ngIf="chunk.pager.currentPage < chunk.pager.totalPages">
+                                    <a style="cursor:pointer" (click)="onPaginate(chunk.pager.currentPage + 1)">Next</a>
+                                </li>
+                                <li *ngIf="chunk.pager.currentPage < chunk.pager.totalPages">
+                                    <a style="cursor:pointer" (click)="onPaginate(chunk.pager.totalPages)">Last</a>
+                                </li>
+                            </ul>
+                        </ng-container>
                     </div>
                 </div>
             </div>

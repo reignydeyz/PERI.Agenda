@@ -124,6 +124,25 @@ export class GroupComponent {
         this.paginate(g, 1);
         this.search = g;
     }
+
+    onGroupInfoChange(groupId: number) {
+        if (groupId > 0) {
+            // Get group
+            this.http.get(this.baseUrl + 'api/group/get/' + groupId)
+                .subscribe(result => {
+                    var g = result.json();
+
+                    // Update groups view
+                    for (let e of this.chunk.groups) {
+                        if (e.id == groupId) {
+                            let index: number = this.chunk.groups.indexOf(e);
+                            this.chunk.groups[index] = g;
+                        }
+                    }
+
+                }, error => this.gm.ex.catchError(error));
+        }
+    }
 }
 
 export class Group {
