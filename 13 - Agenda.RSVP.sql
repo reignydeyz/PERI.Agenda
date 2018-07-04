@@ -4,6 +4,7 @@ create table prompt.RSVP
 	MemberId int not null,
 	IsGoing bit not null,
 	DateCreated datetime not null,
+	DateModified datetime not null,
 	
 	primary key(EventId, MemberId),	
 	

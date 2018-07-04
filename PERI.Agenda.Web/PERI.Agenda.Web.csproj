@@ -38,6 +38,7 @@
     <None Remove="ClientApp\app\components\graph\graph.component.ts" />
     <None Remove="ClientApp\app\components\groupmember\groupmember.component.ts" />
     <None Remove="ClientApp\app\components\location\location.component.ts" />
+    <None Remove="ClientApp\app\components\rsvp\rsvp.component.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -57,6 +58,7 @@
     <TypeScriptCompile Include="ClientApp\app\components\groupmember\groupmember.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\location\location.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\pager\pager.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\rsvp\rsvp.component.ts" />
   </ItemGroup>
 
   <ItemGroup>

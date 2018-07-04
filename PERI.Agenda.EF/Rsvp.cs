@@ -9,6 +9,7 @@ namespace PERI.Agenda.EF
         public int MemberId { get; set; }
         public bool IsGoing { get; set; }
         public DateTime DateCreated { get; set; }
+        public DateTime DateModified { get; set; }
 
         public Event Event { get; set; }
         public Member Member { get; set; }

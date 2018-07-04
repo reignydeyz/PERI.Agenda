@@ -13,8 +13,8 @@
                     <p><i>{{ e.category }}</i></p>
                     <p>{{ e.location }}</p>
                     <p>
-                        <a href="#" class="btn btn-primary" role="button" *ngIf="e.isGoing == false || e.isGoing == null || e.isGoing == undefined">Going</a> 
-                        <a href="#" class="btn btn-default" role="button" *ngIf="e.isGoing == true || e.isGoing == null || e.isGoing == undefined">Not interested</a>
+                        <a style="cursor:pointer" (click)="onGoingClick(e.id)" class="btn btn-primary" role="button" *ngIf="e.isGoing == false || e.isGoing == null || e.isGoing == undefined">Going</a> 
+                        <a style="cursor:pointer" (click)="onNotInterestedClick(e.id)" class="btn btn-default" role="button" *ngIf="e.isGoing == true || e.isGoing == null || e.isGoing == undefined">Not interested</a>
                     </p>
                 </div>
             </div>
