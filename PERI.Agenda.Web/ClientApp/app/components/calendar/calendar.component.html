@@ -8,13 +8,17 @@
         <div *ngFor="let e of calendarEvents; let i = index" class="col-xs-12 col-sm-6 col-lg-4">
             <div class="thumbnail">
                 <div class="caption">
-                    <p>{{ e.dateTimeStart |  date: 'EEEE, MMM dd, hh:mm a' }}</p>
+                    <p>
+                        {{ e.dateTimeStart |  date: 'EEEE, MMM dd, hh:mm a' }}
+                        <span class="pull-right glyphicon glyphicon-thumbs-up" *ngIf="e.isGoing == true"></span>
+                        <span class="pull-right glyphicon glyphicon-thumbs-down" *ngIf="e.isGoing == false"></span>
+                    </p>
                     <h4>{{ e.event }}</h4>
                     <p><i>{{ e.category }}</i></p>
                     <p>{{ e.location }}</p>
                     <p>
-                        <a style="cursor:pointer" (click)="onGoingClick(e.id)" class="btn btn-primary" role="button" *ngIf="e.isGoing == false || e.isGoing == null || e.isGoing == undefined">Going</a> 
-                        <a style="cursor:pointer" (click)="onNotInterestedClick(e.id)" class="btn btn-default" role="button" *ngIf="e.isGoing == true || e.isGoing == null || e.isGoing == undefined">Not interested</a>
+                        <a style="cursor:pointer" (click)="onGoingClick(e.id)" class="btn btn-primary" role="button" *ngIf="e.isGoing == false || e.isGoing == null || e.isGoing == undefined"><i class="glyphicon glyphicon-thumbs-up"></i> Going</a> 
+                        <a style="cursor:pointer" (click)="onNotInterestedClick(e.id)" class="btn btn-default" role="button" *ngIf="e.isGoing == true || e.isGoing == null || e.isGoing == undefined"><i class="glyphicon glyphicon-thumbs-down"></i> Not interested</a>
                     </p>
                 </div>
             </div>
