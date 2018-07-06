@@ -15,6 +15,7 @@ import { IMyDpOptions } from 'mydatepicker';
 
 import { Pager } from '../pager/pager.component';
 import { MemberModule, Member } from '../member/member.component';
+import { Rsvp, RsvpModule } from '../rsvp/rsvp.component';
 
 export class AttendanceModule {
     public http: Http;
@@ -34,6 +35,14 @@ export class AttendanceModule {
 
         return this.http.post(this.baseUrl + 'api/attendance/' + eventId + '/search', body, options)
         .map(r => r.json());
+    }
+
+    public searchGoing(r: Rsvp): Observable<Rsvp[]> {
+        return this.http.post(this.baseUrl + 'api/rsvp/find', {
+            eventid: r.eventId,
+            member: r.member,
+            isGoing: r.isGoing
+        }).map(r => r.json());
     }
 
     public add(eventId: number, a: Attendance): Observable<number> {
@@ -60,6 +69,7 @@ export class AttendanceModule {
     ]
 })
 export class AttendanceComponent {
+    private rm: RsvpModule;
     private am: AttendanceModule;
     private mm: MemberModule;
 
@@ -81,6 +91,8 @@ export class AttendanceComponent {
     public pagerAttendees: Pager;
     public chunkAttendees: ChunkAttendees;
 
+    public going: Rsvp[];
+
     private sub: any;
 
     public myDatePickerOptions: IMyDpOptions = {
@@ -99,6 +111,10 @@ export class AttendanceComponent {
         this.mm = new MemberModule();
         this.mm.http = http;
         this.mm.baseUrl = baseUrl;
+
+        this.rm = new RsvpModule();
+        this.rm.http = http;
+        this.rm.baseUrl = baseUrl;
     }
 
     private paginate(obj: string, page: number) {
@@ -307,11 +323,35 @@ export class AttendanceComponent {
             };
         }
     }
+
+    onGoingClick() {
+        var r = new Rsvp();
+        r.eventId = this.id;
+        r.isGoing = true;
+
+        this.am.searchGoing(r).subscribe(result => {
+            this.going = result;
+        }, error => this.am.ex.catchError(error));
+    }
+
+    onAttendedClick(r: Rsvp) {
+        for (let r of this.going) {
+            if (r.memberId == r.memberId) {
+                var a = new Attendance();
+                a.memberId = r.memberId;
+                a.name = r.member;
+                a.dateTimeLogged = '';
+                this.toggle(a);
+
+                this.going.splice(this.going.indexOf(r), 1);
+            }
+        }
+    }
 }
 
 export class Attendance {
     memberId: number;
-    member: string;
+    name: string;
     dateTimeLogged: string;
 }
 

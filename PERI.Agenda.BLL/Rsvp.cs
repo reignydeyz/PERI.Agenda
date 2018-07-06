@@ -42,5 +42,16 @@ namespace PERI.Agenda.BLL
         {
             return await unitOfWork.RsvpRepository.Entities.FirstOrDefaultAsync(x => x.EventId == args.EventId && x.MemberId == args.MemberId);
         }
+
+        public IQueryable<EF.Rsvp> Find(string name, int eventId, bool? isGoing)
+        {
+            return unitOfWork.RsvpRepository.Entities
+                .Include(x => x.Member)
+                .Where(x => x.EventId == eventId
+                && x.IsGoing == (isGoing ?? x.IsGoing)
+                && x.Member.Name.Contains(String.IsNullOrEmpty(name) ? "" : name)
+                && x.Member.Attendance.Where(y => y.EventId == eventId).Count() == 0)
+                .OrderBy(x => x.Member.Name);
+        }
     }
 }

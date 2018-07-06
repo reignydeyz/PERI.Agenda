@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PERI.Agenda.BLL;
 
 namespace PERI.Agenda.Web.Controllers
@@ -49,6 +50,29 @@ namespace PERI.Agenda.Web.Controllers
             obj.MemberId = obj.MemberId == 0 ? user.Member.Id : obj.MemberId;
 
             await bll_r.Delete(new EF.Rsvp { EventId = obj.EventId, MemberId = obj.MemberId });
+        }
+
+        [BLL.ValidateModelState]
+        [HttpPost("[action]")]
+        [Route("Find")]
+        public async Task<IActionResult> Find([FromBody] Models.Rsvp obj)
+        {
+            var bll_r = new BLL.Rsvp(unitOfWork);
+
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+            obj.MemberId = obj.MemberId == 0 ? user.Member.Id : obj.MemberId;
+
+            var res = from r in await bll_r.Find(obj.Member, obj.EventId, obj.IsGoing).ToListAsync()
+                      select new
+                      {
+                          r.EventId,
+                          r.MemberId,
+                          Member = r.Member.Name,
+                          r.IsGoing,
+                          DateTimeResponded = r.DateModified
+                      };
+
+            return Json(res);
         }
     }
 }
