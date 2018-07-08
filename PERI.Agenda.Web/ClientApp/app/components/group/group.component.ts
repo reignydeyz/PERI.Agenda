@@ -1,6 +1,6 @@
 ﻿import { Component, Inject, AfterViewInit } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
-import { NgForm, NgModel } from '@angular/forms';
+import { NgForm, NgModel, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import * as $ from "jquery";
 
 import { Observable } from 'rxjs/Observable';
@@ -10,6 +10,7 @@ import { ErrorExceptionModule } from '../errorexception/errorexception.component
 import { Member } from '../member/member.component';
 import { Pager } from '../pager/pager.component';
 import { Title } from '@angular/platform-browser';
+import { MemberModule } from '../member/member.component';
 
 export class GroupModule {
     public http: Http;
@@ -20,7 +21,8 @@ export class GroupModule {
     public find(e: Group): Observable<Group[]> {
         return this.http.post(this.baseUrl + 'api/group/find', {
             name: e.name,
-            groupCategoryId: e.groupCategoryId
+            groupCategoryId: e.groupCategoryId,
+            leader: e.leader
         }).map(response => response.json());
     }
 }
@@ -34,6 +36,7 @@ export class GroupModule {
 })
 export class GroupComponent {
     private gm: GroupModule;
+    private mm: MemberModule;
 
     public group: Group;
     public groupCategories: GroupCategory[];
@@ -42,6 +45,28 @@ export class GroupComponent {
     public pager: Pager;
     public chunk: Chunk;
 
+    typeahead: FormControl = new FormControl();
+    public names: string[];
+
+    suggestions: string[] = [];
+
+    suggest() {
+        if (this.typeahead.value.length > 0) {
+            this.suggestions = this.names
+                .filter(c => c.startsWith(this.typeahead.value.toUpperCase()))
+                .slice(0, 5);
+        }
+        else {
+            this.suggestions.length = 0;
+        }
+    }
+
+    suggestionSelect(s: string) {
+        this.suggestions.length = 0;
+
+        this.typeahead.setValue(s);
+    }
+
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
         this.gm = new GroupModule();
         this.gm.http = http;
@@ -49,6 +74,10 @@ export class GroupComponent {
 
         this.gm.ex = new ErrorExceptionModule();
         this.gm.ex.baseUrl = this.baseUrl;
+
+        this.mm = new MemberModule();
+        this.mm.http = http;
+        this.mm.baseUrl = baseUrl;
     }
 
     private paginate(obj: Group, page: number) {
@@ -99,6 +128,8 @@ export class GroupComponent {
         gc.baseUrl = this.baseUrl;
         gc.ex = this.gm.ex;
         gc.find(new GroupCategory()).subscribe(result => { this.groupCategories = result });
+
+        this.mm.allNames().subscribe(result => { this.names = result });
     }
 
     ngAfterViewChecked() {
@@ -116,6 +147,7 @@ export class GroupComponent {
         var g = new Group();
         g.name = f.controls['name'].value;
         g.groupCategoryId = f.controls['groupCategoryId'].value;
+        g.leader = this.typeahead.value;
 
         if (f.controls['groupCategoryId'].value == "" || f.controls['groupCategoryId'].value == null) {
             g.groupCategoryId = 0;
@@ -143,6 +175,11 @@ export class GroupComponent {
                 }, error => this.gm.ex.catchError(error));
         }
     }
+
+    clearAutoCompleteFields() {
+        this.typeahead.setValue(null);
+        this.suggestions.length = 0;
+    }
 }
 
 export class Group {
@@ -151,6 +188,7 @@ export class Group {
     category: string;
     name: string;
     members: number;
+    leader: string;
 }
 
 class Chunk {

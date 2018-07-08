@@ -68,6 +68,7 @@ namespace PERI.Agenda.BLL
             return unitOfWork.GroupRepository.Entities
                 .Include(x => x.GroupMember).ThenInclude(x => x.Member)
                 .Where(x => x.Name.Contains(args.Name ?? "")
+                && x.GroupLeader == (args.GroupLeader == null || args.GroupLeader == 0 ? x.GroupLeader : args.GroupLeader)
                 && x.GroupCategoryId == (args.GroupCategoryId == null || args.GroupCategoryId == 0 ? x.GroupCategoryId : args.GroupCategoryId)
                 && x.GroupCategory.CommunityId == args.GroupCategory.CommunityId)
                 .OrderBy(x => x.Name).AsQueryable();

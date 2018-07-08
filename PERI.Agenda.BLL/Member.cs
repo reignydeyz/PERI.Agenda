@@ -157,5 +157,16 @@ namespace PERI.Agenda.BLL
         {
             return await _unitOfWork.MemberRepository.Entities.Where(x => ids.Contains(x.Id) && x.CommunityId == user.Member.CommunityId).CountAsync() == ids.Count();
         }
+
+        public async Task<int?> GetIdByName(string name, int communityId)
+        {
+            var res = await _unitOfWork.MemberRepository.Entities.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower()
+            && x.CommunityId == communityId);
+
+            if (res == null)
+                return null;
+            else
+                return res.Id;
+        }
     }
 }

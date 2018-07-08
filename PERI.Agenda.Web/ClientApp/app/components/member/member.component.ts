@@ -32,6 +32,10 @@ export class MemberModule {
         }).map(response => response.json());
     }
 
+    public allNames(): Observable<string[]> {
+        return this.http.get(this.baseUrl + 'api/member/allnames').map(response => response.json());
+    }
+
     public edit(m: Member) {
         this.ex = new ErrorExceptionModule();
 

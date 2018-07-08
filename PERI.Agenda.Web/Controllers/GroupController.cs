@@ -45,14 +45,22 @@ namespace PERI.Agenda.Web.Controllers
 
         [HttpPost("[action]")]
         [Route("Find/Page/{id}")]
-        public async Task<IActionResult> Page([FromBody] EF.Group obj, int id)
+        public async Task<IActionResult> Page([FromBody] Models.Group obj, int id)
         {
             var bll_g = new BLL.Group(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            obj.GroupCategory = new EF.GroupCategory { CommunityId = user.Member.CommunityId };
+            var o = AutoMapper.Mapper.Map<EF.Group>(obj);
 
-            var res = from r in bll_g.Find(obj)
+            o.GroupCategory = new EF.GroupCategory { CommunityId = user.Member.CommunityId };
+
+            // Get group leader id
+            var bll_m = new BLL.Member(unitOfWork);
+            var glid = await bll_m.GetIdByName(obj.Leader ?? "", user.Member.CommunityId.Value);
+
+            o.GroupLeader = glid;
+
+            var res = from r in bll_g.Find(o)
                       select new
                       {
                           r.Id,

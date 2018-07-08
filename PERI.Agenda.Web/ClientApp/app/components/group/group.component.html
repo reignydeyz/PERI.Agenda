@@ -12,9 +12,15 @@
             <option *ngFor="let gc of groupCategories" [value]="gc.id">{{ gc.name }}</option>
         </select>
     </div>
-
+    <div class="form-group">
+        <label>Leader</label>
+        <input class="form-control" placeholder="Leader" name="leader" ngModel (input)="suggest()" [formControl]="typeahead" autocomplete="off" id="txtLeaderSearch">
+        <div class="suggestions" *ngIf="suggestions.length" style="max-height:50px; overflow:auto">
+            <p *ngFor="let s of suggestions" (click)="suggestionSelect(s)">{{s}}</p>
+        </div>
+    </div>
     <button type="submit" class="btn btn-primary">Search</button>
-    <a class="btn btn-default" onclick='document.getElementById("frm").reset()'>Clear</a>
+    <a class="btn btn-default" onclick='document.getElementById("frm").reset()' (click)="clearAutoCompleteFields()">Clear</a>
 </form>
 
 <hr />
@@ -85,7 +91,7 @@
     </ul>
 </ng-container>
 
-<groupmember [group]="group" 
+<groupmember [group]="group"
              (change)="onGroupInfoChange($event)"
              *ngIf="group">
 </groupmember>

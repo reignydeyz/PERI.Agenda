@@ -297,5 +297,16 @@ namespace PERI.Agenda.Web.Controllers
             result.FileDownloadName = "my-csv-file.csv";
             return result;
         }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> AllNames()
+        {
+            var bll_member = new BLL.Member(unitOfWork);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            var res = await bll_member.Find(new EF.Member { CommunityId = user.Member.CommunityId }).Select(x => x.Name).ToListAsync();
+
+            return Json(res);
+        }
     }
 }
