@@ -3,13 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "ng": "ng",
-    "start": "ng serve --extract-css",
-    "build": "npm run build -- --app=ssr --output-hashing=media",
-    "build:ssr": "npm run build -- --app=ssr --output-hashing=media",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e"
+    "test": "karma start ClientApp/test/karma.conf.js"
   },
   "devDependencies": {
     "@angular/common": "4.2.5",
