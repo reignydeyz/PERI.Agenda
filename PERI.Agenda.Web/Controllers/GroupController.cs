@@ -97,5 +97,65 @@ namespace PERI.Agenda.Web.Controllers
 
             return Json(obj);
         }
+
+        [HttpPost("[action]")]
+        [BLL.ValidateModelState]
+        public async Task<IActionResult> New([FromBody] Models.Group obj)
+        {
+            var bll_g = new BLL.Group(unitOfWork);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            var o = AutoMapper.Mapper.Map<EF.Group>(obj);
+
+            // Get group leader id
+            var bll_m = new BLL.Member(unitOfWork);
+            var glid = await bll_m.GetIdByName(obj.Leader ?? "", user.Member.CommunityId.Value);
+
+            if (glid == null)
+            {
+                return new ObjectResult("Leader is not found.")
+                {
+                    StatusCode = 403,
+                    Value = "Leader is not found."
+                };
+            }
+            else
+            {
+                o.GroupLeader = glid;
+
+                return Ok(await bll_g.Add(o));
+            }
+        }
+
+        [HttpPost("[action]")]
+        [BLL.ValidateModelState]
+        public async Task<IActionResult> Edit([FromBody] Models.Group obj)
+        {
+            var bll_g = new BLL.Group(unitOfWork);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            var o = AutoMapper.Mapper.Map<EF.Group>(obj);
+
+            // Get group leader id
+            var bll_m = new BLL.Member(unitOfWork);
+            var glid = await bll_m.GetIdByName(obj.Leader ?? "", user.Member.CommunityId.Value);
+
+            if (glid == null)
+            {
+                return new ObjectResult("Leader is not found.")
+                {
+                    StatusCode = 403,
+                    Value = "Leader is not found."
+                };
+            }
+            else
+            {
+                o.GroupLeader = glid;
+
+                await bll_g.Edit(o);
+
+                return Ok();
+            }
+        }
     }
 }

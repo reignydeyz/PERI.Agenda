@@ -14,13 +14,13 @@
     </div>
     <div class="form-group">
         <label>Leader</label>
-        <input class="form-control" placeholder="Leader" name="leader" ngModel (input)="suggest()" [formControl]="typeahead" autocomplete="off" id="txtLeaderSearch">
-        <div class="suggestions" *ngIf="suggestions.length" style="max-height:50px; overflow:auto">
-            <p *ngFor="let s of suggestions" (click)="suggestionSelect(s)">{{s}}</p>
+        <input class="form-control" placeholder="Leader" name="leader" ngModel (input)="suggest($event.target)" autocomplete="off">
+        <div class="suggestions" *ngIf="suggestions" style="max-height:50px; overflow:auto">
+            <p *ngFor="let s of suggestions" (click)="suggestionSelect(s, frm, 'leader')">{{s}}</p>
         </div>
     </div>
     <button type="submit" class="btn btn-primary">Search</button>
-    <a class="btn btn-default" onclick='document.getElementById("frm").reset()' (click)="clearAutoCompleteFields()">Clear</a>
+    <a class="btn btn-default" onclick='document.getElementById("frm").reset()' (click)="clearSuggestions()">Clear</a>
 </form>
 
 <hr />
@@ -95,3 +95,6 @@
              (change)="onGroupInfoChange($event)"
              *ngIf="group">
 </groupmember>
+
+<groupnew (change)="onGroupInfoChange($event)">
+</groupnew>

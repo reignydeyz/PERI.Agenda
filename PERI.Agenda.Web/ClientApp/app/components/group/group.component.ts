@@ -45,15 +45,13 @@ export class GroupComponent {
     public pager: Pager;
     public chunk: Chunk;
 
-    typeahead: FormControl = new FormControl();
     public names: string[];
-
     suggestions: string[] = [];
 
-    suggest() {
-        if (this.typeahead.value.length > 0) {
+    suggest(fc: any) {
+        if (fc.value.length > 0) {
             this.suggestions = this.names
-                .filter(c => c.startsWith(this.typeahead.value.toUpperCase()))
+                .filter(c => c.startsWith(fc.value.toUpperCase()))
                 .slice(0, 5);
         }
         else {
@@ -61,10 +59,10 @@ export class GroupComponent {
         }
     }
 
-    suggestionSelect(s: string) {
+    suggestionSelect(s: string, f: NgForm, fieldName: string) {
         this.suggestions.length = 0;
 
-        this.typeahead.setValue(s);
+        f.controls[fieldName].setValue(s);
     }
 
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
@@ -147,7 +145,7 @@ export class GroupComponent {
         var g = new Group();
         g.name = f.controls['name'].value;
         g.groupCategoryId = f.controls['groupCategoryId'].value;
-        g.leader = this.typeahead.value;
+        g.leader = f.controls['leader'].value;
 
         if (f.controls['groupCategoryId'].value == "" || f.controls['groupCategoryId'].value == null) {
             g.groupCategoryId = 0;
@@ -176,8 +174,7 @@ export class GroupComponent {
         }
     }
 
-    clearAutoCompleteFields() {
-        this.typeahead.setValue(null);
+    clearSuggestions() {
         this.suggestions.length = 0;
     }
 }

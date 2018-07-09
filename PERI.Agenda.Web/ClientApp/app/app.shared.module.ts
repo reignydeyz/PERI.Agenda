@@ -24,6 +24,7 @@ import { CalendarComponent } from './components/calendar/calendar.component';
 
 import { ChartsModule } from 'ng2-charts';
 import { MyDatePickerModule } from 'mydatepicker';
+import { GroupNewComponent } from './components/group/group.new.component';
 
 @NgModule({
     declarations: [
@@ -43,6 +44,7 @@ import { MyDatePickerModule } from 'mydatepicker';
         GroupComponent,
         GroupCategoryComponent,
         GroupMemberComponent,
+        GroupNewComponent,
         CalendarComponent
     ],
     imports: [
@@ -69,6 +71,7 @@ import { MyDatePickerModule } from 'mydatepicker';
             { path: 'group', component: GroupComponent },
             { path: 'groupcategory', component: GroupCategoryComponent },
             { path: 'groupmember', component: GroupMemberComponent },
+            { path: 'groupnew', component: GroupNewComponent },
             { path: 'calendar', component: CalendarComponent },
 
             { path: '**', redirectTo: 'dashboard' }
