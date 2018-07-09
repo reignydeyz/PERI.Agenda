@@ -6,32 +6,33 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">New Group</h4>
             </div>
-            <div class="modal-body">
-                <form class="form-group" #frmNew="ngForm" (ngSubmit)="onSearchSubmit(frmNew)" ngNativeValidate id="frmNew">
+            <form class="form-group" #frmNew="ngForm" (ngSubmit)="onNewSubmit(frmNew)" ngNativeValidate id="frmNew">
+                <div class="modal-body">
+
                     <div class="form-group">
                         <label>Name</label>
-                        <input class="form-control" placeholder="Name" name="name" ngModel>
+                        <input class="form-control" placeholder="Name" name="name" ngModel required>
                     </div>
                     <div class="form-group">
                         <label>Category</label>
-                        <select class="form-control" name="groupCategoryId" ngModel>
+                        <select class="form-control" name="groupCategoryId" ngModel required>
                             <option value="">--ALL--</option>
                             <option *ngFor="let gc of groupCategories" [value]="gc.id">{{ gc.name }}</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Leader</label>
-                        <input class="form-control" placeholder="Leader" name="leader" ngModel (input)="suggest($event.target)" autocomplete="off">
+                        <input class="form-control" placeholder="Leader" name="leader" ngModel (input)="suggest($event.target)" autocomplete="off" required>
                         <div class="suggestions" *ngIf="suggestions" style="max-height:50px; overflow:auto">
                             <p *ngFor="let s of suggestions" (click)="suggestionSelect(s, frmNew, 'leader')">{{s}}</p>
                         </div>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Submit</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

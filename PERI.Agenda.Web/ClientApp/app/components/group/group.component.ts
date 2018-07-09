@@ -25,6 +25,23 @@ export class GroupModule {
             leader: e.leader
         }).map(response => response.json());
     }
+
+    public add(g: Group): Observable<number> {
+        return this.http.post(this.baseUrl + 'api/group/new', {
+            name: g.name,
+            groupCategoryId: g.groupCategoryId,
+            leader: g.leader
+        }).map(response => response.json());
+    }
+
+    public edit(g: Group) {
+        return this.http.post(this.baseUrl + 'api/group/edit', {
+            id: g.id,
+            name: g.name,
+            groupCategoryId: g.groupCategoryId,
+            leader: g.leader
+        });
+    }
 }
 
 @Component({
@@ -169,6 +186,21 @@ export class GroupComponent {
                             this.chunk.groups[index] = g;
                         }
                     }
+
+                }, error => this.gm.ex.catchError(error));
+        }
+    }
+
+    onGroupAdd(groupId: number) {
+        if (groupId > 0) {
+            // Get group
+            this.http.get(this.baseUrl + 'api/group/get/' + groupId)
+                .subscribe(result => {
+                    var g = result.json();
+
+                    // Add new group to the list
+                    this.chunk.groups.push(g);
+                    this.chunk.pager.totalItems++;
 
                 }, error => this.gm.ex.catchError(error));
         }

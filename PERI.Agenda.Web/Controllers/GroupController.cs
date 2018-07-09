@@ -122,6 +122,8 @@ namespace PERI.Agenda.Web.Controllers
             else
             {
                 o.GroupLeader = glid;
+                o.DateCreated = DateTime.Now;
+                o.CreatedBy = user.Member.Name;
 
                 return Ok(await bll_g.Add(o));
             }
