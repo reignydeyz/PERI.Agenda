@@ -16,10 +16,11 @@ export class GroupNewComponent {
     private gm: GroupModule;
     private mm: MemberModule;
     private ex: ErrorExceptionModule;
-
-    public group: Group;
+    
     public groupCategories: GroupCategory[];
 
+    @Input('group') group: Group;
+    @Input('isAdmin') isAdmin: boolean;
     @Output() change: EventEmitter<number> = new EventEmitter<number>();
 
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string) {
@@ -34,6 +35,10 @@ export class GroupNewComponent {
         this.ex = new ErrorExceptionModule();
         this.ex.http = http;
         this.ex.baseUrl = baseUrl;
+
+        if (this.group == null || this.group == undefined) {
+            this.group = new Group();
+        }
     }
 
     public names: string[];
@@ -50,10 +55,10 @@ export class GroupNewComponent {
         }
     }
 
-    suggestionSelect(s: string, f: NgForm, fieldName: string) {
+    suggestionSelect(s: string) {
         this.suggestions.length = 0;
 
-        f.controls[fieldName].setValue(s);
+        this.group.leader = s;
     }
 
     ngAfterViewInit() {
@@ -65,11 +70,7 @@ export class GroupNewComponent {
         this.mm.allNames().subscribe(result => { this.names = result });
     }
 
-    onNewSubmit(f: NgForm) {
-        var g = new Group();
-        g.groupCategoryId = f.controls['groupCategoryId'].value;
-        g.leader = f.controls['leader'].value;
-        g.name = f.controls['name'].value;
+    onNewSubmit(g: Group) {
 
         this.gm.add(g).subscribe(result => {
             g.id = result;
