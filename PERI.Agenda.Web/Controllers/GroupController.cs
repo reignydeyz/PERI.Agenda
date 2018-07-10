@@ -67,7 +67,7 @@ namespace PERI.Agenda.Web.Controllers
                           r.GroupCategoryId,
                           Category = r.GroupCategory.Name,
                           r.Name,
-                          Members = r.GroupMember.Count,
+                          Members = r.GroupMember.Count
                       };
             var page = id;
             var pager = new Core.Pager(await res.CountAsync(), page == 0 ? 1 : page, 100);
@@ -94,6 +94,7 @@ namespace PERI.Agenda.Web.Controllers
             obj.category = r.GroupCategory.Name;
             obj.name = r.Name;
             obj.members = r.GroupMember.Count;
+            obj.leaderMemberId = r.GroupLeader;
 
             return Json(obj);
         }

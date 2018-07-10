@@ -38,6 +38,7 @@
     <None Remove="ClientApp\app\components\graph\graph.component.ts" />
     <None Remove="ClientApp\app\components\groupcategory\group.new.component.ts" />
     <None Remove="ClientApp\app\components\groupmember\groupmember.component.ts" />
+    <None Remove="ClientApp\app\components\group\group.edit.component.ts" />
     <None Remove="ClientApp\app\components\location\location.component.ts" />
     <None Remove="ClientApp\app\components\rsvp\rsvp.component.ts" />
   </ItemGroup>
@@ -56,6 +57,7 @@
     <TypeScriptCompile Include="ClientApp\app\components\eventcategory\eventcategory.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\event\event.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\graph\graph.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\group\group.edit.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\group\group.new.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\groupmember\groupmember.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\location\location.component.ts" />

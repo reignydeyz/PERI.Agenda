@@ -218,6 +218,7 @@ export class Group {
     name: string;
     members: number;
     leader: string;
+    leaderMemberId: number;
 }
 
 class Chunk {

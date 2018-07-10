@@ -99,3 +99,9 @@
 <groupnew [isAdmin]="true"
           (change)="onGroupAdd($event)">
 </groupnew>
+
+<groupedit [group]="group"
+           [isAdmin]="true"
+          (change)="onGroupInfoChange($event)"
+           *ngIf="group">
+</groupedit>

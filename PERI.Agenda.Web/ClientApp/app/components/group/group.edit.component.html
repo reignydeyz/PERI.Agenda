@@ -1,0 +1,38 @@
+﻿<div class="modal fade" id="modalEdit" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Edit Group</h4>
+            </div>
+            <form class="form-group" #frmEdit="ngForm" (ngSubmit)="onEditSubmit(group)" ngNativeValidate id="frmEdit">
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input class="form-control" placeholder="Name" name="group.name" [(ngModel)]="group.name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select class="form-control" name="group.groupCategoryId" [(ngModel)]="group.groupCategoryId" required>
+                            <option value="">--SELECT--</option>
+                            <option *ngFor="let gc of groupCategories" [value]="gc.id">{{ gc.name }}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Leader</label>
+                        <input class="form-control" placeholder="Leader" name="group.leader" [(ngModel)]="group.leader" (input)="suggest($event.target)" autocomplete="off" required  [readonly]="!isAdmin">
+                        <div class="suggestions" *ngIf="suggestions" style="max-height:50px; overflow:auto">
+                            <p *ngFor="let s of suggestions" (click)="suggestionSelect(s)">{{s}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
