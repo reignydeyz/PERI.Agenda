@@ -153,6 +153,11 @@ namespace PERI.Agenda.BLL
             && x.CommunityId == args.CommunityId);
         }
 
+        public async Task<EF.Member> GetById(int id)
+        {
+            return await _unitOfWork.MemberRepository.Entities.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
         public async Task<bool> IsSelectedIdsOk(int[] ids, EF.EndUser user)
         {
             return await _unitOfWork.MemberRepository.Entities.Where(x => ids.Contains(x.Id) && x.CommunityId == user.Member.CommunityId).CountAsync() == ids.Count();

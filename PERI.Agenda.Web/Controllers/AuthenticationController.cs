@@ -76,8 +76,12 @@ namespace PERI.Agenda.Web.Controllers
 
             if (user != null)
             {
+                // Get member info
+                var bll_m = new BLL.Member(unitOfWork);
+                var member = await bll_m.GetById(user.MemberId);
+
                 // Check if active
-                if (user.DateInactive != null)
+                if (user.DateInactive != null || member.IsActive == false)
                 {
                     ModelState.AddModelError(string.Empty, "Account is inactive.");
                     TempData["notice"] = "Account is inactive.";
