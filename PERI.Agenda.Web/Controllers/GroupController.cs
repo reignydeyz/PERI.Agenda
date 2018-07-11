@@ -60,14 +60,19 @@ namespace PERI.Agenda.Web.Controllers
 
             o.GroupLeader = glid;
 
+            var members = bll_m.Find(new EF.Member { CommunityId = user.Member.CommunityId.Value });
+
             var res = from r in bll_g.Find(o)
+                      join m in members on r.GroupLeader equals m.Id
                       select new
                       {
                           r.Id,
                           r.GroupCategoryId,
                           Category = r.GroupCategory.Name,
                           r.Name,
-                          Members = r.GroupMember.Count
+                          Members = r.GroupMember.Count,
+                          LeaderMemberId = r.GroupLeader,
+                          Leader = m.Name
                       };
             var page = id;
             var pager = new Core.Pager(await res.CountAsync(), page == 0 ? 1 : page, 100);
@@ -84,6 +89,7 @@ namespace PERI.Agenda.Web.Controllers
         public async Task<IActionResult> Get(int id)
         {
             var bll_g = new BLL.Group(unitOfWork);
+            var bll_m = new BLL.Member(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var r = await bll_g.Get(new EF.Group { Id = id });
@@ -95,6 +101,7 @@ namespace PERI.Agenda.Web.Controllers
             obj.name = r.Name;
             obj.members = r.GroupMember.Count;
             obj.leaderMemberId = r.GroupLeader;
+            obj.leader = (await bll_m.GetById(r.GroupLeader.Value)).Name;
 
             return Json(obj);
         }
@@ -154,11 +161,28 @@ namespace PERI.Agenda.Web.Controllers
             else
             {
                 o.GroupLeader = glid;
+                o.DateModified = DateTime.Now;
+                o.ModifiedBy = user.Member.Name;
 
                 await bll_g.Edit(o);
 
                 return Ok();
             }
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Delete([FromBody] int[] ids)
+        {
+
+            var bll_g = new BLL.Group(unitOfWork);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            if (!await bll_g.IsSelectedIdsOk(ids, user))
+                return BadRequest();
+
+            await bll_g.Delete(ids);
+
+            return Json("Success!");
         }
     }
 }
