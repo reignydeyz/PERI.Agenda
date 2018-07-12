@@ -4,7 +4,6 @@
   "version": "0.0.0",
   "scripts": {
     "test": "karma start ClientApp/test/karma.conf.js",
-    "build": "webpack --config webpack.conf.js"
   },
   "devDependencies": {
     "@angular/common": "4.2.5",
