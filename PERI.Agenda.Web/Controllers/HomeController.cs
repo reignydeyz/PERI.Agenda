@@ -8,10 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PERI.Agenda.Web.Controllers
 {
-    [Authorize]
     [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public class HomeController : Controller
     {
+        [Authorize]
         public IActionResult Index()
         {
             return View();
@@ -21,6 +21,20 @@ namespace PERI.Agenda.Web.Controllers
         {
             ViewData["RequestId"] = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
             return View();
+        }
+
+        [Route("privacy")]
+        public IActionResult Privacy()
+        {
+            ViewData["Title"] = "Privacy Policy";
+            return View("Privacy");
+        }
+
+        [Route("terms")]
+        public IActionResult Terms()
+        {
+            ViewData["Title"] = "Terms";
+            return View("Terms");
         }
     }
 }

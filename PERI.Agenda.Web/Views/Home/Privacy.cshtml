@@ -1,0 +1,27 @@
+﻿@using HeyRed.MarkdownSharp
+@{
+    Layout = "_Layout";
+}
+
+<div class="container col-md-6 col-md-offset-3">
+    <div class="panel-heading">
+        <div class="panel-title text-center">
+            <h3><img src="~/agenda.png" style="margin-right:8px; height:24px;" /><span style="vertical-align:middle">Agenda</span></h3>
+            <hr />
+            <h4>As of July 2018</h4>
+        </div>
+    </div>
+    <div class="row">
+        @Html.Raw(new Markdown().Transform(System.IO.File.ReadAllText("privacypolicy.md")))
+    </div>
+
+    <div class="row">
+        <br/>
+        <a class="btn btn-default btn-block" href="~/">Back</a>
+    </div>
+
+    @{
+        Html.RenderPartial("../Authentication/Partial/Footer");
+    }
+
+</div>
