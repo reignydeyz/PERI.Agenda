@@ -321,6 +321,5 @@ ASALocalRun/
 
 # MSBuild Binary and Structured Log
 *.binlog
-*.md
 appsettings.json
 appsettings.Development.json
