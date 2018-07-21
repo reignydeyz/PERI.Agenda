@@ -191,7 +191,7 @@ namespace PERI.Agenda.Web.Controllers
             await bll_member.Edit(o);
 
             // Add to User if member is not yet User
-            if (!String.IsNullOrEmpty(obj.Email) && bll_user.Get(new EF.EndUser { Member = new EF.Member { Email = obj.Email } }) != null)
+            if (!String.IsNullOrEmpty(obj.Email) && bll_user.Get(new EF.EndUser { Member = new EF.Member { Email = obj.Email } }) == null)
             {
                 // Generate ConfirmationCode
                 Guid g = Guid.NewGuid();
