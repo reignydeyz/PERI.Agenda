@@ -25,6 +25,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Find([FromBody] EF.Group obj)
         {
+            var bll_m = new BLL.Member(unitOfWork);
             var bll_g = new BLL.Group(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
@@ -37,7 +38,7 @@ namespace PERI.Agenda.Web.Controllers
                           r.GroupCategoryId,
                           Category = r.GroupCategory.Name,
                           r.Name,
-                          Members = r.GroupMember.Count,
+                          Members = r.GroupMember.Count
                       };
 
             return Json(res);
@@ -61,13 +62,18 @@ namespace PERI.Agenda.Web.Controllers
             o.GroupLeader = glid;
 
             var res = from r in bll_g.Find(o)
+                      join m in bll_m.Find(new EF.Member { CommunityId = user.Member.CommunityId }) on r.GroupLeader equals m.Id
                       select new
                       {
                           r.Id,
                           r.GroupCategoryId,
                           Category = r.GroupCategory.Name,
                           r.Name,
-                          Members = r.GroupMember.Count
+                          Members = r.GroupMember.Count,
+                          Leader = m.Name,
+                          LeaderMemberId = m.Id,
+                          isMember = r.GroupMember.Count(x => x.MemberId == user.MemberId) > 0,
+                          isLeader = user.MemberId == m.Id
                       };
             var page = id;
             var pager = new Core.Pager(await res.CountAsync(), page == 0 ? 1 : page, 100);
@@ -83,6 +89,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Get/{id}")]
         public async Task<IActionResult> Get(int id)
         {
+            var bll_m = new BLL.Member(unitOfWork);
             var bll_g = new BLL.Group(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
@@ -94,7 +101,10 @@ namespace PERI.Agenda.Web.Controllers
             obj.category = r.GroupCategory.Name;
             obj.name = r.Name;
             obj.members = r.GroupMember.Count;
+            obj.leader = bll_m.GetById(r.GroupLeader.Value).Result.Name;
             obj.leaderMemberId = r.GroupLeader;
+            obj.isMember = r.GroupMember.Count(x => x.MemberId == user.MemberId) > 0;
+            obj.isLeader = r.GroupLeader == user.MemberId;
 
             return Json(obj);
         }
@@ -110,7 +120,7 @@ namespace PERI.Agenda.Web.Controllers
 
             // Get group leader id
             var bll_m = new BLL.Member(unitOfWork);
-            var glid = await bll_m.GetIdByName(obj.Leader ?? "", user.Member.CommunityId.Value);
+            var glid = await bll_m.GetIdByName(obj.Leader ?? user.Member.Name, user.Member.CommunityId.Value);
 
             if (glid == null)
             {
@@ -141,7 +151,7 @@ namespace PERI.Agenda.Web.Controllers
 
             // Get group leader id
             var bll_m = new BLL.Member(unitOfWork);
-            var glid = await bll_m.GetIdByName(obj.Leader ?? "", user.Member.CommunityId.Value);
+            var glid = await bll_m.GetIdByName(obj.Leader ?? user.Member.Name, user.Member.CommunityId.Value);
 
             if (glid == null)
             {

@@ -1,0 +1,105 @@
+﻿<h1>Groups</h1>
+
+<form class="form-group" #frm="ngForm" (ngSubmit)="onSearchSubmit(frm)" ngNativeValidate id="frm" *ngIf="chunk">
+    <div class="form-group">
+        <label>Name</label>
+        <input class="form-control" placeholder="Name" name="name" ngModel>
+    </div>
+    <div class="form-group">
+        <label>Category</label>
+        <select class="form-control" name="groupCategoryId" ngModel>
+            <option value="">--ALL--</option>
+            <option *ngFor="let gc of groupCategories" [value]="gc.id">{{ gc.name }}</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Leader</label>
+        <input class="form-control" placeholder="Leader" name="leader" ngModel (input)="suggest($event.target)" autocomplete="off">
+        <div class="suggestions" *ngIf="suggestions" style="max-height:50px; overflow:auto">
+            <p *ngFor="let s of suggestions" (click)="suggestionSelect(s, frm, 'leader')">{{s}}</p>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+    <a class="btn btn-default" onclick='document.getElementById("frm").reset()' (click)="clearSuggestions()">Clear</a>
+</form>
+
+<hr />
+
+<p *ngIf="!chunk"><em>Loading...</em></p>
+
+<p *ngIf="chunk">
+    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modalNew" onclick='document.getElementById("frmNew").reset()'>New</a>
+    <button class="btn btn-success" onclick="location.reload();">Refresh</button>
+</p>
+
+<small *ngIf="chunk">Found: {{ chunk.pager.totalItems }}</small>
+
+<div *ngIf="chunk">
+    <table class="table table-striped table-hover tbl" id="tbl">
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Leader</th>
+                <th>Members</th>
+            </tr>
+        </thead>
+        <tbody style="padding-bottom: 50px">
+            <tr *ngFor="let g of chunk.groups; let i = index">
+                <td [ngClass]="{member: g.isMember, nonmember: !g.isMember, leader: g.isLeader }"></td>
+                <td>
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="z-index: 0;">
+                            Action
+                            <span class="fa fa-caret-down"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" *ngIf="!g.isMember && !g.isLeader">Join</a></li>
+                            <li><a href="#" *ngIf="g.isMember">Leave</a></li>
+
+                            <li><a href="#" *ngIf="g.isLeader">New exclusive event</a></li>
+
+                            <li class="divider" *ngIf="g.isMember || g.isLeader"></li>
+                            <li><a href="#" data-toggle="modal" data-target="#modalMembers" (click)="onMembersLoad(g.id)" *ngIf="g.isMember || g.isLeader">Members</a></li>
+                        </ul>
+                    </div>
+                </td>
+                <td>{{ g.name }}</td>
+                <td>{{ g.category }}</td>
+                <td>{{ g.leader }}</td>
+                <td>{{ g.members }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<ng-container *ngIf="chunk && chunk.pager.endPage > 1">
+    <ul class="pagination" *ngIf="chunk">
+        <li *ngIf="chunk.pager.currentPage > 1">
+            <a style="cursor:pointer" (click)="onPaginate(1)">First</a>
+        </li>
+        <li *ngIf="chunk.pager.currentPage > 1">
+            <a style="cursor:pointer" (click)="onPaginate(chunk.pager.currentPage - 1)">Previous</a>
+        </li>
+        <li *ngFor="let p of chunk.pager.pageIndices" [ngClass]="{active: chunk.pager.currentPage == p}">
+            <a style="cursor:pointer" (click)="onPaginate(p)">{{ p }}</a>
+        </li>
+        <li *ngIf="chunk.pager.currentPage < chunk.pager.totalPages">
+            <a style="cursor:pointer" (click)="onPaginate(chunk.pager.currentPage + 1)">Next</a>
+        </li>
+        <li *ngIf="chunk.pager.currentPage < chunk.pager.totalPages">
+            <a style="cursor:pointer" (click)="onPaginate(chunk.pager.totalPages)">Last</a>
+        </li>
+    </ul>
+</ng-container>
+
+<groupmember [group]="group"
+             (change)="onGroupInfoChange($event)"
+             *ngIf="group">
+</groupmember>
+
+<groupnew 
+          (change)="onGroupAdd($event)">
+</groupnew>

@@ -1,0 +1,24 @@
+﻿.table td.member {
+    background-color: green !important;
+}
+
+.table td.nonmember {
+    background-color: none !important;
+}
+
+.table td.leader {
+    background-color: purple !important;
+}
+
+thead tr th:nth-child(1),
+tr td:nth-child(1) {
+    min-width: 3px;
+    max-width: 3px;
+    padding: inherit !important;
+}
+
+.tbl thead tr th:nth-child(2),
+.tbl tr td:nth-child(2) {
+    min-width: 85px;
+    max-width: 85px;
+}

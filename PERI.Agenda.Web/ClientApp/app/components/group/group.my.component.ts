@@ -11,47 +11,16 @@ import { Member } from '../member/member.component';
 import { Pager } from '../pager/pager.component';
 import { Title } from '@angular/platform-browser';
 import { MemberModule } from '../member/member.component';
-
-export class GroupModule {
-    public http: Http;
-    public baseUrl: string;
-
-    public ex: ErrorExceptionModule;
-
-    public find(e: Group): Observable<Group[]> {
-        return this.http.post(this.baseUrl + 'api/group/find', {
-            name: e.name,
-            groupCategoryId: e.groupCategoryId,
-            leader: e.leader
-        }).map(response => response.json());
-    }
-
-    public add(g: Group): Observable<number> {
-        return this.http.post(this.baseUrl + 'api/group/new', {
-            name: g.name,
-            groupCategoryId: g.groupCategoryId,
-            leader: g.leader
-        }).map(response => response.json());
-    }
-
-    public edit(g: Group) {
-        return this.http.post(this.baseUrl + 'api/group/edit', {
-            id: g.id,
-            name: g.name,
-            groupCategoryId: g.groupCategoryId,
-            leader: g.leader
-        });
-    }
-}
+import { GroupModule, Group } from './group.component';
 
 @Component({
-    selector: 'group',
-    templateUrl: './group.component.html',
-    styleUrls: ['./group.component.css',
+    selector: 'groupmy',
+    templateUrl: './group.my.component.html',
+    styleUrls: ['./group.my.component.css',
         '../table/table.component.css'
     ]
 })
-export class GroupComponent {
+export class GroupMyComponent {
     private gm: GroupModule;
     private mm: MemberModule;
 
@@ -128,15 +97,6 @@ export class GroupComponent {
         this.titleService.setTitle('Groups');
     }
 
-    checkAll() {
-        var src = <HTMLInputElement>document.getElementById("checkall");
-
-        $("#tbl").find('input[type=checkbox]').each(function () {
-            var element = <HTMLInputElement>this;
-            element.checked = src.checked;
-        });
-    }
-
     ngAfterViewInit() {
         var gc = new GroupCategoryModule();
         gc.http = this.http;
@@ -209,18 +169,6 @@ export class GroupComponent {
     clearSuggestions() {
         this.suggestions.length = 0;
     }
-}
-
-export class Group {
-    id: number;
-    groupCategoryId: number;
-    category: string;
-    name: string;
-    members: number;
-    leader: string;
-    leaderMemberId: number;
-    isLeader: boolean;
-    isMember: boolean;
 }
 
 class Chunk {
