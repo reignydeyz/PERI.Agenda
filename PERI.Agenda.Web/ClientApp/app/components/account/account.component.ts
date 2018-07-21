@@ -92,6 +92,7 @@ export class AccountComponent {
     public onEditSubmit(m: Member) {
         if (m.birthDate != null) {
             m.birthDate = moment(m.birthDate.date.month + '/' + m.birthDate.date.day + '/' + m.birthDate.date.year).format('MM/DD/YYYY');
+            m.isActive = true;
         }
 
         this.mm.edit(m);
