@@ -36,5 +36,12 @@ namespace PERI.Agenda.Web.Controllers
             ViewData["Title"] = "Terms";
             return View("Terms");
         }
+
+        [Route("about")]
+        public IActionResult About()
+        {
+            ViewData["Title"] = "About";
+            return View("About");
+        }
     }
 }

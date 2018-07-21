@@ -45,6 +45,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="about.md" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\PERI.Agenda.BLL\PERI.Agenda.BLL.csproj" />
     <ProjectReference Include="..\PERI.Agenda.EF\PERI.Agenda.EF.csproj" />
   </ItemGroup>
@@ -76,6 +80,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="about.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="privacypolicy.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

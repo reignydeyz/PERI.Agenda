@@ -3,32 +3,104 @@
 }
 @model PERI.Agenda.Web.Models.Login
 
-<div class="container col-md-6 col-md-offset-3">
-    <div class="panel-heading">
-        <div class="panel-title text-center">
-            <h3><img src="~/agenda.png" style="margin-right:8px; height:24px;"/><span style="vertical-align:middle">Agenda</span></h3>
-            <hr />
-            <h4>Please sign-in.</h4>
-        </div>
-    </div>
-    
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
-        <div class="form-group">
-            @Html.TextBoxFor(x => x.Email, new { placeholder = "Email", @class = "form-control", required = "required", @type = "email", @autocomplete = "off" })
-        </div>
-        <div class="form-group">
-            @Html.TextBoxFor(x => x.Password, new { placeholder = "Password", @class = "form-control", required = "required", @type = "password" })
-        </div>
-        <button type="submit" class="btn btn-primary btn-block">Sign-in</button>
-        <a class="btn btn-default btn-block" href="~/Authentication/ForgotPassword">Forgot password?</a>
-        <br />
-        <center>- or -</center>
-        <br />
-        <a class="btn btn-success btn-block" href="~/Authentication/SignUp">Sign-up</a>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<style>
+    @@media screen and (max-width: 600px) {
+        #title_message {
+            visibility: hidden;
+            clear: both;
+            float: left;
+            margin: 10px auto 5px 20px;
+            width: 28%;
+            display: none;
+        }
     }
 
+    .jumbotron {
+        background-color:white !important;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="panel-heading">
+            <div class="panel-title text-center">
+                <h3><img src="~/agenda.png" style="margin-right:8px; height:24px;" /><span style="vertical-align:middle">Agenda</span></h3>
+                <hr />
+            </div>
+        </div>
+
+        <div class="col-sm-6" id="title_message">
+            <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                <!-- Indicators -->
+                <ol class="carousel-indicators">
+                    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                    <li data-target="#myCarousel" data-slide-to="1"></li>
+                    <li data-target="#myCarousel" data-slide-to="2"></li>
+                </ol>
+
+                <!-- Wrapper for slides -->
+                <div class="carousel-inner">
+                    <div class="item active">
+                        <div class="jumbotron">
+                            <h2>Agenda</h2>
+                            <p>Agenda offers free, simple and smart solution for your event-management needs.</p>
+                            <p><a class="btn btn-primary btn-lg" href="~/about" role="button">Learn more</a></p>
+                        </div>
+                    </div>
+
+                    <div class="item">
+                        <div class="jumbotron">
+                            <h2>Support our on-going project</h2>
+                            <p>If you could support us by making a donation, we would greatly appreciate it.</p>
+                            <br />
+                            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                                <input type="hidden" name="cmd" value="_s-xclick">
+                                <input type="hidden" name="hosted_button_id" value="B95E9WYU44ZC6">
+                                <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+                                <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Left and right controls -->
+                <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="right carousel-control" href="#myCarousel" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </div>
+        <div class="col-sm-6">
+
+            <h4 class="text-center">Please sign-in.</h4>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Email, new { placeholder = "Email", @class = "form-control", required = "required", @type = "email", @autocomplete = "off" })
+                </div>
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Password, new { placeholder = "Password", @class = "form-control", required = "required", @type = "password" })
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Sign-in</button>
+                <a class="btn btn-default btn-block" href="~/Authentication/ForgotPassword">Forgot password?</a>
+                <br />
+                <center>- or -</center>
+                <br />
+                <a class="btn btn-success btn-block" href="~/Authentication/SignUp">Sign-up</a>
+            }
+
+
+        </div>
+    </div>
     @{
         Html.RenderPartial("Partial/Footer");
     }
