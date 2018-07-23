@@ -51,5 +51,7 @@ namespace PERI.Agenda.Web.Models
         public DateTime? DateModified { get; set; }
         public string ModifiedBy { get; set; }        
         public int? CommunityId { get; set; }
+
+        public int? RoleId { get; set; }
     }
 }

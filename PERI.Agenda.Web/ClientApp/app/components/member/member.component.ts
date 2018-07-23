@@ -67,6 +67,7 @@ export class MemberComponent {
     public member: Member;
     public genders: LookUp[];
     public statuses: boolean[];
+    public roles: Role[];
 
     public search: Member;
     public pager: Pager;
@@ -133,6 +134,11 @@ export class MemberComponent {
         this.getTotal();
 
         this.titleService.setTitle('Members');
+
+        // Populate roles
+        this.http.get(this.baseUrl + 'api/role/getall').subscribe(result => {
+            this.roles = result.json();
+        }, error => this.ex.catchError(error));
     }
 
     // https://www.concretepage.com/angular-2/angular-2-ngform-with-ngmodel-directive-example
@@ -140,6 +146,7 @@ export class MemberComponent {
         var m = new Member();
         m.name = f.controls['name'].value;
         m.email = f.controls['email'].value;
+        m.roleId = f.controls['roleId'].value;
 
         this.paginate(m, 1);
         this.search = m;
@@ -376,6 +383,12 @@ export class Member {
     address: string;
     mobile: string;
     isActive: boolean;
+    roleId: number;
+}
+
+export class Role {
+    id: number;
+    name: string;
 }
 
 class Chunk {

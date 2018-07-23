@@ -124,6 +124,9 @@ namespace PERI.Agenda.BLL
             && x.CommunityId == args.CommunityId)
                 .OrderBy(x => x.Name).AsQueryable();
 
+            if (args.EndUser != null)
+                res = res.Where(x => x.EndUser.RoleId == args.EndUser.RoleId);
+
             return res;
         }
 

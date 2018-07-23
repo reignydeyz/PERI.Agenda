@@ -67,6 +67,9 @@ namespace PERI.Agenda.Web.Controllers
 
             var o = AutoMapper.Mapper.Map<EF.Member>(obj);
 
+            if (obj.RoleId != null)
+                o.EndUser = new EF.EndUser { RoleId = obj.RoleId.Value };
+
             var res = bll_member.Find(o);
             var page = id;
             var pager = new Core.Pager(await res.CountAsync(), page == 0 ? 1 : page, 100);
