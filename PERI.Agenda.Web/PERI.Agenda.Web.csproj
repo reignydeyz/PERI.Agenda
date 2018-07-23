@@ -36,6 +36,8 @@
     <None Remove="ClientApp\app\components\errorexception\errorexception.component.ts" />
     <None Remove="ClientApp\app\components\eventcategory\eventcategory.component.ts" />
     <None Remove="ClientApp\app\components\event\event.component.ts" />
+    <None Remove="ClientApp\app\components\event\event.edit.component.ts" />
+    <None Remove="ClientApp\app\components\event\event.new.component.ts" />
     <None Remove="ClientApp\app\components\graph\graph.component.ts" />
     <None Remove="ClientApp\app\components\groupcategory\group.new.component.ts" />
     <None Remove="ClientApp\app\components\groupmember\groupmember.component.ts" />
@@ -60,7 +62,9 @@
     <TypeScriptCompile Include="ClientApp\app\components\dashboard\dashboard.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\errorexception\errorexception.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\eventcategory\eventcategory.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\event\event.edit.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\event\event.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\event\event.new.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\graph\graph.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\group\group.edit.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\group\group.new.component.ts" />

@@ -27,6 +27,8 @@ import { MyDatePickerModule } from 'mydatepicker';
 import { GroupNewComponent } from './components/group/group.new.component';
 import { GroupEditComponent } from './components/group/group.edit.component';
 import { GroupMyComponent } from './components/group/group.my.component';
+import { EventNewComponent } from './components/event/event.new.component';
+import { EventEditComponent } from './components/event/event.edit.component';
 
 @NgModule({
     declarations: [
@@ -39,6 +41,8 @@ import { GroupMyComponent } from './components/group/group.my.component';
         AccountComponent,
         MemberComponent,
         EventComponent,
+        EventNewComponent,
+        EventEditComponent,
         EventCategoryComponent,
         LocationComponent,
         DashboardComponent,
@@ -68,6 +72,8 @@ import { GroupMyComponent } from './components/group/group.my.component';
             { path: 'account', component: AccountComponent },
             { path: 'member', component: MemberComponent },
             { path: 'event', component: EventComponent },
+            { path: 'eventnew', component: EventNewComponent },
+            { path: 'eventedit', component: EventEditComponent },
             { path: 'eventcategory', component: EventCategoryComponent },
             { path: 'location', component: LocationComponent },
             { path: 'dashboard', component: DashboardComponent },

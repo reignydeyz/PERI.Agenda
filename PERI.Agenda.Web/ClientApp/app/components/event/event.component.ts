@@ -106,7 +106,7 @@ export class EventComponent {
         });
     }
 
-    ngAfterViewInit() {
+    /*ngAfterViewInit() {
         var ecc = new EventCategoryModule();
         ecc.http = this.http;
         ecc.baseUrl = this.baseUrl;
@@ -117,7 +117,7 @@ export class EventComponent {
         l.http = this.http;
         l.baseUrl = this.baseUrl;
         l.find(new Location()).subscribe(result => { this.locations = result });        
-    }
+    }*/
 
     ngAfterViewChecked() {
         if (this.chunk) {
@@ -167,7 +167,7 @@ export class EventComponent {
         }, error => this.em.ex.catchError(error));;
     }
 
-    public onNewSubmit(f: NgForm) {
+    /*public onNewSubmit(f: NgForm) {
         var e = new Event();
         e.name = f.controls['name'].value;
         e.eventCategoryId = f.controls['eventCategoryId'].value;
@@ -189,6 +189,21 @@ export class EventComponent {
                 alert('Added!');
                 $('#modalNew').modal('toggle');
             }, error => this.em.ex.catchError(error));
+    }*/
+
+    onEventAdd(eventId: number) {
+        if (eventId > 0) {
+            // Get group
+            this.http.get(this.baseUrl + 'api/event/get/' + eventId)
+                .subscribe(result => {
+                    var g = result.json();
+
+                    // Add new group to the list
+                    this.chunk.events.push(g);
+                    this.chunk.pager.totalItems++;
+
+                }, error => this.em.ex.catchError(error));
+        }
     }
 
     public onEditInit(id: number) {
