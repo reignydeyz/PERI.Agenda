@@ -59,6 +59,9 @@ You may need to understand the nature of ASP-MVC before going through the entire
    - 10 - Agenda schema.sql
    - 11 - Agenda tables.sql
    - 12 - Agenda.Role defaults.sql
+   - .
+   - .
+   - .
 
 ### Application Setting
 
