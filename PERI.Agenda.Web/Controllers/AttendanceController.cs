@@ -160,8 +160,10 @@ namespace PERI.Agenda.Web.Controllers
 
             if (status.ToLower() == "attendees")
                 return await bll_a.Find(new EF.Attendance { EventId = id }).CountAsync();
-            else
+            else if (status.ToLower() == "pending")
                 return await res.Where(x => x.DateTimeLogged == null).CountAsync();
+            else
+                return await res.CountAsync();
         }
     }
 }
