@@ -56,8 +56,8 @@
                             <span class="fa fa-caret-down"></span>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a href="#" *ngIf="!g.isMember && !g.isLeader">Join</a></li>
-                            <li><a href="#" *ngIf="g.isMember">Leave</a></li>
+                            <li><a style="cursor:pointer" (click)="join(g.id)" *ngIf="!g.isMember && !g.isLeader">Join</a></li>
+                            <li><a style="cursor:pointer" (click)="leave(g.id)" *ngIf="g.isMember">Leave</a></li>
 
                             <li><a href="#" data-toggle="modal" data-target="#modalEventNew" (click)="onEditInit(g.id)" *ngIf="g.isLeader">New exclusive event</a></li>
 

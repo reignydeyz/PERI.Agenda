@@ -1,4 +1,4 @@
-﻿import { Component, Inject, AfterViewInit } from '@angular/core';
+﻿import { Component, Inject, AfterViewInit, group } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { NgForm, NgModel, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import * as $ from "jquery";
@@ -12,6 +12,7 @@ import { Pager } from '../pager/pager.component';
 import { Title } from '@angular/platform-browser';
 import { MemberModule } from '../member/member.component';
 import { GroupModule, Group } from './group.component';
+import { GroupMemberModule, GroupMember } from '../groupmember/groupmember.component';
 
 @Component({
     selector: 'groupmy',
@@ -23,6 +24,7 @@ import { GroupModule, Group } from './group.component';
 export class GroupMyComponent {
     private gm: GroupModule;
     private mm: MemberModule;
+    private gmm: GroupMemberModule;
 
     public group: Group;
     public groupCategories: GroupCategory[];
@@ -62,6 +64,10 @@ export class GroupMyComponent {
         this.mm = new MemberModule();
         this.mm.http = http;
         this.mm.baseUrl = baseUrl;
+
+        this.gmm = new GroupMemberModule();
+        this.gmm.http = http;
+        this.gmm.baseUrl = baseUrl;
     }
 
     private paginate(obj: Group, page: number) {
@@ -164,6 +170,28 @@ export class GroupMyComponent {
 
                 }, error => this.gm.ex.catchError(error));
         }
+    }
+
+    join(groupId: number) {
+        var gm = new GroupMember();
+        gm.groupId = groupId;
+        this.gmm.add(gm).subscribe(r => {
+
+            alert("Success");
+
+            this.onGroupInfoChange(groupId);
+        });
+    }
+
+    leave(groupId: number) {
+        var gm = new GroupMember();
+        gm.groupId = groupId;
+        this.gmm.delete(gm).subscribe(r => {
+
+            alert("Success");
+
+            this.onGroupInfoChange(groupId);
+        });
     }
 
     clearSuggestions() {
