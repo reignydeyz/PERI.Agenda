@@ -1,4 +1,4 @@
-﻿import { Component, Inject, AfterViewInit } from '@angular/core';
+﻿import { Component, Inject, AfterViewInit, group } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { NgForm, NgModel } from '@angular/forms';
 import * as $ from "jquery";
@@ -31,6 +31,15 @@ export class EventModule {
 
     public add(e: Event): Observable<number> {
         return this.http.post(this.baseUrl + 'api/event/new', {
+            name: e.name,
+            eventCategoryId: e.eventCategoryId,
+            dateTimeStart: e.dateTimeStart,
+            locationId: e.locationId
+        }).map(response => response.json());
+    }
+
+    public addExclusive(e: Event, groupId: number): Observable<number> {
+        return this.http.post(this.baseUrl + 'api/event/new/exclusive/' + groupId, {
             name: e.name,
             eventCategoryId: e.eventCategoryId,
             dateTimeStart: e.dateTimeStart,

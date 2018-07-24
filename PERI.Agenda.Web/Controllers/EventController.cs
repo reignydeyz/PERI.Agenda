@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using PERI.Agenda.Core;
 using PERI.Agenda.BLL;
+using NLog;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -15,11 +16,15 @@ namespace PERI.Agenda.Web.Controllers
     [Route("api/Event")]
     public class EventController : Controller
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private readonly UnitOfWork unitOfWork;
+        private readonly EF.AARSContext context;
 
         public EventController()
         {
-            unitOfWork = new UnitOfWork(new EF.AARSContext());
+            context = new EF.AARSContext();
+            unitOfWork = new UnitOfWork(context);
         }
 
         [HttpPost("[action]")]
@@ -118,6 +123,67 @@ namespace PERI.Agenda.Web.Controllers
             var o = AutoMapper.Mapper.Map<EF.Event>(obj);
 
             return await bll_event.Add(o);
+        }
+
+        [HttpPost("[action]")]
+        [Route("New/Exclusive/{groupId}")]
+        [BLL.ValidateModelState]
+        public async Task<IActionResult> NewExclusive([FromBody] Models.Event obj, int groupId)
+        {
+            var bll_e = new BLL.Event(unitOfWork);
+            var bll_r = new BLL.Registrant(unitOfWork);
+            var bll_g = new BLL.Group(unitOfWork);
+
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            using (var txn = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var o = AutoMapper.Mapper.Map<EF.Event>(obj);
+                    o.IsExclusive = true;
+                    var eventId = bll_e.Add(o).Result;
+
+                    // Gets members from a group
+                    var gr = await bll_g.Get(new EF.Group { Id = groupId });
+                    var registrants = (from r in gr.GroupMember
+                                       select new EF.Registrant
+                                       {
+                                           EventId = eventId,
+                                           MemberId = r.MemberId.Value,
+                                           DateCreated = DateTime.Now,
+                                           CreatedBy = user.Member.Name
+                                       }).ToList();
+
+                    // Also add the group leader
+                    registrants.Add(new EF.Registrant
+                    {
+                        EventId = eventId,
+                        MemberId = gr.GroupLeader.Value,
+                        DateCreated = DateTime.Now,
+                        CreatedBy = user.Member.Name
+                    });
+
+                    // Add registrants
+                    await bll_r.Add(registrants);
+
+                    txn.Commit();
+
+                    return Ok(eventId);
+                }
+                catch (Exception ex)
+                {
+                    txn.Rollback();
+
+                    logger.Error(ex);
+
+                    return new ObjectResult(ex.Message)
+                    {
+                        StatusCode = 403,
+                        Value = "Entry is invalid."
+                    };
+                }
+            }
         }
 
         [HttpGet("[action]")]

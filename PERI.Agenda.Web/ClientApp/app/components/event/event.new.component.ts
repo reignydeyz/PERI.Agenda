@@ -8,6 +8,7 @@ import { ErrorExceptionModule } from '../errorexception/errorexception.component
 import { Http } from '@angular/http';
 import { EventCategory, EventCategoryModule } from '../eventcategory/eventcategory.component';
 import { Location, LocationModule } from '../location/location.component';
+import { Group } from '../group/group.component';
 
 @Component({
     selector: 'eventnew',
@@ -21,6 +22,7 @@ export class EventNewComponent {
     public locations: Location[];
 
     @Input('event') event: Event;
+    @Input('group') group: Group;
     @Output() change: EventEmitter<number> = new EventEmitter<number>();
 
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string) {
@@ -63,13 +65,25 @@ export class EventNewComponent {
         let l: any = this.locations.find(x => x.id == e.locationId);
         e.location = l.name;
 
-        this.em.add(e).subscribe(
-            result => {
-                e.id = result;
-                this.change.emit(e.id);
+        if (this.group == null || this.group == undefined) {
+            this.em.add(e).subscribe(
+                result => {
+                    e.id = result;
+                    this.change.emit(e.id);
 
-                alert('Added!');
-                $('#modalEventNew').modal('toggle');
-            }, error => this.ex.catchError(error));
+                    alert('Added!');
+                    $('#modalEventNew').modal('toggle');
+                }, error => this.ex.catchError(error));
+        }
+        else {
+            this.em.addExclusive(e, this.group.id).subscribe(
+                result => {
+                    e.id = result;
+                    this.change.emit(e.id);
+
+                    alert('Added!');
+                    $('#modalEventNew').modal('toggle');
+                }, error => this.ex.catchError(error));
+        }
     }
 }
