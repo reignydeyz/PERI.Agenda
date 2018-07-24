@@ -1,5 +1,5 @@
 ﻿import { Component, Inject } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, Headers, RequestOptions } from '@angular/http';
 import { NgForm, NgModel } from '@angular/forms';
 import * as $ from "jquery";
 
@@ -23,6 +23,13 @@ export class GroupCategoryModule {
 
     public add(gc: GroupCategory): Observable<number> {
         return this.http.post(this.baseUrl + 'api/groupcategory/new', {
+            name: gc.name
+        }).map(response => response.json());
+    }
+
+    public edit(gc: GroupCategory): Observable<number> {
+        return this.http.post(this.baseUrl + 'api/groupcategory/edit', {
+            id: gc.id,
             name: gc.name
         }).map(response => response.json());
     }
@@ -88,6 +95,74 @@ export class GroupCategoryComponent {
                 $('#modalNew').modal('toggle');
             },
             error => this.gcm.ex.catchError(error));
+    }
+
+    onEditInit(id: number) {
+        this.http.get(this.baseUrl + 'api/groupcategory/get/' + id)
+            .subscribe(result => {
+                console.log(result.json());
+                this.groupcategory = result.json();
+            }, error => this.gcm.ex.catchError(error));
+    }
+
+    public onEditSubmit(gc: GroupCategory) {
+        this.gcm.edit(gc).subscribe(r => {
+
+            this.onGroupCategoryInfoChange(gc.id);
+
+            alert('Updated!');
+            $('#modalEdit').modal('toggle');
+        });
+    }
+
+    onGroupCategoryInfoChange(gcId: number) {
+        if (gcId > 0) {
+            // Get group category
+            this.http.get(this.baseUrl + 'api/groupcategory/get/' + gcId)
+                .subscribe(result => {
+                    var res = result.json();
+
+                    for (let e of this.groupcategories) {
+                        if (e.id == res.id) {
+                            let index: number = this.groupcategories.indexOf(e);
+                            this.groupcategories[index] = res;
+                        }
+                    }
+
+                }, error => this.gcm.ex.catchError(error));
+        }
+    }
+
+    onDeleteClick() {
+        var flag = confirm('Are you sure you want to delete selected records?');
+
+        if (!flag)
+            return false;
+
+        var selectedIds = new Array();
+        $('input:checkbox.checkBox').each(function () {
+            if ($(this).prop('checked')) {
+                selectedIds.push($(this).val());
+            }
+        });
+
+        let body = JSON.stringify(selectedIds);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+
+        this.http.post(this.baseUrl + 'api/groupcategory/delete', body, options).subscribe(result => {
+
+            for (let id of selectedIds) {
+                for (let e of this.groupcategories) {
+                    if (e.id == id) {
+                        this.groupcategories.splice(this.groupcategories.indexOf(e), 1);
+                    }
+                }
+            }
+
+            alert('Success!');
+
+        }, error => this.gcm.ex.catchError(error));
     }
 }
 

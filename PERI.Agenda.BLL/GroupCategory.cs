@@ -40,9 +40,10 @@ namespace PERI.Agenda.BLL
             throw new NotImplementedException();
         }
 
-        public Task Delete(int[] ids)
+        public async Task Delete(int[] ids)
         {
-            throw new NotImplementedException();
+            unitOfWork.GroupCategoryRepository.RemoveRange(unitOfWork.GroupCategoryRepository.Entities.Where(x => ids.Contains(x.Id)));
+            await unitOfWork.CommitAsync();
         }
 
         public Task Delete(EF.GroupCategory args)
@@ -50,9 +51,17 @@ namespace PERI.Agenda.BLL
             throw new NotImplementedException();
         }
 
-        public Task Edit(EF.GroupCategory args)
+        public async Task Edit(EF.GroupCategory args)
         {
-            throw new NotImplementedException();
+            var gc = await unitOfWork.GroupCategoryRepository.Entities.FirstAsync(x => x.Id == args.Id
+            && x.CommunityId == args.CommunityId);
+
+            gc.Name = args.Name;
+            gc.Description = args.Description;
+            gc.DateTimeModified = DateTime.Now;
+            gc.ModifiedBy = args.ModifiedBy;
+
+            unitOfWork.Commit();
         }
 
         public IQueryable<EF.GroupCategory> Find(EF.GroupCategory args)
@@ -67,9 +76,14 @@ namespace PERI.Agenda.BLL
         public async Task<EF.GroupCategory> Get(EF.GroupCategory args)
         {
             return await unitOfWork.GroupCategoryRepository.Entities
-                .Include(x => x.Group)
+                .Include(x => x.Group).ThenInclude(x => x.GroupMember)
                 .FirstOrDefaultAsync(x => x.Id == args.Id
                 && x.CommunityId == args.CommunityId);
+        }
+
+        public async Task<bool> AreSelectedIdsOk(int[] ids, EF.EndUser user)
+        {
+            return await unitOfWork.GroupCategoryRepository.Entities.Where(x => ids.Contains(x.Id) && x.CommunityId == user.Member.CommunityId).CountAsync() == ids.Count();
         }
     }
 }
