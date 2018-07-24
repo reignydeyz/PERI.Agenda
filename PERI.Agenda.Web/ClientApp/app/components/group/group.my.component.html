@@ -61,8 +61,8 @@
 
                             <li><a href="#" data-toggle="modal" data-target="#modalEventNew" (click)="onEditInit(g.id)" *ngIf="g.isLeader">New exclusive event</a></li>
 
-                            <li class="divider" *ngIf="g.isMember || g.isLeader"></li>
-                            <li><a href="#" data-toggle="modal" data-target="#modalMembers" (click)="onMembersLoad(g.id)" *ngIf="g.isMember || g.isLeader">Members</a></li>
+                            <li class="divider" *ngIf="g.isLeader"></li>
+                            <li><a href="#" data-toggle="modal" data-target="#modalMembers" (click)="onMembersLoad(g.id)" *ngIf="g.isLeader">Members</a></li>
                         </ul>
                     </div>
                 </td>
