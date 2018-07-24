@@ -39,13 +39,13 @@ export class EventModule {
     }
 
     public edit(e: Event) {
-        this.http.post(this.baseUrl + 'api/event/edit', {
+        return this.http.post(this.baseUrl + 'api/event/edit', {
             id: e.id,
             name: e.name,
             eventCategoryId: e.eventCategoryId,
             dateTimeStart: e.dateTimeStart,
             locationId: e.locationId
-        }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => this.ex.catchError(error));
+        });
     }
 
     public get(id: number): Observable<Event> {
@@ -95,6 +95,17 @@ export class EventComponent {
         this.paginate(this.event, 1);
 
         this.titleService.setTitle('Events');
+
+        var ecc = new EventCategoryModule();
+        ecc.http = this.http;
+        ecc.baseUrl = this.baseUrl;
+        ecc.ex = this.em.ex;
+        ecc.find(new EventCategory()).subscribe(result => { this.eventCategories = result });
+
+        var l = new LocationModule();
+        l.http = this.http;
+        l.baseUrl = this.baseUrl;
+        l.find(new Location()).subscribe(result => { this.locations = result });       
     }
 
     checkAll() {
@@ -105,19 +116,6 @@ export class EventComponent {
             element.checked = src.checked;
         });
     }
-
-    /*ngAfterViewInit() {
-        var ecc = new EventCategoryModule();
-        ecc.http = this.http;
-        ecc.baseUrl = this.baseUrl;
-        ecc.ex = this.em.ex;
-        ecc.find(new EventCategory()).subscribe(result => { this.eventCategories = result });        
-
-        var l = new LocationModule();
-        l.http = this.http;
-        l.baseUrl = this.baseUrl;
-        l.find(new Location()).subscribe(result => { this.locations = result });        
-    }*/
 
     ngAfterViewChecked() {
         if (this.chunk) {
@@ -167,38 +165,14 @@ export class EventComponent {
         }, error => this.em.ex.catchError(error));;
     }
 
-    /*public onNewSubmit(f: NgForm) {
-        var e = new Event();
-        e.name = f.controls['name'].value;
-        e.eventCategoryId = f.controls['eventCategoryId'].value;
-        e.dateTimeStart = f.controls['dateTimeStart'].value;
-        e.locationId = f.controls['locationId'].value;
-        e.attendance = 0;
-
-        let ec: any = this.eventCategories.find(x => x.id == e.eventCategoryId);
-        e.category = ec.name;
-
-        let l: any = this.locations.find(x => x.id == e.locationId);
-        e.location = l.name;
-
-        this.em.add(e).subscribe(
-            result => {
-                e.id = result;
-                this.chunk.events.push(e);
-
-                alert('Added!');
-                $('#modalNew').modal('toggle');
-            }, error => this.em.ex.catchError(error));
-    }*/
-
     onEventAdd(eventId: number) {
         if (eventId > 0) {
-            // Get group
+            // Get event
             this.http.get(this.baseUrl + 'api/event/get/' + eventId)
                 .subscribe(result => {
                     var g = result.json();
 
-                    // Add new group to the list
+                    // Add new event to the list
                     this.chunk.events.push(g);
                     this.chunk.pager.totalItems++;
 
@@ -211,26 +185,21 @@ export class EventComponent {
             .subscribe(result => { this.event = result.json() as Event }, error => this.em.ex.catchError(error));
     }
 
-    public onEditSubmit(event: Event) {
-        var date = <HTMLInputElement>document.getElementById("txtDate");
-        event.dateTimeStart = date.value;
+    onEventInfoChange(eventId: number) {
+        if (eventId > 0) {
+            // Get event
+            this.http.get(this.baseUrl + 'api/event/get/' + eventId)
+                .subscribe(result => {
+                    var res = result.json();
 
-        let e: any = this.chunk.events.find(x => x.id == event.id);
-        event.attendance = e.attendance;
+                    for (let e of this.chunk.events) {
+                        if (e.id == res.id) {
+                            let index: number = this.chunk.events.indexOf(e);
+                            this.chunk.events[index] = res;
+                        }
+                    }
 
-        let ec: any = this.eventCategories.find(x => x.id == event.eventCategoryId);
-        event.category = ec.name;
-
-        let l: any = this.locations.find(x => x.id == event.locationId);
-        event.location = l.name;
-
-        this.em.edit(event);
-
-        for (let e of this.chunk.events) {
-            if (e.id == event.id) {
-                let index: number = this.chunk.events.indexOf(e);
-                this.chunk.events[index] = event;
-            }
+                }, error => this.em.ex.catchError(error));
         }
     }
 

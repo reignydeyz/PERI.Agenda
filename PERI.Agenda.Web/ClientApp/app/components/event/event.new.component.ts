@@ -69,7 +69,7 @@ export class EventNewComponent {
                 this.change.emit(e.id);
 
                 alert('Added!');
-                $('#modalNew').modal('toggle');
+                $('#modalEventNew').modal('toggle');
             }, error => this.ex.catchError(error));
     }
 }
