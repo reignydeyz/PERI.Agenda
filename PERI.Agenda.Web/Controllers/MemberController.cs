@@ -264,10 +264,26 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [HttpGet("[action]")]
+        [Route("{id}/Leading")]
+        public async Task<int> Leading(int id)
+        {
+            var bll_member = new BLL.Member(unitOfWork);
+            return await bll_member.Leading(id);
+        }
+
+        [HttpGet("[action]")]
+        [Route("{id}/Following")]
+        public async Task<int> Following(int id)
+        {
+            var bll_member = new BLL.Member(unitOfWork);
+            return await bll_member.Following(id);
+        }
+
+        [HttpGet("[action]")]
         [Route("Total/{status}")]
         public async Task<int> Total(string status)
         {
-            
+
             var bll_member = new BLL.Member(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 

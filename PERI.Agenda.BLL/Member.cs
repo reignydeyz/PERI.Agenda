@@ -176,5 +176,33 @@ namespace PERI.Agenda.BLL
             else
                 return res.Id;
         }
+
+        public IQueryable<EF.Attendance> Activities(int id)
+        {
+            return _unitOfWork.AttendanceRepository.Entities
+                .Include(x => x.Event)
+                .Where(x => x.MemberId == id);
+        }
+
+
+        /// <summary>
+        /// Gets the total number groups leading
+        /// </summary>
+        /// <param name="id">ID of the member</param>
+        /// <returns>int</returns>
+        public async Task<int> Leading(int id)
+        {
+            return await _unitOfWork.GroupRepository.Entities.CountAsync(x => x.GroupLeader == id);
+        }
+
+        /// <summary>
+        /// Gets the total number groups following
+        /// </summary>
+        /// <param name="id">ID of the member</param>
+        /// <returns>int</returns>
+        public async Task<int> Following(int id)
+        {
+            return await _unitOfWork.GroupMemberRepository.Entities.CountAsync(x => x.MemberId == id);
+        }
     }
 }

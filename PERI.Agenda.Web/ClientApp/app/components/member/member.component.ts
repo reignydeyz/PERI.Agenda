@@ -36,6 +36,14 @@ export class MemberModule {
         return this.http.get(this.baseUrl + 'api/member/allnames').map(response => response.json());
     }
 
+    public leading(id: number): Observable<number> {
+        return this.http.get(this.baseUrl + 'api/member/' + id + '/leading').map(response => response.json());
+    }
+
+    public following(id: number): Observable<number> {
+        return this.http.get(this.baseUrl + 'api/member/' + id + '/following').map(response => response.json());
+    }
+
     public edit(m: Member) {
         this.ex = new ErrorExceptionModule();
 

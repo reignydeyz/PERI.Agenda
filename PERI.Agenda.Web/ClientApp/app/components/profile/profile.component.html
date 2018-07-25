@@ -1,0 +1,49 @@
+﻿<h1 *ngIf="member">{{ member.name }}</h1>
+
+<div class="row" *ngIf="member">
+    <div class="col-md-3">
+        <div class="box-body box-profile">
+
+            <ul class="list-group list-group-unbordered">
+                <li class="list-group-item">
+                    <b>Leading</b> <a class="pull-right">{{ leading }}</a>
+                </li>
+                <li class="list-group-item">
+                    <b>Following</b> <a class="pull-right">{{ following }}</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="box-body">
+            <strong><i class="fa fa-envelope margin-r-5"></i> Email</strong>
+
+            <p class="text-muted">
+                <a href="mailto: {{member.email}}">{{ member.email }}</a>
+            </p>
+
+            <hr>
+
+            <strong><i class="fa fa-map-marker margin-r-5"></i> Address</strong>
+
+            <p class="text-muted">{{ member.address }}</p>
+
+            <hr>
+
+            <strong><i class="fa fa-mobile margin-r-5"></i> Mobile</strong>
+
+            <p class="text-muted">{{ member.mobile }}</p>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#home">Activities</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div id="home" class="tab-pane fade in active">
+                <h3>HOME</h3>
+                <p>Some content.</p>
+            </div>
+        </div>
+    </div>
+</div>

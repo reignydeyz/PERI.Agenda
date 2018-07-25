@@ -106,7 +106,20 @@
             <tr *ngFor="let m of chunk.members; let i = index">
                 <td [ngClass]="{active: m.isActive == true || m.isActive == 'true', inactive: m.isActive == false || m.isActive == 'false'}"></td>
                 <td><input type="checkbox" value="{{ m.id }}" class="checkBox" /></td>
-                <td><button class="btn btn-default" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(m.id)">Edit</button></td>
+                <td>
+                    <!--<button class="btn btn-default" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(m.id)">Edit</button>-->
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="z-index: 0;">
+                            Action
+                            <span class="fa fa-caret-down"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(m.id)">Edit</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#" data-toggle="modal" data-target="#modalProfile" (click)="onEditInit(m.id)">Profile</a></li>
+                        </ul>
+                    </div>
+                </td>
                 <td>{{ m.name }}</td>
                 <td>{{ m.nickName }}</td>
                 <td>{{ m.birthDate | date: 'MM/dd/yyyy' }}</td>
@@ -261,6 +274,24 @@
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalProfile" role="dialog">
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Profile</h4>
+            </div>
+            <div class="modal-body">
+                <profile [member]="member"></profile>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
 </div>

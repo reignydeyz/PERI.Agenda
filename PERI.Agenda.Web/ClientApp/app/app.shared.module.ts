@@ -30,6 +30,7 @@ import { GroupMyComponent } from './components/group/group.my.component';
 import { EventNewComponent } from './components/event/event.new.component';
 import { EventEditComponent } from './components/event/event.edit.component';
 import { EventMyComponent } from './components/event/event.my.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 @NgModule({
     declarations: [
@@ -55,7 +56,8 @@ import { EventMyComponent } from './components/event/event.my.component';
         GroupNewComponent,
         GroupEditComponent,
         GroupMyComponent,
-        CalendarComponent
+        CalendarComponent,
+        ProfileComponent
     ],
     imports: [
         CommonModule,
@@ -88,6 +90,7 @@ import { EventMyComponent } from './components/event/event.my.component';
             { path: 'groupedit', component: GroupEditComponent },
             { path: 'groupmy', component: GroupMyComponent },
             { path: 'calendar', component: CalendarComponent },
+            { path: 'profile', component: ProfileComponent },
 
             { path: '**', redirectTo: 'dashboard' }
         ])
