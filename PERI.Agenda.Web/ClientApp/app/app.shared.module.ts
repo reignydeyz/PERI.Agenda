@@ -29,6 +29,7 @@ import { GroupEditComponent } from './components/group/group.edit.component';
 import { GroupMyComponent } from './components/group/group.my.component';
 import { EventNewComponent } from './components/event/event.new.component';
 import { EventEditComponent } from './components/event/event.edit.component';
+import { EventMyComponent } from './components/event/event.my.component';
 
 @NgModule({
     declarations: [
@@ -43,6 +44,7 @@ import { EventEditComponent } from './components/event/event.edit.component';
         EventComponent,
         EventNewComponent,
         EventEditComponent,
+        EventMyComponent,
         EventCategoryComponent,
         LocationComponent,
         DashboardComponent,
@@ -74,6 +76,7 @@ import { EventEditComponent } from './components/event/event.edit.component';
             { path: 'event', component: EventComponent },
             { path: 'eventnew', component: EventNewComponent },
             { path: 'eventedit', component: EventEditComponent },
+            { path: 'eventmy', component: EventMyComponent },
             { path: 'eventcategory', component: EventCategoryComponent },
             { path: 'location', component: LocationComponent },
             { path: 'dashboard', component: DashboardComponent },

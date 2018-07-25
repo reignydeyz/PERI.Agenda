@@ -85,6 +85,39 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [HttpPost("[action]")]
+        [Route("Find/MyPage/{id}")]
+        public async Task<IActionResult> MyPage([FromBody] EF.Event obj, int id)
+        {
+            var bll_event = new BLL.Event(unitOfWork);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            obj.EventCategory = new EF.EventCategory { CommunityId = user.Member.CommunityId };
+
+            var res = from r in bll_event.Find(obj)
+                      where r.CreatedBy == user.Member.Name
+                      select new
+                      {
+                          r.Id,
+                          r.EventCategoryId,
+                          Category = r.EventCategory.Name,
+                          r.Name,
+                          r.IsActive,
+                          r.DateTimeStart,
+                          Location = (r.Location == null ? "" : r.Location.Name),
+                          Attendance = r.Attendance.Count,
+                          r.IsExclusive
+                      };
+            var page = id;
+            var pager = new Core.Pager(await res.CountAsync(), page == 0 ? 1 : page, 100);
+
+            dynamic obj1 = new ExpandoObject();
+            obj1.events = await res.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize).ToListAsync();
+            obj1.pager = pager;
+
+            return Json(obj1);
+        }
+
+        [HttpPost("[action]")]
         public async Task<IActionResult> Download([FromBody] EF.Event obj)
         {
             var bll_event = new BLL.Event(unitOfWork);
@@ -120,7 +153,11 @@ namespace PERI.Agenda.Web.Controllers
         {
             var bll_event = new BLL.Event(unitOfWork);
 
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
             var o = AutoMapper.Mapper.Map<EF.Event>(obj);
+            o.CreatedBy = user.Member.Name;
+            o.DateTimeCreated = DateTime.Now;
 
             return await bll_event.Add(o);
         }
@@ -142,6 +179,8 @@ namespace PERI.Agenda.Web.Controllers
                 {
                     var o = AutoMapper.Mapper.Map<EF.Event>(obj);
                     o.IsExclusive = true;
+                    o.CreatedBy = user.Member.Name;
+                    o.DateTimeCreated = DateTime.Now;
                     var eventId = bll_e.Add(o).Result;
 
                     // Gets members from a group

@@ -1,4 +1,4 @@
-﻿import { Component, Inject, AfterViewInit, group } from '@angular/core';
+﻿import { Component, Inject, AfterViewInit, Input } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { NgForm, NgModel } from '@angular/forms';
 import * as $ from "jquery";
@@ -81,6 +81,8 @@ export class EventComponent {
     public pager: Pager;
     public chunk: Chunk;
 
+    @Input('isAdmin') isAdmin: boolean = true;
+
     // https://stackoverflow.com/questions/44000162/how-to-change-title-of-a-page-using-angularangular-2-or-4-route
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
         this.em = new EventModule();
@@ -92,9 +94,16 @@ export class EventComponent {
     }
 
     private paginate(obj: Event, page: number) {
-        this.http.post(this.baseUrl + 'api/event/find/page/' + page, obj).subscribe(result => {
-            this.chunk = result.json() as Chunk;
-        }, error => this.em.ex.catchError(error));
+        if (this.isAdmin) {
+            this.http.post(this.baseUrl + 'api/event/find/page/' + page, obj).subscribe(result => {
+                this.chunk = result.json() as Chunk;
+            }, error => this.em.ex.catchError(error));
+        }
+        else {
+            this.http.post(this.baseUrl + 'api/event/find/mypage/' + page, obj).subscribe(result => {
+                this.chunk = result.json() as Chunk;
+            }, error => this.em.ex.catchError(error));
+        }
     }
 
     ngOnInit() {
