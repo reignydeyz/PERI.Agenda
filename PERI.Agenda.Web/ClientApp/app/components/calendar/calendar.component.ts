@@ -27,6 +27,10 @@ export class CalendarComponent {
         this.rm.baseUrl = baseUrl;
     }
 
+    ngOnInit() {
+        this.titleService.setTitle('Calendar');
+    }
+
     ngAfterViewInit() {
         this.http.get(this.baseUrl + 'api/calendar/events').subscribe(result => {
             this.calendarEvents = result.json() as CalendarEvent[];
