@@ -44,6 +44,10 @@ export class MemberModule {
         return this.http.get(this.baseUrl + 'api/member/' + id + '/following').map(response => response.json());
     }
 
+    public activities(id: number): Observable<Activity[]> {
+        return this.http.get(this.baseUrl + 'api/member/' + id + '/activities').map(response => response.json());
+    }
+
     public edit(m: Member) {
         this.ex = new ErrorExceptionModule();
 
@@ -80,9 +84,8 @@ export class MemberComponent {
     public search: Member;
     public pager: Pager;
     public chunk: Chunk;
-
+    
     private mm: MemberModule;
-
     private ex: ErrorExceptionModule;
 
     public myDatePickerOptions: IMyDpOptions = {
@@ -379,6 +382,29 @@ export class MemberComponent {
 
         }, error => this.ex.catchError(error));        
     }
+
+    onModalProfileInit(id: number) {
+        this.http.get(this.baseUrl + 'api/member/get/' + id)
+            .subscribe(result => {
+                this.member = result.json() as Member;
+
+                if (moment(this.member.birthDate).isValid() == true) {
+                    this.member.birthDate = { date: { year: moment(this.member.birthDate).format('YYYY'), month: moment(this.member.birthDate).format('M'), day: moment(this.member.birthDate).format('D') } };
+                }
+
+                this.mm.leading(this.member.id).subscribe(res => {
+                    this.member.leading = res
+                });
+
+                this.mm.following(this.member.id).subscribe(res => {
+                    this.member.following = res
+                });
+
+                this.mm.activities(this.member.id).subscribe(res => {
+                    this.member.activities = res
+                });
+            }, error => this.ex.catchError(error));
+    }
 }
 
 export class Member {
@@ -392,6 +418,9 @@ export class Member {
     mobile: string;
     isActive: boolean;
     roleId: number;
+    leading: number;
+    following: number;
+    activities: Activity[];
 }
 
 export class Role {
@@ -402,4 +431,11 @@ export class Role {
 class Chunk {
     members: Member[];
     pager: Pager;
+}
+
+class Activity {
+    eventId: number;
+    event: string;
+    eventDate: any;
+    timeLogged: any;
 }

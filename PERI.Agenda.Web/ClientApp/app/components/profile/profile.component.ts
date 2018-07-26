@@ -4,10 +4,14 @@ import { ErrorExceptionModule } from '../errorexception/errorexception.component
 import { MemberModule, Member } from '../member/member.component';
 import { AccountModule } from '../account/account.component';
 import { Title } from '@angular/platform-browser';
+import * as $ from "jquery";
 
 @Component({
     selector: 'profile',
-    templateUrl: './profile.component.html'
+    templateUrl: './profile.component.html',
+    styleUrls: ['./profile.component.css',
+        '../table/table.component.css'
+    ]
 })
 export class ProfileComponent {
     @Input('member') member: Member;
@@ -15,9 +19,6 @@ export class ProfileComponent {
     private ac: AccountModule;
     private mm: MemberModule;
     private ex: ErrorExceptionModule;
-
-    leading: number = 0;
-    following: number = 0;
 
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
         this.ex = new ErrorExceptionModule();
@@ -37,8 +38,32 @@ export class ProfileComponent {
             this.ac.getProfile()
                 .subscribe(r => {
                     this.member = r;
-                    this.titleService.setTitle('Profile');
+
+                    this.mm.leading(r.id).subscribe(res => {
+                        this.member.leading = res
+                    });
+
+                    this.mm.following(r.id).subscribe(res => {
+                        this.member.following = res
+                    });
+
+                    this.mm.activities(r.id).subscribe(res => {
+                        this.member.activities = res
+                    });
+
+                    this.titleService.setTitle(r.name);
                 });
+        }
+    }
+
+    ngAfterViewChecked() {
+        if (this.member && this.member.activities) {
+            var tbl = <HTMLTableElement>document.getElementById("tbl");
+            let tbl1: any;
+            tbl1 = $("table");
+            tbl.onscroll = function () {
+                $("table > *").width(tbl1.width() + tbl1.scrollLeft());
+            };
         }
     }
 }

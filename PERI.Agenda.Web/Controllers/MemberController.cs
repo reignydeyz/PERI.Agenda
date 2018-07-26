@@ -280,6 +280,25 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [HttpGet("[action]")]
+        [Route("{id}/Activities")]
+        public async Task<IActionResult> Activities(int id)
+        {
+            var bll_member = new BLL.Member(unitOfWork);
+            var res = from a in bll_member.Activities(id)
+                      .OrderByDescending(x => x.Event.DateTimeStart)
+                      .Take(20)
+                      select new
+                      {
+                          a.EventId,
+                          Event = a.Event.Name,
+                          EventDate = a.Event.DateTimeStart,
+                          TimeLogged = a.DateTimeLogged
+                      };
+
+            return Json(await res.ToListAsync());
+        }
+
+        [HttpGet("[action]")]
         [Route("Total/{status}")]
         public async Task<int> Total(string status)
         {
