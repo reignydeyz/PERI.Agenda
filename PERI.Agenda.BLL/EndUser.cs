@@ -50,8 +50,8 @@ namespace PERI.Agenda.BLL
             args.ConfirmationCode = args.ConfirmationCode ?? guidString;
             args.ConfirmationExpiry = DateTime.Now.AddHours(12);
 
-            unitOfWork.EndUserRepository.Add(args);
-            await unitOfWork.CommitAsync();
+            await unitOfWork.EndUserRepository.AddAsync(args);
+            unitOfWork.Commit();
 
             return args.UserId;
         }
