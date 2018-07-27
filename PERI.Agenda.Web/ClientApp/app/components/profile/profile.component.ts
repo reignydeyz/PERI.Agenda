@@ -58,12 +58,14 @@ export class ProfileComponent {
 
     ngAfterViewChecked() {
         if (this.member && this.member.activities) {
-            var tbl = <HTMLTableElement>document.getElementById("tbl");
-            let tbl1: any;
-            tbl1 = $("table");
-            tbl.onscroll = function () {
-                $("table > *").width(tbl1.width() + tbl1.scrollLeft());
-            };
+            var tbl = <HTMLTableElement>document.getElementById("tblProfile");
+            if (tbl != null && tbl != undefined) {
+                let tbl1: any;
+                tbl1 = $("#tblProfile");
+                tbl.onscroll = function () {
+                    $("#tblProfile > *").width(tbl1.width() + tbl1.scrollLeft());
+                };
+            }
         }
     }
 }
