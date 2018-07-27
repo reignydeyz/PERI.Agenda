@@ -251,7 +251,7 @@
                     <div class="form-group">
                         <label>Email address</label>
                         <input type="email" class="form-control" placeholder="Email" name="member.email" [(ngModel)]="member.email"
-                               [readOnly]="member.email != null && member.email != undefined && member.email != ''">
+                               [readOnly]="!enableEmail">
                     </div>
                     <div class="form-group">
                         <label>Address</label>

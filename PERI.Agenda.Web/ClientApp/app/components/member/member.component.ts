@@ -84,6 +84,8 @@ export class MemberComponent {
     public search: Member;
     public pager: Pager;
     public chunk: Chunk;
+
+    public enableEmail: boolean = true;
     
     private mm: MemberModule;
     private ex: ErrorExceptionModule;
@@ -211,6 +213,8 @@ export class MemberComponent {
         this.http.get(this.baseUrl + 'api/member/get/' + id)
             .subscribe(result => {
                 this.member = result.json() as Member;
+
+                this.enableEmail = this.member.email.length == 0;
 
                 if (moment(this.member.birthDate).isValid() == true) {
                     this.member.birthDate = { date: { year: moment(this.member.birthDate).format('YYYY'), month: moment(this.member.birthDate).format('M'), day: moment(this.member.birthDate).format('D') } };
