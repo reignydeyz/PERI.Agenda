@@ -209,6 +209,38 @@ export class GroupComponent {
     clearSuggestions() {
         this.suggestions.length = 0;
     }
+
+    onDeleteClick() {
+        var flag = confirm('Are you sure you want to delete selected records?');
+
+        if (!flag)
+            return false;
+
+        var selectedIds = new Array();
+        $('input:checkbox.checkBox').each(function () {
+            if ($(this).prop('checked')) {
+                selectedIds.push($(this).val());
+            }
+        });
+
+        let body = JSON.stringify(selectedIds);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+
+        this.http.post(this.baseUrl + 'api/group/delete', body, options).subscribe(result => {
+
+            for (let id of selectedIds) {
+                for (let g of this.chunk.groups) {
+                    if (g.id == id) {
+                        this.chunk.groups.splice(this.chunk.groups.indexOf(g), 1);
+                    }
+                }
+            }
+
+            alert('Success!');
+
+        }, error => this.gm.ex.catchError(error));
+    }
 }
 
 export class Group {

@@ -170,5 +170,20 @@ namespace PERI.Agenda.Web.Controllers
                 return Ok();
             }
         }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Delete([FromBody] int[] ids)
+        {
+
+            var bll_g = new BLL.Group(unitOfWork);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            if (!await bll_g.IsSelectedIdsOk(ids, user))
+                return BadRequest();
+
+            await bll_g.Delete(ids);
+
+            return Json("Success!");
+        }
     }
 }
