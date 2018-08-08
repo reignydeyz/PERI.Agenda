@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PERI.Agenda.BLL;
+using PERI.Agenda.Core;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -184,6 +186,32 @@ namespace PERI.Agenda.Web.Controllers
             await bll_g.Delete(ids);
 
             return Json("Success!");
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Download([FromBody] EF.Group obj)
+        {
+            var bll_g = new BLL.Group(unitOfWork);
+            var bll_m = new BLL.Member(unitOfWork);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            obj.GroupCategory = new EF.GroupCategory { CommunityId = user.Member.CommunityId };
+
+            var res = from r in bll_g.Find(obj)
+                      join m in bll_m.Find(new EF.Member { CommunityId = user.Member.CommunityId }) on r.GroupLeader equals m.Id
+                      select new
+                      {
+                          Category = r.GroupCategory.Name,
+                          r.Name,
+                          Leader = m.Name,
+                          Members = r.GroupMember.Count
+                      };
+
+            var bytes = Encoding.ASCII.GetBytes((await res.ToListAsync()).ExportToCsv().ToString());
+
+            var result = new FileContentResult(bytes, "text/csv");
+            result.FileDownloadName = "my-csv-file.csv";
+            return result;
         }
     }
 }

@@ -12,6 +12,8 @@ import { Pager } from '../pager/pager.component';
 import { Title } from '@angular/platform-browser';
 import { MemberModule } from '../member/member.component';
 
+import { saveAs } from 'file-saver';
+
 export class GroupModule {
     public http: Http;
     public baseUrl: string;
@@ -240,6 +242,22 @@ export class GroupComponent {
             alert('Success!');
 
         }, error => this.gm.ex.catchError(error));
+    }
+
+    downloadFile(data: any) {
+        var blob = new Blob([data], { type: 'text/csv' });
+        saveAs(blob, "data.csv");
+    }
+
+    private download(g: Group) {
+        this.http.post(this.baseUrl + 'api/group/download', g).subscribe(result => {
+            let parsedResponse = result.text();
+            this.downloadFile(parsedResponse);
+        }, error => this.gm.ex.catchError(error));;
+    }
+
+    public onDownloadClick() {
+        this.download(this.search);
     }
 }
 
