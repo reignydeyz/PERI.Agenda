@@ -254,7 +254,7 @@ export class AttendanceComponent {
                 }
                 this.totalAttendees--;
                 this.totalPending++;
-                alert('Success');
+                //alert('Success');
             }, error => this.am.ex.catchError(error));
         }
         else {
@@ -269,7 +269,7 @@ export class AttendanceComponent {
                 }
                 this.totalAttendees++;
                 this.totalPending--;
-                alert('Success');
+                //alert('Success');
             }, error => this.am.ex.catchError(error));
         }        
     }
