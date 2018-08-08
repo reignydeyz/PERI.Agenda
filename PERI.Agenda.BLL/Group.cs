@@ -67,6 +67,7 @@ namespace PERI.Agenda.BLL
         public IQueryable<EF.Group> Find(EF.Group args)
         {
             return unitOfWork.GroupRepository.Entities
+                .Include(x => x.GroupCategory)
                 .Include(x => x.GroupMember).ThenInclude(x => x.Member)
                 .Where(x => x.Name.Contains(args.Name ?? "")
                 && x.GroupLeader == (args.GroupLeader == null || args.GroupLeader == 0 ? x.GroupLeader : args.GroupLeader)
