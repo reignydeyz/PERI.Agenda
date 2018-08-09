@@ -43,5 +43,11 @@ namespace PERI.Agenda.Web.Controllers
             ViewData["Title"] = "About";
             return View("About");
         }
+
+        [Route("version")]
+        public IActionResult Version()
+        {
+            return Json(Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationVersion);
+        }
     }
 }
