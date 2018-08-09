@@ -16,6 +16,7 @@ import { IMyDpOptions } from 'mydatepicker';
 import { Pager } from '../pager/pager.component';
 import { MemberModule, Member } from '../member/member.component';
 import { Rsvp, RsvpModule } from '../rsvp/rsvp.component';
+import { LookUp, LookUpModule } from '../lookup/lookup.component';
 
 export class AttendanceModule {
     public http: Http;
@@ -92,6 +93,8 @@ export class AttendanceComponent {
     public chunkAttendees: ChunkAttendees;
 
     public going: Rsvp[];
+
+    public genders: LookUp[];
 
     private sub: any;
 
@@ -175,6 +178,11 @@ export class AttendanceComponent {
     }
 
     ngAfterViewInit() {
+        var lm = new LookUpModule();
+        lm.http = this.http;
+        lm.baseUrl = this.baseUrl;
+        lm.getByGroup('Gender').subscribe(result => { this.genders = result });
+
         var em = new EventModule();
         em.http = this.http;
         em.baseUrl = this.baseUrl;

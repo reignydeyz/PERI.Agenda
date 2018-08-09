@@ -136,6 +136,7 @@
                     <label>Gender</label>
                     <select class="form-control" name="gender" ngModel>
                         <option value="">--SELECT--</option>
+                        <option *ngFor="let g of genders" value="{{ g.value }}">{{ g.name }}</option>
                     </select>
                 </div>
                 <div class="form-group">
