@@ -12,6 +12,7 @@ import { Pager } from '../pager/pager.component';
 import { Title } from '@angular/platform-browser';
 import { MemberModule } from '../member/member.component';
 
+import * as moment from 'moment';
 import { saveAs } from 'file-saver';
 
 export class GroupModule {
@@ -63,6 +64,8 @@ export class GroupComponent {
     public search: Group;
     public pager: Pager;
     public chunk: Chunk;
+
+    public member: Member;
 
     public names: string[];
     suggestions: string[] = [];
@@ -258,6 +261,29 @@ export class GroupComponent {
 
     public onDownloadClick() {
         this.download(this.search);
+    }
+
+    onModalProfileInit(id: number) {
+        this.http.get(this.baseUrl + 'api/member/get/' + id)
+            .subscribe(result => {
+                this.member = result.json() as Member;
+
+                if (moment(this.member.birthDate).isValid() == true) {
+                    this.member.birthDate = { date: { year: moment(this.member.birthDate).format('YYYY'), month: moment(this.member.birthDate).format('M'), day: moment(this.member.birthDate).format('D') } };
+                }
+
+                this.mm.leading(this.member.id).subscribe(res => {
+                    this.member.leading = res
+                });
+
+                this.mm.following(this.member.id).subscribe(res => {
+                    this.member.following = res
+                });
+
+                this.mm.activities(this.member.id).subscribe(res => {
+                    this.member.activities = res
+                });
+            }, error => this.gm.ex.catchError(error));
     }
 }
 
