@@ -28,7 +28,9 @@ export class MemberModule {
             address: m.address,
             mobile: m.mobile,
             isActive: m.isActive,
-            gender: m.gender
+            gender: m.gender,
+            invitedByMemberName: m.invitedByMemberName,
+            remarks: m.remarks
         }).map(response => response.json());
     }
 
@@ -60,7 +62,9 @@ export class MemberModule {
             email: m.email,
             address: m.address,
             mobile: m.mobile,
-            isActive: m.isActive
+            isActive: m.isActive,
+            invitedByMembername: m.invitedByMemberName,
+            remarks: m.remarks
         }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => this.ex.catchError(error));
     }
 }
@@ -194,6 +198,8 @@ export class MemberComponent {
         m.address = f.controls['address'].value;
         m.mobile = f.controls['mobile'].value;
         m.gender = f.controls['gender'].value;
+        m.invitedByMemberName = f.controls['invitedBy'].value;
+        m.remarks = f.controls['remarks'].value;
 
         this.mm.add(m).subscribe(
             result => {
@@ -262,6 +268,8 @@ export class MemberComponent {
         lm.http = this.http;
         lm.baseUrl = this.baseUrl;
         lm.getByGroup('Gender').subscribe(result => { this.genders = result });
+
+        this.mm.allNames().subscribe(result => { this.names = result });
     }
 
     ngAfterViewChecked() {
@@ -409,6 +417,46 @@ export class MemberComponent {
                 });
             }, error => this.ex.catchError(error));
     }
+
+    public names: string[];
+    suggestionsForNew: string[] = [];
+    suggestionsForEdit: string[] = [];
+
+    // New
+    suggestForNew(fc: any) {
+        if (fc.value.length > 0) {
+            this.suggestionsForNew = this.names
+                .filter(c => c.startsWith(fc.value.toUpperCase()))
+                .slice(0, 5);
+        }
+        else {
+            this.suggestionsForNew.length = 0;
+        }
+    }
+
+    suggestionForNewSelect(f: NgForm, s: string) {
+        this.suggestionsForNew.length = 0;
+        
+        f.controls['invitedBy'].setValue(s);
+    }
+
+    // Edit
+    suggestForEdit(fc: any) {
+        if (fc.value.length > 0) {
+            this.suggestionsForEdit = this.names
+                .filter(c => c.startsWith(fc.value.toUpperCase()))
+                .slice(0, 5);
+        }
+        else {
+            this.suggestionsForEdit.length = 0;
+        }
+    }
+
+    suggestionForEditSelect(f: NgForm, s: string) {
+        this.suggestionsForEdit.length = 0;
+
+        this.member.invitedByMemberName = s;
+    }
 }
 
 export class Member {
@@ -425,6 +473,9 @@ export class Member {
     leading: number;
     following: number;
     activities: Activity[];
+    invitedBy: number;
+    invitedByMemberName: string;
+    remarks: string;
 }
 
 export class Role {

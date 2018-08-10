@@ -203,6 +203,8 @@ export class AttendanceComponent {
         div[0].style.width = "100%";
 
         this.initMenu();
+
+        this.mm.allNames().subscribe(result => { this.names = result });
     }
 
     showMenuButton(): boolean {
@@ -303,6 +305,8 @@ export class AttendanceComponent {
         m.address = f.controls['address'].value;
         m.mobile = f.controls['mobile'].value;
         m.gender = f.controls['gender'].value;
+        m.invitedByMemberName = f.controls['invitedBy'].value;
+        m.remarks = f.controls['remarks'].value;
 
         this.mm.add(m).subscribe(
             result => {
@@ -354,6 +358,26 @@ export class AttendanceComponent {
                 this.going.splice(this.going.indexOf(r), 1);
             }
         }
+    }
+
+    public names: string[];
+    suggestions: string[] = [];
+
+    suggest(fc: any) {
+        if (fc.value.length > 0) {
+            this.suggestions = this.names
+                .filter(c => c.startsWith(fc.value.toUpperCase()))
+                .slice(0, 5);
+        }
+        else {
+            this.suggestions.length = 0;
+        }
+    }
+
+    suggestionSelect(f: NgForm, s: string) {
+        this.suggestions.length = 0;
+
+        f.controls['invitedBy'].setValue(s);
     }
 }
 

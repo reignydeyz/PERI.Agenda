@@ -152,6 +152,17 @@
                     <input class="form-control" placeholder="Mobile" name="mobile" ngModel>
                 </div>
                 <div class="form-group">
+                    <label>Remarks</label>
+                    <textarea class="form-control" placeholder="Remarks" name="remarks" ngModel></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Invited by</label>
+                    <input class="form-control" placeholder="Invited by" name="invitedBy" ngModel (input)="suggest($event.target)" autocomplete="off">
+                    <div class="suggestions" *ngIf="suggestions" style="max-height:50px; overflow:auto">
+                        <p *ngFor="let s of suggestions" (click)="suggestionSelect(frmNew, s)">{{s}}</p>
+                    </div>
+                </div>
+                <div class="form-group">
                     <button type="submit" class="btn btn-primary">Submit</button>
                     <a class="btn btn-default" onclick='document.getElementById("frmNew").reset()'>Clear</a>
                 </div>

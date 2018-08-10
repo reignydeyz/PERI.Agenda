@@ -38,7 +38,7 @@ namespace PERI.Agenda.Web.Controllers
 
         [BLL.VerifyUser(AllowedRoles = "Admin,Developer")]
         [HttpPost("[action]")]
-        public async Task<IEnumerable<EF.Member>> Find([FromBody] Models.Member obj)
+        public async Task<IActionResult> Find([FromBody] Models.Member obj)
         {
             obj = obj ?? new Models.Member();
 
@@ -50,8 +50,25 @@ namespace PERI.Agenda.Web.Controllers
 
             var o = AutoMapper.Mapper.Map<EF.Member>(obj);
 
-            var res = await bll_member.Find(o).Where(x => x.IsActive == (obj.IsActive ?? x.IsActive)).ToListAsync();
-            return res;
+            var res = from r in await bll_member.Find(o).Where(x => x.IsActive == (obj.IsActive ?? x.IsActive)).ToListAsync()
+                      join m in bll_member.Find(new EF.Member { CommunityId = obj.CommunityId }) on r.InvitedBy equals m.Id into g
+                      from m1 in g.DefaultIfEmpty()
+                      select new
+                      {
+                          r.Id,
+                          r.Name,
+                          r.NickName,
+                          r.Address,
+                          r.Mobile,
+                          r.Email,
+                          r.BirthDate,
+                          r.Remarks,
+                          r.CivilStatus,
+                          r.Gender,
+                          InvitedByMemberName = m1 == null ? "" : m1.Name,
+                          r.IsActive
+                      };
+            return Json(res);
         }
 
         [BLL.VerifyUser(AllowedRoles = "Admin")]
@@ -70,12 +87,31 @@ namespace PERI.Agenda.Web.Controllers
             if (obj.RoleId != null)
                 o.EndUser = new EF.EndUser { RoleId = obj.RoleId.Value };
 
-            var res = bll_member.Find(o);
+            var members = bll_member.Find(o);
             var page = id;
-            var pager = new Core.Pager(await res.CountAsync(), page == 0 ? 1 : page, 100);
+            var pager = new Core.Pager(await members.CountAsync(), page == 0 ? 1 : page, 100);
+
+            var res = from r in await members.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize).ToListAsync()
+                      join m in bll_member.Find(new EF.Member { CommunityId = obj.CommunityId }) on r.InvitedBy equals m.Id into g
+                      from m1 in g.DefaultIfEmpty()
+                      select new
+                      {
+                          r.Id,
+                          r.Name,
+                          r.NickName,
+                          r.Address,
+                          r.Mobile,
+                          r.Email,
+                          r.BirthDate,
+                          r.Remarks,
+                          r.CivilStatus,
+                          r.Gender,
+                          InvitedByMemberName = m1 == null ? "" : m1.Name,
+                          r.IsActive
+                      };
 
             dynamic obj1 = new ExpandoObject();
-            obj1.members = await res.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize).ToListAsync();
+            obj1.members = res;
             obj1.pager = pager;
 
             return Json(obj1);
@@ -98,6 +134,23 @@ namespace PERI.Agenda.Web.Controllers
                     m.CommunityId = user.Member.CommunityId.Value;
                     m.CreatedBy = user.Member.Name;
                     m.DateCreated = DateTime.Now;
+
+                    // Check and get invited by
+                    if (!String.IsNullOrEmpty(args.InvitedByMemberName))
+                    {
+                        var ibid = await bll_member.GetIdByName(args.InvitedByMemberName ?? "", user.Member.CommunityId.Value);
+
+                        if (ibid == null)
+                        {
+                            return new ObjectResult("Invalid Invited by.")
+                            {
+                                StatusCode = 403,
+                                Value = "Invalid Invited by."
+                            };
+                        }
+                        else
+                            m.InvitedBy = ibid;
+                    }
 
                     var memberId = await bll_member.Add(m);
 
@@ -169,13 +222,30 @@ namespace PERI.Agenda.Web.Controllers
         [BLL.VerifyUser(AllowedRoles = "Admin,Developer")]
         [HttpGet("[action]")]
         [Route("Get/{id}")]
-        public async Task<EF.Member> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             
             var bll_member = new BLL.Member(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            return await bll_member.Get(new EF.Member { Id = id, CommunityId = user.Member.CommunityId });
+            var r = await bll_member.Get(new EF.Member { Id = id, CommunityId = user.Member.CommunityId });
+            return Json(new Models.Member
+                {
+                    Address = r.Address,
+                    BirthDate = r.BirthDate,
+                    CivilStatus = r.CivilStatus,
+                    CommunityId = r.CommunityId,
+                    Email = r.Email,
+                    Gender = r.Gender,
+                    Id = r.Id,
+                    InvitedBy = r.InvitedBy,
+                    InvitedByMemberName = r.InvitedBy > 0 ? bll_member.GetById(r.InvitedBy.Value).Result.Name : "",
+                    IsActive = r.IsActive,
+                    Mobile = r.Mobile,
+                    Name = r.Name,
+                    NickName = r.NickName,
+                    Remarks = r.Remarks
+                });
         }
 
         [HttpPost("[action]")]
@@ -190,6 +260,15 @@ namespace PERI.Agenda.Web.Controllers
             obj.CommunityId = user.Member.CommunityId;
 
             var o = AutoMapper.Mapper.Map<EF.Member>(obj);
+
+            // Check and get invited by
+            if (!String.IsNullOrEmpty(obj.InvitedByMemberName))
+            {
+                var ibid = await bll_member.GetIdByName(obj.InvitedByMemberName ?? "", user.Member.CommunityId.Value);
+
+                if (ibid != null)
+                    o.InvitedBy = ibid;
+            }
 
             await bll_member.Edit(o);
 
@@ -321,15 +400,32 @@ namespace PERI.Agenda.Web.Controllers
         {
             
             var bll_member = new BLL.Member(unitOfWork);
+            var bll_lu = new BLL.LookUp(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             obj.CommunityId = user.Member.CommunityId;
 
             var o = AutoMapper.Mapper.Map<EF.Member>(obj);
 
-            var res = await bll_member.Find(o).ToListAsync();
+            var res = from r in await bll_member.Find(o).ToListAsync()
+                      join m in bll_member.Find(new EF.Member { CommunityId = obj.CommunityId }) on r.InvitedBy equals m.Id into g
+                      from m1 in g.DefaultIfEmpty()
+                      select new
+                      {
+                          r.Id,
+                          r.Name,
+                          r.NickName,
+                          r.Address,
+                          r.Mobile,
+                          r.Email,
+                          r.BirthDate,
+                          r.Remarks,
+                          r.CivilStatus,
+                          r.Gender,
+                          InvitedBy = m1 == null ? "" : m1.Name
+                      };
 
-            var bytes = Encoding.ASCII.GetBytes(res.ExportToCsv().ToString());
+            var bytes = Encoding.ASCII.GetBytes(res.ToList().ExportToCsv().ToString());
 
             var result = new FileContentResult(bytes, "text/csv");
             result.FileDownloadName = "my-csv-file.csv";

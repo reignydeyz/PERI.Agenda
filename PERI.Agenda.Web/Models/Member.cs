@@ -45,6 +45,7 @@ namespace PERI.Agenda.Web.Models
         [Range(3,4)]
         public int? Gender { get; set; }
         public int? InvitedBy { get; set; }
+        public string InvitedByMemberName { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? DateCreated { get; set; }
         public string CreatedBy { get; set; }

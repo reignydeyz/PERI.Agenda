@@ -61,7 +61,9 @@ namespace PERI.Agenda.BLL
                     CommunityId = args.CommunityId,
                     IsActive = args.IsActive,
                     CreatedBy = args.CreatedBy,
-                    DateCreated = args.DateCreated
+                    DateCreated = args.DateCreated,
+                    InvitedBy = args.InvitedBy,
+                    Remarks = args.Remarks
                 };
 
                 await _unitOfWork.MemberRepository.AddAsync(m);
@@ -113,6 +115,8 @@ namespace PERI.Agenda.BLL
             user.Address = args.Address;
             user.Mobile = args.Mobile;
             user.IsActive = args.IsActive;
+            user.InvitedBy = args.InvitedBy;
+            user.Remarks = args.Remarks;
 
             await _unitOfWork.CommitAsync();
         }
