@@ -132,7 +132,7 @@ export class GroupMemberComponent {
                 }
 
                 this.change.emit(this.group.id);
-                alert('Success');
+                //alert('Success');
             }, error => this.ex.catchError(error));
         }
         else {
@@ -153,7 +153,7 @@ export class GroupMemberComponent {
                 }
 
                 this.change.emit(this.group.id);
-                alert('Success');
+                //alert('Success');
             }, error => this.ex.catchError(error));
         }
     }

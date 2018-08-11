@@ -31,6 +31,8 @@
                         </button>
                         <ul class="dropdown-menu">
                             <li><a href="#" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(g.id)">Edit</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#" data-toggle="modal" data-target="#modalStats" (click)="onStatsLoad(g.id)">Stats</a></li>
                         </ul>
                     </div>
                 </td>
@@ -86,6 +88,40 @@
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalStats" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">{{ groupcategory.name }}</h4>
+            </div>
+            <div class="modal-body" *ngIf="chartLabels.length > 0">
+                <ul class="nav nav-pills">
+                    <li class="active"><a data-toggle="pill" href="#home">Chart</a></li>
+                    
+                </ul>
+
+                <div class="tab-content">
+                    <div id="home" class="tab-pane fade in active">
+                        <br />
+                        <br />
+                        <canvas baseChart
+                                [datasets]="stats.dataSet"
+                                [labels]="chartLabels"
+                                [options]="chartOptions"
+                                [legend]="chartLegend"
+                                [chartType]="chartType"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
 </div>

@@ -102,5 +102,52 @@ namespace PERI.Agenda.Web.Controllers
 
             return Json("Success!");
         }
+
+        [BLL.VerifyUser(AllowedRoles = "Admin")]
+        [HttpGet("[action]")]
+        [Route("Stats/{id}")]
+        public async Task<Models.Graph.GraphDataSet> Stats(int id)
+        {
+            var bll_group = new BLL.Group(unitOfWork);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            var res = bll_group.Find(new EF.Group { GroupCategory = new EF.GroupCategory { CommunityId = user.Member.CommunityId }, GroupCategoryId = id });
+
+            var list = new List<Models.Graph.GraphData>();
+            list.Add(new Models.Graph.GraphData { Label = "Members", Data = await res.OrderByDescending(x => x.GroupMember.Count).Select(x => x.GroupMember.Count).Take(20).ToArrayAsync() });
+
+            return new Models.Graph.GraphDataSet
+            {
+                DataSet = list,
+                ChartLabels = await res.OrderByDescending(x => x.GroupMember.Count).Select(x => x.Name).Take(20).ToArrayAsync()
+            };
+        }
+
+        [BLL.VerifyUser(AllowedRoles = "Admin")]
+        [HttpGet("[action]")]
+        [Route("Groups/{id}")]
+        public async Task<IActionResult> Events(int id)
+        {
+            var bll_group = new BLL.Group(unitOfWork);
+            var bll_m = new BLL.Member(unitOfWork);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            var res = from r in (await bll_group.Find(new EF.Group { GroupCategory = new EF.GroupCategory { CommunityId = user.Member.CommunityId }, GroupCategoryId = id }).OrderByDescending(x => x.GroupMember.Count).Take(20).ToListAsync())
+                      join m in bll_m.Find(new EF.Member { CommunityId = user.Member.CommunityId }) on r.GroupLeader equals m.Id
+                      select new
+                      {
+                          r.Id,
+                          r.GroupCategoryId,
+                          Category = r.GroupCategory.Name,
+                          r.Name,
+                          Members = r.GroupMember.Count,
+                          Leader = m.Name,
+                          LeaderMemberId = m.Id,
+                          isMember = r.GroupMember.Count(x => x.MemberId == user.MemberId) > 0,
+                          isLeader = user.MemberId == m.Id
+                      };
+
+            return Json(res);
+        }
     }
 }

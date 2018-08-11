@@ -8,6 +8,8 @@ import { Observable } from 'rxjs/Observable';
 import { Title } from '@angular/platform-browser';
 
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
+import { Group } from '../group/group.component';
+import { Statistics, GraphDataSet, GraphData } from '../graph/graph.component';
 
 export class GroupCategoryModule {
     public http: Http;
@@ -46,6 +48,22 @@ export class GroupCategoryComponent {
 
     public groupcategory = GroupCategory;
     public groupcategories: GroupCategory[];
+
+    groups: Group[];
+
+    public stats: GraphDataSet;
+    public chartLabels: string[] = [];
+    public chartType: string = 'pie';
+    public chartLegend: boolean = true;
+    public chartOptions: any = {
+        responsive: true,
+        legend: {
+            display: false,
+            labels: {
+                display: false
+            }
+        }
+    };
 
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
         this.gcm = new GroupCategoryModule();
@@ -163,6 +181,19 @@ export class GroupCategoryComponent {
             alert('Success!');
 
         }, error => this.gcm.ex.catchError(error));
+    }
+
+    onStatsLoad(id: number) {
+        this.onEditInit(id);
+
+        // Updating lineChartLabels does not reflect on the chart
+        // https://github.com/valor-software/ng2-charts/issues/774
+        this.chartLabels.length = 0;
+
+        this.http.get(this.baseUrl + 'api/groupcategory/stats/' + id).subscribe(result => {
+            this.stats = result.json() as GraphDataSet;
+            this.chartLabels = this.stats.chartLabels;
+        }, error => console.error(error));
     }
 }
 
