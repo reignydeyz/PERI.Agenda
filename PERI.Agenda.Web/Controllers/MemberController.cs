@@ -359,6 +359,14 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [HttpGet("[action]")]
+        [Route("{id}/Invites")]
+        public async Task<int> Invites(int id)
+        {
+            var bll_member = new BLL.Member(unitOfWork);
+            return await bll_member.Invites(id);
+        }
+
+        [HttpGet("[action]")]
         [Route("{id}/Activities")]
         public async Task<IActionResult> Activities(int id)
         {

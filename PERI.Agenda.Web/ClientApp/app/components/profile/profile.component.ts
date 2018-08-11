@@ -47,6 +47,10 @@ export class ProfileComponent {
                         this.member.following = res
                     });
 
+                    this.mm.invites(r.id).subscribe(res => {
+                        this.member.invites = res
+                    });
+
                     this.mm.activities(r.id).subscribe(res => {
                         this.member.activities = res
                     });

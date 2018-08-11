@@ -46,6 +46,10 @@ export class MemberModule {
         return this.http.get(this.baseUrl + 'api/member/' + id + '/following').map(response => response.json());
     }
 
+    public invites(id: number): Observable<number> {
+        return this.http.get(this.baseUrl + 'api/member/' + id + '/invites').map(response => response.json());
+    }
+
     public activities(id: number): Observable<Activity[]> {
         return this.http.get(this.baseUrl + 'api/member/' + id + '/activities').map(response => response.json());
     }
@@ -412,6 +416,10 @@ export class MemberComponent {
                     this.member.following = res
                 });
 
+                this.mm.invites(this.member.id).subscribe(res => {
+                    this.member.invites = res
+                });
+
                 this.mm.activities(this.member.id).subscribe(res => {
                     this.member.activities = res
                 });
@@ -472,6 +480,7 @@ export class Member {
     roleId: number;
     leading: number;
     following: number;
+    invites: number;
     activities: Activity[];
     invitedBy: number;
     invitedByMemberName: string;

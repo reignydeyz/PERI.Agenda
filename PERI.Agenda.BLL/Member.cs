@@ -190,7 +190,7 @@ namespace PERI.Agenda.BLL
 
 
         /// <summary>
-        /// Gets the total number groups leading
+        /// Gets the total number of groups leading
         /// </summary>
         /// <param name="id">ID of the member</param>
         /// <returns>int</returns>
@@ -200,13 +200,23 @@ namespace PERI.Agenda.BLL
         }
 
         /// <summary>
-        /// Gets the total number groups following
+        /// Gets the total number of groups following
         /// </summary>
         /// <param name="id">ID of the member</param>
         /// <returns>int</returns>
         public async Task<int> Following(int id)
         {
             return await _unitOfWork.GroupMemberRepository.Entities.CountAsync(x => x.MemberId == id);
+        }
+
+        /// <summary>
+        /// Gets the total number of invited members
+        /// </summary>
+        /// <param name="id">ID of the member</param>
+        /// <returns>int</returns>
+        public async Task<int> Invites(int id)
+        {
+            return await _unitOfWork.MemberRepository.Entities.CountAsync(x => x.InvitedBy == id);
         }
     }
 }
