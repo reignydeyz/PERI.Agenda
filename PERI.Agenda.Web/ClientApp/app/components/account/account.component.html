@@ -13,6 +13,8 @@
         <form class="form-group" (ngSubmit)="onEditSubmit(profile)" ngNativeValidate id="frmEdit">
             <input type="hidden" id="index">
             <input type="hidden" name="profile.id" [(ngModel)]="profile.id">
+            <input type="hidden" name="profile.invitedByMemberName" [(ngModel)]="profile.invitedByMemberName">
+            <input type="hidden" name="profile.remarks" [(ngModel)]="profile.remarks">
             <div class="form-group">
                 <label>Name*</label>
                 <input class="form-control" placeholder="Name" name="profile.name" required [(ngModel)]="profile.name">
@@ -46,7 +48,7 @@
                 <label>Mobile</label>
                 <input class="form-control" placeholder="Mobile" name="profile.mobile" [(ngModel)]="profile.mobile">
             </div>
-            
+
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>

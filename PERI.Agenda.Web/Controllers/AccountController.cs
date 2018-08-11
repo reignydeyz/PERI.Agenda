@@ -29,19 +29,29 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [HttpGet("[action]")]
-        public EF.Member Profile()
+        public async Task<Models.Member> Profile()
         {
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
-            return new EF.Member
+
+            var bll_member = new BLL.Member(unitOfWork);
+
+            var r = await bll_member.Get(new EF.Member { Id = user.MemberId, CommunityId = user.Member.CommunityId });
+            return new Models.Member
             {
-                Id = user.MemberId,
-                Name = user.Member.Name,
-                NickName = user.Member.NickName,
-                BirthDate = user.Member.BirthDate,
-                Gender = user.Member.Gender,
-                Email = user.Member.Email,
-                Address = user.Member.Address,
-                Mobile = user.Member.Mobile
+                Address = r.Address,
+                BirthDate = r.BirthDate,
+                CivilStatus = r.CivilStatus,
+                CommunityId = r.CommunityId,
+                Email = r.Email,
+                Gender = r.Gender,
+                Id = r.Id,
+                InvitedBy = r.InvitedBy,
+                InvitedByMemberName = r.InvitedBy > 0 ? bll_member.GetById(r.InvitedBy.Value).Result.Name : "",
+                IsActive = r.IsActive,
+                Mobile = r.Mobile,
+                Name = r.Name,
+                NickName = r.NickName,
+                Remarks = r.Remarks
             };
         }
 
