@@ -280,6 +280,10 @@ export class GroupComponent {
                     this.member.following = res
                 });
 
+                this.mm.invites(this.member.id).subscribe(res => {
+                    this.member.invites = res
+                });
+
                 this.mm.activities(this.member.id).subscribe(res => {
                     this.member.activities = res
                 });
