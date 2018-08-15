@@ -377,6 +377,7 @@ namespace PERI.Agenda.Web.Controllers
                       select new
                       {
                           a.EventId,
+                          Category = a.Event.EventCategory.Name,
                           Event = a.Event.Name,
                           EventDate = a.Event.DateTimeStart,
                           TimeLogged = a.DateTimeLogged

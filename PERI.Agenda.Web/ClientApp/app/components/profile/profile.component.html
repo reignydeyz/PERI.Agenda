@@ -47,6 +47,7 @@
                 <table class="table table-striped table-hover tbl1" id="tblProfile">
                     <thead>
                         <tr>
+                            <th>Category</th>
                             <th>Event</th>
                             <th>Date</th>
                             <th>Time Logged</th>
@@ -54,6 +55,7 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let a of member.activities; let i = index">
+                            <td>{{ a.category }}</td>
                             <td>{{ a.event }}</td>
                             <td>{{ a.eventDate  | date: 'MM/dd/yyyy' }}</td>
                             <td>{{ a.timeLogged  |  date: 'MM/dd/yyyy hh:mm a' }}</td>

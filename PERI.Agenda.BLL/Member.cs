@@ -184,7 +184,7 @@ namespace PERI.Agenda.BLL
         public IQueryable<EF.Attendance> Activities(int id)
         {
             return _unitOfWork.AttendanceRepository.Entities
-                .Include(x => x.Event)
+                .Include(x => x.Event).ThenInclude(x => x.EventCategory)
                 .Where(x => x.MemberId == id);
         }
 
