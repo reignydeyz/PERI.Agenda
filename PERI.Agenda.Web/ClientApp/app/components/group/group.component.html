@@ -48,7 +48,7 @@
                 <th>Members</th>
             </tr>
         </thead>
-        <tbody style="padding-bottom: 50px">
+        <tbody style="padding-bottom: 75px">
             <tr *ngFor="let g of chunk.groups; let i = index">
                 <td><input type="checkbox" value="{{ g.id }}" class="checkBox" /></td>
                 <td>
@@ -117,7 +117,7 @@
                 <h4 class="modal-title">Profile</h4>
             </div>
             <div class="modal-body">
-                <profile [member]="member"></profile>
+                <profile [member]="member" *ngIf="member"></profile>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

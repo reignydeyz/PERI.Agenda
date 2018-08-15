@@ -63,7 +63,7 @@
                 <th>Attendance</th>
             </tr>
         </thead>
-        <tbody style="padding-bottom: 50px">
+        <tbody style="padding-bottom: 75px">
             <tr *ngFor="let e of chunk.events; let i = index">
                 <td [ngClass]="{exclusive: e.isExclusive == true || e.isExclusive == 'true', open: e.isExclusive == false || e.isExclusive == 'false'}"></td>
                 <td><input type="checkbox" value="{{ e.id }}" class="checkBox" /></td>

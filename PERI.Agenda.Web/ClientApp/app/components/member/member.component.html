@@ -104,7 +104,7 @@
                 <th>Remarks</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody style="padding-bottom: 75px">
             <tr *ngFor="let m of chunk.members; let i = index">
                 <td [ngClass]="{active: m.isActive == true || m.isActive == 'true', inactive: m.isActive == false || m.isActive == 'false'}"></td>
                 <td><input type="checkbox" value="{{ m.id }}" class="checkBox" /></td>
