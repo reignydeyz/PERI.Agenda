@@ -141,7 +141,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_a = new BLL.Attendance(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            if (!await bll_event.IsSelectedIdsOk(new int[] { obj.EventId }, user))
+            if (!await bll_event.IsSelectedIdsOk(new int[] { id }, user))
                 throw new ArgumentException("Event Id is invalid.");
 
             return await bll_a.Add(new EF.Attendance { EventId = id, MemberId = obj.MemberId.Value, DateTimeLogged = obj.DateTimeLogged ?? DateTime.Now });
@@ -155,7 +155,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_a = new BLL.Attendance(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            if (!await bll_event.IsSelectedIdsOk(new int[] { obj.EventId }, user))
+            if (!await bll_event.IsSelectedIdsOk(new int[] { id }, user))
                 throw new ArgumentException("Event Id is invalid.");
 
             await bll_a.Delete(new EF.Attendance { EventId = id, MemberId = obj.MemberId });
