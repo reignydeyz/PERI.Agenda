@@ -155,6 +155,9 @@ namespace PERI.Agenda.Web.Controllers
             var bll_m = new BLL.Member(unitOfWork);
             var glid = await bll_m.GetIdByName(obj.Leader ?? user.Member.Name, user.Member.CommunityId.Value);
 
+            if (!await bll_g.IsSelectedIdsOk(new int[] { obj.Id }, user))
+                return BadRequest();
+
             if (glid == null)
             {
                 return new ObjectResult("Leader is not found.")

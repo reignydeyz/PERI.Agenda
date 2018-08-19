@@ -91,7 +91,15 @@ namespace PERI.Agenda.BLL
 
         public async Task<bool> IsSelectedIdsOk(int[] ids, EF.EndUser user)
         {
-            return await unitOfWork.EventRepository.Entities.Where(x => ids.Contains(x.Id) && x.EventCategory.CommunityId == user.Member.CommunityId).CountAsync() == ids.Count();
+            switch (user.RoleId)
+            {
+                case 1:
+                case 3:
+                    return await unitOfWork.EventRepository.Entities.Where(x => ids.Contains(x.Id) && x.EventCategory.CommunityId == user.Member.CommunityId).CountAsync() == ids.Count();
+                default:
+                    return await unitOfWork.EventRepository.Entities.Where(x => ids.Contains(x.Id) && x.EventCategory.CommunityId == user.Member.CommunityId).CountAsync() == ids.Count()
+                        && await unitOfWork.EventRepository.Entities.Where(x => ids.Contains(x.Id) && x.CreatedBy == user.Member.Name).CountAsync() == ids.Count();
+            }
         }
 
         /// <summary>

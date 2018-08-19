@@ -137,7 +137,12 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/Add")]
         public async Task<int> Add([FromBody] Models.Attendance obj, int id)
         {
+            var bll_event = new BLL.Event(unitOfWork);
             var bll_a = new BLL.Attendance(unitOfWork);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            if (!await bll_event.IsSelectedIdsOk(new int[] { obj.EventId }, user))
+                throw new ArgumentException("Event Id is invalid.");
 
             return await bll_a.Add(new EF.Attendance { EventId = id, MemberId = obj.MemberId.Value, DateTimeLogged = obj.DateTimeLogged ?? DateTime.Now });
         }
@@ -146,7 +151,12 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/Delete")]
         public async Task Delete([FromBody] EF.Attendance obj, int id)
         {
+            var bll_event = new BLL.Event(unitOfWork);
             var bll_a = new BLL.Attendance(unitOfWork);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            if (!await bll_event.IsSelectedIdsOk(new int[] { obj.EventId }, user))
+                throw new ArgumentException("Event Id is invalid.");
 
             await bll_a.Delete(new EF.Attendance { EventId = id, MemberId = obj.MemberId });
         }

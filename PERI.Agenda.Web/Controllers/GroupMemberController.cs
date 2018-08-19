@@ -68,8 +68,12 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Add")]
         public async Task<int> Add([FromBody] Models.GroupMember obj)
         {
+            var bll_g = new BLL.Group(unitOfWork);
             var bll_gm = new BLL.GroupMember(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            if (!await bll_g.IsSelectedIdsOk(new int[] { obj.GroupId }, user))
+                throw new ArgumentException("Group Id is invalid.");
 
             return await bll_gm.Add(new EF.GroupMember {
                 GroupId = obj.GroupId,
@@ -82,8 +86,12 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Delete")]
         public async Task Delete([FromBody] Models.GroupMember obj)
         {
+            var bll_g = new BLL.Group(unitOfWork);
             var bll_gm = new BLL.GroupMember(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            if (!await bll_g.IsSelectedIdsOk(new int[] { obj.GroupId }, user))
+                throw new ArgumentException("Group Id is invalid.");
 
             await bll_gm.Delete(new EF.GroupMember {
                 GroupId = obj.GroupId,
