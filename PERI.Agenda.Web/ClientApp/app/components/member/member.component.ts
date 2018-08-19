@@ -224,7 +224,7 @@ export class MemberComponent {
             .subscribe(result => {
                 this.member = result.json() as Member;
 
-                this.enableEmail = this.member.email.length == 0;
+                this.enableEmail = !this.member.email || this.member.email.length == 0;
 
                 if (moment(this.member.birthDate).isValid() == true) {
                     this.member.birthDate = { date: { year: moment(this.member.birthDate).format('YYYY'), month: moment(this.member.birthDate).format('M'), day: moment(this.member.birthDate).format('D') } };

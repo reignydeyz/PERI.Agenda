@@ -104,21 +104,39 @@ namespace PERI.Agenda.BLL
 
         public async Task Edit(EF.Member args)
         {
-            var user = await _unitOfWork.MemberRepository.Entities.FirstAsync(x => x.Id == args.Id
-            && x.CommunityId == args.CommunityId);
+            var m = new EF.Member();
 
-            user.Name = args.Name;
-            user.NickName = args.NickName;
-            user.BirthDate = args.BirthDate;
-            user.Gender = args.Gender;
-            user.Email = args.Email;
-            user.Address = args.Address;
-            user.Mobile = args.Mobile;
-            user.IsActive = args.IsActive;
-            user.InvitedBy = args.InvitedBy;
-            user.Remarks = args.Remarks;
+            // Validate Email
+            m = await Find(new EF.Member
+            {
+                Email = String.IsNullOrEmpty(args.Email) ? "email" : args.Email.Trim(),
+                CommunityId = args.CommunityId
+            }).FirstOrDefaultAsync();
 
-            await _unitOfWork.CommitAsync();
+            if (m != null)
+            {
+                // Check if member is same
+                if (args.Id != m.Id)
+                    throw new ArgumentException("The email you entered is being used by another member.");
+                else
+                {
+                    var user = await _unitOfWork.MemberRepository.Entities.FirstAsync(x => x.Id == args.Id
+                        && x.CommunityId == args.CommunityId);
+
+                    user.Name = args.Name;
+                    user.NickName = args.NickName;
+                    user.BirthDate = args.BirthDate;
+                    user.Gender = args.Gender;
+                    user.Email = args.Email;
+                    user.Address = args.Address;
+                    user.Mobile = args.Mobile;
+                    user.IsActive = args.IsActive;
+                    user.InvitedBy = args.InvitedBy;
+                    user.Remarks = args.Remarks;
+
+                    await _unitOfWork.CommitAsync();
+                }
+            }
         }
 
         public IQueryable<EF.Member> Find(EF.Member args)
