@@ -10,7 +10,7 @@ using PERI.Agenda.BLL;
 
 namespace PERI.Agenda.Web.Controllers
 {
-    [BLL.VerifyUser(AllowedRoles = "Admin,Developer")]
+    [BLL.VerifyUser]
     [Produces("application/json")]
     [Route("api/Attendance")]
     public class AttendanceController : Controller
