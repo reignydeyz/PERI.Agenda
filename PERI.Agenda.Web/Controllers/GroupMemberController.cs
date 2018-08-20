@@ -63,6 +63,30 @@ namespace PERI.Agenda.Web.Controllers
             return Json(obj1);
         }
 
+        [HttpPost("[action]")]
+        [Route("{id}/Checklist")]
+        public async Task<IActionResult> Checklist([FromBody] string member, int id)
+        {
+            var bll_gm = new BLL.GroupMember(unitOfWork);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            var m = new EF.Member
+            {
+                Name = member,
+                CommunityId = user.Member.CommunityId
+            };
+
+            var res = from r in bll_gm.Checklist(m, id)
+                      select new
+                      {
+                          r.Member.Name,
+                          r.MemberId,
+                          r.GroupId
+                      };
+
+            return Json(await res.ToListAsync());
+        }
+
         [HttpPut("[action]")]
         [BLL.ValidateModelState]
         [Route("Add")]
