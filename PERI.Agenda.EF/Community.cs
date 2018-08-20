@@ -5,6 +5,11 @@ namespace PERI.Agenda.EF
 {
     public partial class Community
     {
+        public Community()
+        {
+            Report = new HashSet<Report>();
+        }
+
         public int Id { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
@@ -20,5 +25,7 @@ namespace PERI.Agenda.EF
         public int? MaxUsers { get; set; }
         public DateTime? DateExpiration { get; set; }
         public bool? IsActive { get; set; }
+
+        public ICollection<Report> Report { get; set; }
     }
 }

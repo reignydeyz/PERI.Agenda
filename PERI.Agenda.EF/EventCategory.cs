@@ -8,6 +8,7 @@ namespace PERI.Agenda.EF
         public EventCategory()
         {
             Event = new HashSet<Event>();
+            EventCategoryReport = new HashSet<EventCategoryReport>();
             EventSection = new HashSet<EventSection>();
         }
 
@@ -23,6 +24,7 @@ namespace PERI.Agenda.EF
         public int? CommunityId { get; set; }
 
         public ICollection<Event> Event { get; set; }
+        public ICollection<EventCategoryReport> EventCategoryReport { get; set; }
         public ICollection<EventSection> EventSection { get; set; }
     }
 }

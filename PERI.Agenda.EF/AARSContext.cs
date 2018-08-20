@@ -21,6 +21,7 @@ namespace PERI.Agenda.EF
         public virtual DbSet<EndUser> EndUser { get; set; }
         public virtual DbSet<Event> Event { get; set; }
         public virtual DbSet<EventCategory> EventCategory { get; set; }
+        public virtual DbSet<EventCategoryReport> EventCategoryReport { get; set; }
         public virtual DbSet<EventSection> EventSection { get; set; }
         public virtual DbSet<Group> Group { get; set; }
         public virtual DbSet<GroupCategory> GroupCategory { get; set; }
@@ -30,6 +31,7 @@ namespace PERI.Agenda.EF
         public virtual DbSet<Member> Member { get; set; }
         public virtual DbSet<Recurrence> Recurrence { get; set; }
         public virtual DbSet<Registrant> Registrant { get; set; }
+        public virtual DbSet<Report> Report { get; set; }
         public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<Rsvp> Rsvp { get; set; }
         public virtual DbSet<User> User { get; set; }
@@ -224,6 +226,23 @@ namespace PERI.Agenda.EF
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<EventCategoryReport>(entity =>
+            {
+                entity.HasKey(e => new { e.EventCategoryId, e.ReportId });
+
+                entity.ToTable("EventCategoryReport", "prompt");
+
+                entity.HasOne(d => d.EventCategory)
+                    .WithMany(p => p.EventCategoryReport)
+                    .HasForeignKey(d => d.EventCategoryId)
+                    .HasConstraintName("FK_EventCategoryReport_EventCategory");
+
+                entity.HasOne(d => d.Report)
+                    .WithMany(p => p.EventCategoryReport)
+                    .HasForeignKey(d => d.ReportId)
+                    .HasConstraintName("FK_EventCategoryReport_Report");
             });
 
             modelBuilder.Entity<EventSection>(entity =>
@@ -458,6 +477,35 @@ namespace PERI.Agenda.EF
                     .HasConstraintName("FK_Registrant_Member");
             });
 
+            modelBuilder.Entity<Report>(entity =>
+            {
+                entity.ToTable("Report", "prompt");
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DateCreated).HasColumnType("datetime");
+
+                entity.Property(e => e.DateModified).HasColumnType("datetime");
+
+                entity.Property(e => e.ModifiedBy)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.Community)
+                    .WithMany(p => p.Report)
+                    .HasForeignKey(d => d.CommunityId)
+                    .HasConstraintName("FK_Report_Community");
+            });
+
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.ToTable("Role", "prompt");
@@ -479,6 +527,8 @@ namespace PERI.Agenda.EF
                     .IsUnique();
 
                 entity.Property(e => e.DateCreated).HasColumnType("datetime");
+
+                entity.Property(e => e.DateModified).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Event)
                     .WithMany(p => p.Rsvp)

@@ -26,6 +26,8 @@ namespace PERI.Agenda.BLL
         public IRepository<EF.Registrant> RegistrantRepository => new GenericRepository<EF.Registrant>(_dbContext);
         public IRepository<EF.Role> RoleRepository => new GenericRepository<EF.Role>(_dbContext);
         public IRepository<EF.Rsvp> RsvpRepository => new GenericRepository<EF.Rsvp>(_dbContext);
+        public IRepository<EF.Report> ReportRepository => new GenericRepository<EF.Report>(_dbContext);
+        public IRepository<EF.EventCategoryReport> EventCategoryReportRepository => new GenericRepository<EF.EventCategoryReport>(_dbContext);
         #endregion
         public UnitOfWork(EF.AARSContext dbContext)
         {
