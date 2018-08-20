@@ -36,8 +36,12 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/Checklist/Page/{p}")]
         public async Task<IActionResult> Page([FromBody] string member, int id, int p)
         {
+            var bll_g = new BLL.Group(unitOfWork);
             var bll_gm = new BLL.GroupMember(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            if (!await bll_g.IsSelectedIdsOk(new int[] { id }, user))
+                return Unauthorized();
 
             var m = new EF.Member
             {
@@ -67,8 +71,12 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/Checklist")]
         public async Task<IActionResult> Checklist([FromBody] string member, int id)
         {
+            var bll_g = new BLL.Group(unitOfWork);
             var bll_gm = new BLL.GroupMember(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            if (!await bll_g.IsSelectedIdsOk(new int[] { id }, user))
+                return Unauthorized();
 
             var m = new EF.Member
             {
