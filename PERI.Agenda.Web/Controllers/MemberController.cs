@@ -219,7 +219,7 @@ namespace PERI.Agenda.Web.Controllers
             }
         }
 
-        [BLL.VerifyUser(AllowedRoles = "Admin,Developer")]
+        [BLL.VerifyUser]
         [HttpGet("[action]")]
         [Route("Get/{id}")]
         public async Task<IActionResult> Get(int id)
@@ -227,6 +227,9 @@ namespace PERI.Agenda.Web.Controllers
             
             var bll_member = new BLL.Member(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            if (!await bll_member.IsSelectedIdsOk(new int[] { id }, user))
+                return BadRequest();
 
             var r = await bll_member.Get(new EF.Member { Id = id, CommunityId = user.Member.CommunityId });
             return Json(new Models.Member
@@ -250,7 +253,7 @@ namespace PERI.Agenda.Web.Controllers
 
         [HttpPost("[action]")]
         [BLL.ValidateModelState]
-        public async Task Edit([FromBody] Models.Member obj)
+        public async Task<IActionResult> Edit([FromBody] Models.Member obj)
         {
             
             var bll_member = new BLL.Member(unitOfWork);
@@ -260,6 +263,9 @@ namespace PERI.Agenda.Web.Controllers
             obj.CommunityId = user.Member.CommunityId;
 
             var o = AutoMapper.Mapper.Map<EF.Member>(obj);
+
+            if (!await bll_member.IsSelectedIdsOk(new int[] { obj.Id }, user))
+                return BadRequest();
 
             // Check and get invited by
             if (!String.IsNullOrEmpty(obj.InvitedByMemberName))
@@ -273,7 +279,7 @@ namespace PERI.Agenda.Web.Controllers
             await bll_member.Edit(o);
 
             // Add to User if member is not yet User
-            if (!String.IsNullOrEmpty(obj.Email) && (await bll_user.Get(new EF.EndUser { Member = new EF.Member { Email = obj.Email } })) == null)
+            if (!String.IsNullOrEmpty(obj.Email) && await bll_user.GetByEmail(obj.Email) == null)
             {
                 // Generate ConfirmationCode
                 Guid g = Guid.NewGuid();
@@ -292,6 +298,8 @@ namespace PERI.Agenda.Web.Controllers
                     "Your Agenda Credentials",
                     "Please click the link below to validate and change your password:<br/>http://" + Request.Host.Value + "/authentication/newpassword/?userid=" + newId + "&code=" + guidString);
             }
+
+            return Ok();
         }
 
         [BLL.VerifyUser(AllowedRoles = "Admin,Developer")]

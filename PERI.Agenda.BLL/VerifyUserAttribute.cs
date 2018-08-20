@@ -52,7 +52,7 @@ namespace PERI.Agenda.BLL
                 // Verifiy user
                 var unitOfWork = new UnitOfWork(new EF.AARSContext());
                 var bll_u = new BLL.EndUser(unitOfWork);
-                var user = bll_u.Get(new EF.EndUser { UserId = userId }).Result;
+                var user = bll_u.GetById(userId).Result;
 
                 // Allowed Roles
                 if (AllowedRoles != null)

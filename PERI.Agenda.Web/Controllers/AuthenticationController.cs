@@ -72,7 +72,7 @@ namespace PERI.Agenda.Web.Controllers
             
             var buser = new BLL.EndUser(unitOfWork);
 
-            var user = await buser.Get(new EF.EndUser { Member = new EF.Member { Email = args.Email } });
+            var user = await buser.GetByEmail(args.Email);
 
             if (user != null)
             {
@@ -115,7 +115,7 @@ namespace PERI.Agenda.Web.Controllers
         {
             var buser = new BLL.EndUser(unitOfWork);
 
-            var user = await buser.Get(new EF.EndUser { Member = new EF.Member { Email = args.Email } });
+            var user = await buser.GetByEmail(args.Email);
 
             if (user != null)
             {
@@ -272,7 +272,7 @@ namespace PERI.Agenda.Web.Controllers
 
             var bll_user = new BLL.EndUser(unitOfWork);
 
-            var user = await bll_user.Get(new EF.EndUser { Member = new EF.Member { Email = args.Email } });
+            var user = await bll_user.GetByEmail(args.Email);
 
             if (user != null)
             {
@@ -312,7 +312,7 @@ namespace PERI.Agenda.Web.Controllers
             
             var bll_user = new BLL.EndUser(unitOfWork);
 
-            var user = await bll_user.Get(new EF.EndUser { UserId = Convert.ToInt32(userId) });
+            var user = await bll_user.GetById(Convert.ToInt32(userId));
 
             if (user != null)
             {
@@ -336,7 +336,7 @@ namespace PERI.Agenda.Web.Controllers
 
             var bll_user = new BLL.EndUser(unitOfWork);
 
-            var user = await bll_user.Get(new EF.EndUser { UserId = args.EndUser.UserId });
+            var user = await bll_user.GetById(args.EndUser.UserId);
 
             var salt = Core.Crypto.GenerateSalt();
             var enc = Core.Crypto.Hash(args.Password, salt);

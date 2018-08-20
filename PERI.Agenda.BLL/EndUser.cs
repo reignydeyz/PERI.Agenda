@@ -104,15 +104,22 @@ namespace PERI.Agenda.BLL
             throw new NotImplementedException();
         }
 
-        public async Task<EF.EndUser> Get(EF.EndUser args)
+        public async Task<EF.EndUser> GetById(int id)
         {
-            args.Member = args.Member ?? new EF.Member();
-
             var rec = await unitOfWork.EndUserRepository.Entities
                 .Include(x => x.Member)
                 .Include(x => x.Role)
-                .FirstOrDefaultAsync(x => x.UserId == (args.UserId == 0 ? x.UserId : args.UserId)
-                && x.Member.Email == (args.Member.Email ?? x.Member.Email));
+                .FirstOrDefaultAsync(x => x.UserId == id);
+
+            return rec;
+        }
+
+        public async Task<EF.EndUser> GetByEmail(string email)
+        {
+            var rec = await unitOfWork.EndUserRepository.Entities
+                .Include(x => x.Member)
+                .Include(x => x.Role)
+                .FirstOrDefaultAsync(x => x.Member.Email == email);
 
             return rec;
         }
