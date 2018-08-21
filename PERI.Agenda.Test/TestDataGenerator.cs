@@ -65,5 +65,18 @@ namespace PERI.Agenda.Test
             yield return new object[] { new EF.Member { Name = "LEBRON", CommunityId = 1 }, 40 };
         }
         #endregion
+
+        #region GroupActivityReportTests
+        public static IEnumerable<object[]> MonitoringReport_HasResultParams()
+        {
+            yield return new object[] { new BLL.GroupReport {
+                DateFrom = new DateTime(2018, 1, 1),
+                DateTo = new DateTime(2018, 12, 31),
+                GroupId = 30,
+                ReportId = 1,
+                CommunityId = 1
+            } };
+        }
+        #endregion
     }
 }

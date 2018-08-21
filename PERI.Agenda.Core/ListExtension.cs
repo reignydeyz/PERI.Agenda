@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -69,6 +71,31 @@ namespace PERI.Agenda.Core
             }
 
             return fileContent;
+        }
+
+        /// <summary>
+        /// Converts List<T> to DataTable
+        /// <see cref="https://stackoverflow.com/questions/26197736/dapper-mapping-dynamic-pivot-columns-from-stored-procedure"/>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="items"></param>
+        /// <returns>DataTable</returns>
+        public static DataTable ToDataTable<T>(List<T> items)
+        {
+            if (items == null) return null;
+            var data = items.ToArray();
+            if (data.Length == 0) return null;
+
+            var dt = new DataTable();
+            foreach (var pair in ((IDictionary<string, object>)data[0]))
+            {
+                dt.Columns.Add(pair.Key, (pair.Value ?? string.Empty).GetType());
+            }
+            foreach (var d in data)
+            {
+                dt.Rows.Add(((IDictionary<string, object>)d).Values.ToArray());
+            }
+            return dt;
         }
     }
 }
