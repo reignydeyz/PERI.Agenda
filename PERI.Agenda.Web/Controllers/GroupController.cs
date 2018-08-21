@@ -25,25 +25,37 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> Find([FromBody] EF.Group obj)
+        public async Task<IActionResult> Find([FromBody] Models.Group obj)
         {
-            var bll_m = new BLL.Member(unitOfWork);
             var bll_g = new BLL.Group(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            obj.GroupCategory = new EF.GroupCategory { CommunityId = user.Member.CommunityId };
+            var o = AutoMapper.Mapper.Map<EF.Group>(obj);
 
-            var res = from r in (await bll_g.Find(obj).ToListAsync())
+            o.GroupCategory = new EF.GroupCategory { CommunityId = user.Member.CommunityId };
+
+            // Get group leader id
+            var bll_m = new BLL.Member(unitOfWork);
+            var glid = await bll_m.GetIdByName(obj.Leader ?? "", user.Member.CommunityId.Value);
+
+            o.GroupLeader = glid;
+
+            var res = from r in bll_g.Find(o)
+                      join m in bll_m.Find(new EF.Member { CommunityId = user.Member.CommunityId }) on r.GroupLeader equals m.Id
                       select new
                       {
                           r.Id,
                           r.GroupCategoryId,
                           Category = r.GroupCategory.Name,
                           r.Name,
-                          Members = r.GroupMember.Count
+                          Members = r.GroupMember.Count,
+                          Leader = m.Name,
+                          LeaderMemberId = m.Id,
+                          isMember = r.GroupMember.Count(x => x.MemberId == user.MemberId) > 0,
+                          isLeader = user.MemberId == m.Id
                       };
 
-            return Json(res);
+            return Json(await res.ToListAsync());
         }
 
         [HttpPost("[action]")]
