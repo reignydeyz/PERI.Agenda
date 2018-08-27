@@ -61,6 +61,24 @@ namespace PERI.Agenda.Web.Controllers
             return Json(await res.ToListAsync());
         }
 
+        [HttpGet("[action]")]
+        [Route("{id}/FirstTimers")]
+        public async Task<IActionResult> FirstTimers(int id)
+        {
+            var bll_a = new BLL.Attendance(unitOfWork);
+
+            var res = from r in bll_a.Find(new EF.Attendance { EventId = id }).OrderBy(x => x.Member.Name)
+                      where r.FirstTimer != null
+                      select new
+                      {
+                          r.Member.Name,
+                          r.MemberId,
+                          r.DateTimeLogged
+                      };
+
+            return Json(await res.ToListAsync());
+        }
+
         /// <summary>
         /// Search or filter Registrants
         /// </summary>
@@ -139,12 +157,17 @@ namespace PERI.Agenda.Web.Controllers
         {
             var bll_event = new BLL.Event(unitOfWork);
             var bll_a = new BLL.Attendance(unitOfWork);
+            var bll_ft = new BLL.FirstTimer(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             if (!await bll_event.IsSelectedIdsOk(new int[] { id }, user))
                 throw new ArgumentException("Event Id is invalid.");
 
-            return await bll_a.Add(new EF.Attendance { EventId = id, MemberId = obj.MemberId.Value, DateTimeLogged = obj.DateTimeLogged ?? DateTime.Now });
+            var attendanceid = await bll_a.Add(new EF.Attendance { EventId = id, MemberId = obj.MemberId.Value, DateTimeLogged = obj.DateTimeLogged ?? DateTime.Now });
+
+            await bll_ft.ValidateThenAdd(new EF.FirstTimer { AttendanceId = attendanceid });
+
+            return attendanceid;
         }
         
         [HttpPost("[action]")]

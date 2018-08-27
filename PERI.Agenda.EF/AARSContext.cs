@@ -23,6 +23,7 @@ namespace PERI.Agenda.EF
         public virtual DbSet<EventCategory> EventCategory { get; set; }
         public virtual DbSet<EventCategoryReport> EventCategoryReport { get; set; }
         public virtual DbSet<EventSection> EventSection { get; set; }
+        public virtual DbSet<FirstTimer> FirstTimer { get; set; }
         public virtual DbSet<Group> Group { get; set; }
         public virtual DbSet<GroupCategory> GroupCategory { get; set; }
         public virtual DbSet<GroupMember> GroupMember { get; set; }
@@ -273,6 +274,20 @@ namespace PERI.Agenda.EF
                     .WithMany(p => p.EventSection)
                     .HasForeignKey(d => d.EventCategoryId)
                     .HasConstraintName("FK_EventSection_EventCategory");
+            });
+
+            modelBuilder.Entity<FirstTimer>(entity =>
+            {
+                entity.HasKey(e => e.AttendanceId);
+
+                entity.ToTable("FirstTimer", "prompt");
+
+                entity.Property(e => e.AttendanceId).ValueGeneratedNever();
+
+                entity.HasOne(d => d.Attendance)
+                    .WithOne(p => p.FirstTimer)
+                    .HasForeignKey<FirstTimer>(d => d.AttendanceId)
+                    .HasConstraintName("FK_AttendanceId_Attendance");
             });
 
             modelBuilder.Entity<Group>(entity =>

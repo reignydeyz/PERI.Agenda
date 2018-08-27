@@ -18,3 +18,8 @@ div.available {
     max-width: 100px;
 }
 
+.tbl2 thead tr th:nth-child(1),
+.tbl2 tr td:nth-child(1) {
+    min-width: 300px;
+    max-width: 300px;
+}

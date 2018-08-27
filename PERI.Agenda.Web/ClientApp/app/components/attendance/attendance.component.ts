@@ -96,6 +96,8 @@ export class AttendanceComponent {
 
     public genders: LookUp[];
 
+    public firstTimers: Attendance[];
+
     private sub: any;
 
     public myDatePickerOptions: IMyDpOptions = {
@@ -249,6 +251,12 @@ export class AttendanceComponent {
 
     public onPaginateAttendees(page: number) {
         this.paginateAttendees(page);
+    }
+
+    public onFirstTimers() {
+        this.http.get(this.baseUrl + 'api/attendance/' + this.id + '/firsttimers').subscribe(result => {
+            this.firstTimers = result.json();
+        }, error => this.am.ex.catchError(error));
     }
 
     public toggle(a: Attendance) {

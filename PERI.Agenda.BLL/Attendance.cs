@@ -56,6 +56,7 @@ namespace PERI.Agenda.BLL
         {
             return unitOfWork.AttendanceRepository.Entities
                 .Include(x => x.Member)
+                .Include(x => x.FirstTimer)
                 .Where(x => x.EventId == args.EventId
             && x.EventSectionId == (args.EventSectionId ?? x.EventSectionId)).AsQueryable();
         }

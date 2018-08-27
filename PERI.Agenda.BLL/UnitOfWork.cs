@@ -28,6 +28,7 @@ namespace PERI.Agenda.BLL
         public IRepository<EF.Rsvp> RsvpRepository => new GenericRepository<EF.Rsvp>(_dbContext);
         public IRepository<EF.Report> ReportRepository => new GenericRepository<EF.Report>(_dbContext);
         public IRepository<EF.EventCategoryReport> EventCategoryReportRepository => new GenericRepository<EF.EventCategoryReport>(_dbContext);
+        public IRepository<EF.FirstTimer> FirstTimerRepository => new GenericRepository<EF.FirstTimer>(_dbContext);
         #endregion
         public UnitOfWork(EF.AARSContext dbContext)
         {

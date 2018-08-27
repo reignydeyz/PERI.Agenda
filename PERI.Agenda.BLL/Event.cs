@@ -83,7 +83,7 @@ namespace PERI.Agenda.BLL
         {
             return await unitOfWork.EventRepository.Entities
                 .Include(x => x.EventCategory)
-                .Include(x => x.Attendance)
+                .Include(x => x.Attendance).ThenInclude(x => x.FirstTimer)
                 .Include(x => x.Location)
                 .FirstOrDefaultAsync(x => x.Id == args.Id
                 && x.EventCategory.CommunityId == args.EventCategory.CommunityId);

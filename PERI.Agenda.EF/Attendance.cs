@@ -17,5 +17,6 @@ namespace PERI.Agenda.EF
 
         public Event Event { get; set; }
         public Member Member { get; set; }
+        public FirstTimer FirstTimer { get; set; }
     }
 }
