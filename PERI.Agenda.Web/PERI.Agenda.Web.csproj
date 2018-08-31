@@ -44,6 +44,7 @@
     <None Remove="ClientApp\app\components\group\group.edit.component.ts" />
     <None Remove="ClientApp\app\components\location\location.component.ts" />
     <None Remove="ClientApp\app\components\profile\profile.component.ts" />
+    <None Remove="ClientApp\app\components\reporttemplate\reporttemplate.component.ts" />
     <None Remove="ClientApp\app\components\rsvp\rsvp.component.ts" />
   </ItemGroup>
 
@@ -73,6 +74,7 @@
     <TypeScriptCompile Include="ClientApp\app\components\location\location.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\pager\pager.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\profile\profile.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\reporttemplate\reporttemplate.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\rsvp\rsvp.component.ts" />
   </ItemGroup>
 

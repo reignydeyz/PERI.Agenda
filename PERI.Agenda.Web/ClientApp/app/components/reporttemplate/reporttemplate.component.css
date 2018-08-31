@@ -1,0 +1,17 @@
+﻿.tbl thead tr th:nth-child(1),
+.tbl tr td:nth-child(1) {
+    min-width: 25px;
+    max-width: 25px;
+}
+
+.tbl thead tr th:nth-child(2),
+.tbl tr td:nth-child(2) {
+    min-width: 85px;
+    max-width: 85px;
+}
+
+.tbl1 thead tr th:nth-child(1),
+.tbl1 tr td:nth-child(1) {
+    min-width: 25px;
+    max-width: 25px;
+}

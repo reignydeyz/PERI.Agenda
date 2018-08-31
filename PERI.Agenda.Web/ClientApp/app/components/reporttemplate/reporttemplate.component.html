@@ -1,0 +1,75 @@
+﻿<h1>Report Templates</h1>
+
+<hr />
+
+<p *ngIf="!reports"><em>Loading...</em></p>
+
+<p *ngIf="reports">
+    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modalNew" onclick='document.getElementById("frmNew").reset()'>New</a>
+    <button class="btn btn-default">Delete</button>
+    <button class="btn btn-success" onclick="location.reload();">Refresh</button>
+</p>
+
+<div *ngIf="reports">
+    <table class="table table-striped table-hover tbl" id="tbl">
+        <thead>
+            <tr>
+                <th><input type="checkbox" (change)="checkAll()" id="checkall" /></th>
+                <th></th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody style="padding-bottom: 75px">
+            <tr *ngFor="let r of reports; let i = index">
+                <td><input type="checkbox" value="{{ r.reportId }}" /></td>
+                <td>
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="z-index: 0;">
+                            Action
+                            <span class="fa fa-caret-down"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Edit</a></li>
+                        </ul>
+                    </div>
+                </td>
+                <td>
+                    {{ r.name }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="modalNew" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">New Report Template</h4>
+            </div>
+            <form class="form-group" #frmNew="ngForm" (ngSubmit)="onNewSubmit(frmNew)" ngNativeValidate id="frmNew">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Name*</label>
+                        <input class="form-control" placeholder="Name" name="name" ngModel required>
+                    </div>
+                    <div class="form-group">
+                        <label>Event category to track*</label>
+                        <table class="table tbl1">
+                            <tr *ngFor="let ec of eventCategories">
+                                <td><input type="checkbox" value="{{ ec.id }}" class="checkBox" /></td>
+                                <td>{{ ec.name }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

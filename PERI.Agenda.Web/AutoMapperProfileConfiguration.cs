@@ -18,6 +18,7 @@ namespace PERI.Agenda.Web
             CreateMap<Models.Location, EF.Location>().IgnoreAllPropertiesWithAnInaccessibleSetter();
             CreateMap<Models.Attendance, EF.Attendance>().IgnoreAllPropertiesWithAnInaccessibleSetter();
             CreateMap<Models.Group, EF.Group>().IgnoreAllPropertiesWithAnInaccessibleSetter();
+            CreateMap<Models.ReportTemplate, EF.Report>().IgnoreAllPropertiesWithAnInaccessibleSetter();
         }
     }
 }
