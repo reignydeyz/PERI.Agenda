@@ -39,7 +39,7 @@ namespace PERI.Agenda.Web.Controllers
         
         [HttpPost("[action]")]
         [BLL.ValidateModelState]
-        public async Task Edit([FromBody] Models.ReportTemplate args)
+        public async Task<IActionResult> Edit([FromBody] Models.ReportTemplate args) 
         {
             var bll_rt = new BLL.Report(unitOfWork);
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
@@ -50,6 +50,8 @@ namespace PERI.Agenda.Web.Controllers
             o.ModifiedBy = user.Member.Name;
 
             await bll_rt.Edit(o);
+
+            return Ok();
         }
 
         [HttpPost("[action]")]
@@ -74,16 +76,21 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Checklist/{id}")]
         public async Task<IActionResult> Checklist(int id)
         {
+            var bll_ec = new BLL.EventCategory(unitOfWork);
             var bll_rt = new BLL.Report(unitOfWork);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var res = from r in (await bll_rt.Checklist(id)
-                      .OrderBy(x => x.Name)
-                      .ToListAsync())
+            var categories = await bll_ec.Find(new EF.EventCategory { CommunityId = user.Member.CommunityId }).ToListAsync();
+            var report = await bll_rt.GetById(id);
+
+            var res = from c in categories
+                      join ecr in report.EventCategoryReport on c.Id equals ecr.EventCategoryId into ps
+                      from ecr in ps.DefaultIfEmpty()
                       select new
                       {
-                          r.Id,
-                          r.Name,
-                          IsSelected = r.EventCategoryReport.Count > 0
+                          c.Id,
+                          c.Name,
+                          IsSelected = ecr != null
                       };
 
             return Json(res);

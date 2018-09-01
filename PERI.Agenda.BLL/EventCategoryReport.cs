@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,12 +16,19 @@ namespace PERI.Agenda.BLL
             unitOfWork = _unitOfWork;
         }
 
-        public async Task<int> Add(EF.EventCategoryReport args)
+        public async Task AddRange(IEnumerable<EF.EventCategoryReport> args)
         {
-            await unitOfWork.EventCategoryReportRepository.AddAsync(args);
+            await unitOfWork.EventCategoryReportRepository.AddRangeAsync(args);
             await unitOfWork.CommitAsync();
+        }
 
-            return args.EventCategoryId;
+        public async Task Update(IEnumerable<EF.EventCategoryReport> args)
+        {
+            var res = await unitOfWork.EventCategoryReportRepository.Entities.Where(x => x.ReportId == args.First().ReportId).ToListAsync();
+
+            unitOfWork.EventCategoryReportRepository.RemoveRange(res);
+
+            await AddRange(args);
         }
 
         public async Task Delete(EF.EventCategoryReport args)

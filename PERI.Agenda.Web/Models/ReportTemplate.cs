@@ -8,7 +8,7 @@ namespace PERI.Agenda.Web.Models
 {
     public class ReportTemplate
     {
-        public int Id { get; set; }
+        public int ReportId { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         [MinLength(5)]

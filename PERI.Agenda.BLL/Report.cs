@@ -18,6 +18,9 @@ namespace PERI.Agenda.BLL
 
         public async Task<int> Add(EF.Report args)
         {
+            args.DateModified = args.DateCreated;
+            args.ModifiedBy = args.CreatedBy;
+
             await unitOfWork.ReportRepository.AddAsync(args);
             unitOfWork.Commit();
             return args.ReportId;
@@ -49,12 +52,11 @@ namespace PERI.Agenda.BLL
                 .OrderBy(x => x.Name).AsQueryable();
         }
 
-        public IQueryable<EF.EventCategory> Checklist(int id)
+        public async Task<EF.Report> GetById(int id)
         {
-            return from r in unitOfWork.EventCategoryRepository.Entities.Include(x => x.EventCategoryReport)
-                      join ecr in unitOfWork.EventCategoryReportRepository.Entities.Where(x => x.ReportId == id) on r.Id equals ecr.EventCategoryId into ps
-                      from ecr in ps.DefaultIfEmpty()
-                      select r;
+            return await unitOfWork.ReportRepository.Entities
+                .Include(x => x.EventCategoryReport)
+                .FirstOrDefaultAsync(x => x.ReportId == id);
         }
     }
 }

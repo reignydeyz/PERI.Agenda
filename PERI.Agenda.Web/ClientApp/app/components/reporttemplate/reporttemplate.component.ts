@@ -3,6 +3,7 @@ import { Http, Headers, RequestOptions } from '@angular/http';
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
 
 import { Title } from '@angular/platform-browser';
+import { NgForm, NgModel } from '@angular/forms';
 import * as $ from "jquery";
 import { Observable } from 'rxjs/Observable';
 import { EventCategory, EventCategoryModule } from '../eventcategory/eventcategory.component';
@@ -18,7 +19,7 @@ export class ReportModule {
     }
 
     public edit(r: Report) {
-        return this.http.post(this.baseUrl + 'api/reporttemplate/edit', r).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => this.ex.catchError(error));
+        return this.http.post(this.baseUrl + 'api/reporttemplate/edit', r);
     }
 
     public find(r: Report): Observable<Report[]> {
@@ -77,15 +78,69 @@ export class ReportTemplateComponent {
     onEditInit(r: Report) {
         this.report = r;
 
+        this.checklist = [];
+
         this.http.get(this.baseUrl + 'api/reporttemplate/checklist/' + r.reportId)
             .subscribe(result => {
                 this.checklist = result.json();
             }, error => this.rm.ex.catchError(error));
     }
+
+    onEditSubmit(rpt: Report) {
+        this.rm.edit(rpt).subscribe(r => {
+
+            var selectedIds = new Array();
+            $("#frmEdit input:checkbox:checked").each(function () {
+                if ($(this).prop('checked')) {
+                    selectedIds.push($(this).val());
+                }
+            });
+
+            let body = JSON.stringify(selectedIds);
+            let headers = new Headers({ 'Content-Type': 'application/json' });
+            let options = new RequestOptions({ headers: headers });
+            
+            this.http.post(this.baseUrl + 'api/eventcategoryreport/update/' + rpt.reportId, body, options)
+                .subscribe(res => {
+                    alert('Updated.');
+                    $('#modalEdit').modal('toggle');
+                });
+        })
+    }
+
+    onNewSubmit(f: NgForm) {
+        var r = new Report();
+        r.name = f.controls['name'].value;
+
+        this.rm.add(r).subscribe(
+            result => {
+                r.reportId = result;
+
+                var selectedIds = new Array();
+                $("#frmNew input:checkbox:checked").each(function () {
+                    if ($(this).prop('checked')) {
+                        selectedIds.push($(this).val());
+                    }
+                });
+
+                let body = JSON.stringify(selectedIds);
+                let headers = new Headers({ 'Content-Type': 'application/json' });
+                let options = new RequestOptions({ headers: headers });
+                
+                this.http.post(this.baseUrl + 'api/eventcategoryreport/addrange/' + r.reportId, body, options)
+                    .subscribe(res => {
+                        this.reports.push(r);
+
+                        alert('Added!');
+                        $('#modalNew').modal('toggle');
+                    });
+            },
+            error => this.rm.ex.catchError(error));
+    }
 }
 
 export class Report {
-    reportId: string;
+    reportId: number;
     name: string;
 }
 
