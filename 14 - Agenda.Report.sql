@@ -8,6 +8,8 @@ create table prompt.Report
 	DateModified datetime not null,
 	CommunityId int not null,
 
+	constraint UQ_Report_Name_CommunityId unique ([Name], CommunityId),
+
 	constraint FK_Report_Community foreign key (CommunityId)
 		references [Community] (ID) on delete cascade
 );

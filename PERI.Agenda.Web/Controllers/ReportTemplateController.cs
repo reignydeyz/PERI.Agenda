@@ -69,5 +69,24 @@ namespace PERI.Agenda.Web.Controllers
 
             return Json(res);
         }
+
+        [HttpGet("[action]")]
+        [Route("Checklist/{id}")]
+        public async Task<IActionResult> Checklist(int id)
+        {
+            var bll_rt = new BLL.Report(unitOfWork);
+
+            var res = from r in (await bll_rt.Checklist(id)
+                      .OrderBy(x => x.Name)
+                      .ToListAsync())
+                      select new
+                      {
+                          r.Id,
+                          r.Name,
+                          IsSelected = r.EventCategoryReport.Count > 0
+                      };
+
+            return Json(res);
+        }
     }
 }

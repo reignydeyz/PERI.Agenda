@@ -33,8 +33,11 @@ export class ReportModule {
         '../table/table.component.css']
 })
 export class ReportTemplateComponent {
-    rm: ReportModule;
+    rm: ReportModule;    
     ecm: EventCategoryModule;
+
+    checklist: ReportEventCategory[];
+    report: Report;
     reports: Report[] = [];
     eventCategories: EventCategory[] = [];
 
@@ -70,9 +73,24 @@ export class ReportTemplateComponent {
             this.eventCategories = r
         }, err => this.rm.ex.catchError(err));
     }
+
+    onEditInit(r: Report) {
+        this.report = r;
+
+        this.http.get(this.baseUrl + 'api/reporttemplate/checklist/' + r.reportId)
+            .subscribe(result => {
+                this.checklist = result.json();
+            }, error => this.rm.ex.catchError(error));
+    }
 }
 
 export class Report {
     reportId: string;
     name: string;
+}
+
+export class ReportEventCategory {
+    id: number;
+    name: number;
+    isSelected: boolean;
 }

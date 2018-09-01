@@ -496,6 +496,10 @@ namespace PERI.Agenda.EF
             {
                 entity.ToTable("Report", "prompt");
 
+                entity.HasIndex(e => new { e.Name, e.CommunityId })
+                    .HasName("UQ_Report_Name_CommunityId")
+                    .IsUnique();
+
                 entity.Property(e => e.CreatedBy)
                     .IsRequired()
                     .HasMaxLength(50)

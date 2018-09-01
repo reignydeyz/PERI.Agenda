@@ -46,8 +46,15 @@ namespace PERI.Agenda.BLL
             return unitOfWork.ReportRepository.Entities
                 .Where(x => x.Name.Contains(args.Name ?? "")
                 && x.CommunityId == args.CommunityId)
-                .Include(x => x.EventCategoryReport).ThenInclude(x => x.EventCategory)
                 .OrderBy(x => x.Name).AsQueryable();
+        }
+
+        public IQueryable<EF.EventCategory> Checklist(int id)
+        {
+            return from r in unitOfWork.EventCategoryRepository.Entities.Include(x => x.EventCategoryReport)
+                      join ecr in unitOfWork.EventCategoryReportRepository.Entities.Where(x => x.ReportId == id) on r.Id equals ecr.EventCategoryId into ps
+                      from ecr in ps.DefaultIfEmpty()
+                      select r;
         }
     }
 }
