@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <None Remove="ClientApp\app\components\account\account.component.ts" />
+    <None Remove="ClientApp\app\components\activityreport\activityreport.component.ts" />
     <None Remove="ClientApp\app\components\attendance\attendance.component.ts" />
     <None Remove="ClientApp\app\components\calendar\calendar.component.ts" />
     <None Remove="ClientApp\app\components\dashboard\dashboard.component.ts" />
@@ -59,6 +60,7 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\app\components\account\account.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\activityreport\activityreport.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\attendance\attendance.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\calendar\calendar.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\dashboard\dashboard.component.ts" />

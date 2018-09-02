@@ -32,6 +32,7 @@ import { EventEditComponent } from './components/event/event.edit.component';
 import { EventMyComponent } from './components/event/event.my.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { ReportTemplateComponent } from './components/reporttemplate/reporttemplate.component';
+import { ActivityReportComponent } from './components/activityreport/activityreport.component';
 
 @NgModule({
     declarations: [
@@ -59,7 +60,8 @@ import { ReportTemplateComponent } from './components/reporttemplate/reporttempl
         GroupMyComponent,
         CalendarComponent,
         ProfileComponent,
-        ReportTemplateComponent
+        ReportTemplateComponent,
+        ActivityReportComponent
     ],
     imports: [
         CommonModule,
@@ -94,6 +96,7 @@ import { ReportTemplateComponent } from './components/reporttemplate/reporttempl
             { path: 'calendar', component: CalendarComponent },
             { path: 'profile', component: ProfileComponent },
             { path: 'reporttemplate', component: ReportTemplateComponent },
+            { path: 'activityreport', component: ActivityReportComponent },
 
             { path: '**', redirectTo: 'dashboard' }
         ])
