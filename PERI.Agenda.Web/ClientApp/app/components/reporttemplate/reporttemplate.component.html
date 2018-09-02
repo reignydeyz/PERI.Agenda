@@ -6,7 +6,7 @@
 
 <p *ngIf="reports">
     <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modalNew" onclick='document.getElementById("frmNew").reset()'>New</a>
-    <button class="btn btn-default">Delete</button>
+    <button class="btn btn-default" (click)="onDeleteClick()">Delete</button>
     <button class="btn btn-success" onclick="location.reload();">Refresh</button>
 </p>
 
@@ -21,7 +21,7 @@
         </thead>
         <tbody style="padding-bottom: 75px">
             <tr *ngFor="let r of reports; let i = index">
-                <td><input type="checkbox" value="{{ r.reportId }}" /></td>
+                <td><input type="checkbox" value="{{ r.reportId }}" class="checkBox" /></td>
                 <td>
                     <div class="input-group-btn">
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="z-index: 0;">

@@ -55,6 +55,20 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [HttpPost("[action]")]
+        public async Task<IActionResult> Delete([FromBody] int[] ids)
+        {
+            var bll_rt = new BLL.Report(unitOfWork);
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            if (!await bll_rt.IsSelectedIdsOk(ids, user))
+                return BadRequest();
+
+            await bll_rt.Delete(ids);
+
+            return Json("Success!");
+        }
+
+        [HttpPost("[action]")]
         public async Task<IActionResult> Find(EF.Report args)
         {
             var bll_rt = new BLL.Report(unitOfWork);

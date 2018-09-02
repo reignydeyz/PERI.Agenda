@@ -137,6 +137,38 @@ export class ReportTemplateComponent {
             },
             error => this.rm.ex.catchError(error));
     }
+
+    onDeleteClick() {
+        var flag = confirm('Are you sure you want to delete selected records?');
+
+        if (!flag)
+            return false;
+
+        var selectedIds = new Array();
+        $('#tbl input:checkbox.checkBox').each(function () {
+            if ($(this).prop('checked')) {
+                selectedIds.push($(this).val());
+            }
+        });
+
+        let body = JSON.stringify(selectedIds);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+
+        this.http.post(this.baseUrl + 'api/reporttemplate/delete', body, options).subscribe(result => {
+
+            for (let id of selectedIds) {
+                for (let e of this.reports) {
+                    if (e.reportId == id) {
+                        this.reports.splice(this.reports.indexOf(e), 1);
+                    }
+                }
+            }
+
+            alert('Success!');
+
+        }, error => this.rm.ex.catchError(error));
+    }
 }
 
 export class Report {

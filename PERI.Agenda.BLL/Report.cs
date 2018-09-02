@@ -58,5 +58,10 @@ namespace PERI.Agenda.BLL
                 .Include(x => x.EventCategoryReport)
                 .FirstOrDefaultAsync(x => x.ReportId == id);
         }
+
+        public async Task<bool> IsSelectedIdsOk(int[] ids, EF.EndUser user)
+        {
+            return await unitOfWork.ReportRepository.Entities.Where(x => ids.Contains(x.ReportId) && x.CommunityId == user.Member.CommunityId).CountAsync() == ids.Count();
+        }
     }
 }
