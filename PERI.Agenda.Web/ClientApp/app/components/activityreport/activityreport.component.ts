@@ -1,12 +1,13 @@
 ﻿import { Component, Input, Inject, OnChanges, Output, EventEmitter } from '@angular/core';
 import * as $ from "jquery";
-
+import * as moment from 'moment';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { Title } from '@angular/platform-browser';
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
-import { NgForm } from '@angular/forms';
+import { NgForm, NgModel } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Report, ReportModule } from '../reporttemplate/reporttemplate.component';
+import { IMyDpOptions } from 'mydatepicker';
 
 @Component({
     selector: 'activityreport',
@@ -17,6 +18,11 @@ export class ActivityReportComponent {
 
     private ex: ErrorExceptionModule;
     private rm: ReportModule;
+
+    public myDatePickerOptions: IMyDpOptions = {
+        // other options...
+        dateFormat: 'mm/dd/yyyy',
+    };
 
     reports: Report[] = [];
 
@@ -35,4 +41,23 @@ export class ActivityReportComponent {
             this.reports = r;
         });
     }
+
+    onSubmit(f: NgForm) {
+        var r = new ActivityReport();
+        r.groupId = this.groupId;
+        r.reportId = f.controls['reportId'].value;
+        r.dateTimeStart = f.controls['dateTimeStart'].value.formatted;
+        r.dateTimeEnd = f.controls['dateTimeEnd'].value.formatted;
+
+        this.http.post(this.baseUrl + 'api/activityreport/generatereport', r).subscribe(result => {
+
+        });
+    }
+}
+
+export class ActivityReport {
+    reportId: number;
+    groupId: number;
+    dateTimeStart: string;
+    dateTimeEnd: string;
 }
