@@ -15,7 +15,8 @@ namespace PERI.Agenda.Web.Controllers
         [BLL.ValidateModelState]
         public IActionResult GenerateReport([FromBody] Models.ActivityReport args)
         {
-            return View();
+            // More logics here
+            return Ok();
         }
     }
 }
