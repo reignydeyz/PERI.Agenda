@@ -173,17 +173,17 @@
         <div id="menu3" class="tab-pane fade">
             <p *ngIf="!firstTimers"><em>Loading...</em></p>
             <small *ngIf="firstTimers">Found: {{ firstTimers.length }}</small>
+            <button (click)="downloadFirstTimers()" class="btn btn-default pull-right">Download</button>
             <table id="tbl2" class="table table-striped table-hover tbl2" *ngIf="firstTimers">
                 <thead>
                     <tr>
-                        
-                        <th>Member</th>
-                        <th>Time Logged</th>
+                        <th (click)="sortByMemberNameFirstTimers()">Member</th>
+                        <th (click)="sortByTimeLoggedFirstTimers()">Time Logged</th>
                     </tr>
                 </thead>
                 <tbody style="padding-bottom: 50px">
                     <tr *ngFor="let e of firstTimers; let i = index">
-                        
+
                         <td>{{ e.name }}</td>
                         <td>{{ e.dateTimeLogged |  date: 'MM/dd/yyyy hh:mm a' }}</td>
                     </tr>

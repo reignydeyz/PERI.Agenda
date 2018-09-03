@@ -407,6 +407,14 @@ export class AttendanceComponent {
         this.chunkAttendees.attendees.sort((a, b) => a.dateTimeLogged.localeCompare(b.dateTimeLogged));
     }
 
+    sortByMemberNameFirstTimers() {
+        this.firstTimers.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    sortByTimeLoggedFirstTimers() {
+        this.firstTimers.sort((a, b) => a.dateTimeLogged.localeCompare(b.dateTimeLogged));
+    }
+
     downloadFile(data: any) {
         var blob = new Blob([data], { type: 'text/csv' });
         saveAs(blob, "data.csv");
@@ -414,6 +422,13 @@ export class AttendanceComponent {
 
     downloadAttendees() {
         this.http.get(this.baseUrl + 'api/attendance/' + this.id + '/downloadattendees').subscribe(result => {
+            let parsedResponse = result.text();
+            this.downloadFile(parsedResponse);
+        }, error => this.am.ex.catchError(error));;
+    }
+
+    downloadFirstTimers() {
+        this.http.get(this.baseUrl + 'api/attendance/' + this.id + '/downloadfirsttimers').subscribe(result => {
             let parsedResponse = result.text();
             this.downloadFile(parsedResponse);
         }, error => this.am.ex.catchError(error));;

@@ -220,5 +220,26 @@ namespace PERI.Agenda.Web.Controllers
             result.FileDownloadName = "my-csv-file.csv";
             return result;
         }
+
+        [HttpGet("[action]")]
+        [Route("{id}/DownloadFirstTimers")]
+        public async Task<IActionResult> DownloadFirstTimers(int id)
+        {
+            var bll_a = new BLL.Attendance(unitOfWork);
+
+            var res = from r in bll_a.Find(new EF.Attendance { EventId = id }).OrderBy(x => x.Member.Name)
+                      where r.FirstTimer != null
+                      select new
+                      {
+                          r.Member.Name,
+                          r.DateTimeLogged
+                      };
+
+            var bytes = Encoding.ASCII.GetBytes((await res.ToListAsync()).ExportToCsv().ToString());
+
+            var result = new FileContentResult(bytes, "text/csv");
+            result.FileDownloadName = "my-csv-file.csv";
+            return result;
+        }
     }
 }
