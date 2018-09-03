@@ -23,11 +23,23 @@ namespace PERI.Agenda.Test
         [InlineData(3)]
         public void GetEventCategoryReportByReportId_HasResult(int reportId)
         {
+            var bll_ec = new BLL.EventCategory(unitOfWork);
             var bll_r = new BLL.Report(unitOfWork);
 
-            var categories = bll_r.Checklist(reportId).ToList();
+            var categories = bll_ec.Find(new EF.EventCategory { CommunityId = 1 });
+            var report = bll_r.GetById(reportId).Result;
 
-            Assert.True(categories.Where(x => x.EventCategoryReport != null).Count() > 0);
+            var res = from c in categories
+                      join ecr in report.EventCategoryReport on c.Id equals ecr.EventCategoryId into ps
+                      from ecr in ps.DefaultIfEmpty()
+                      select new
+                      {
+                          c.Id,
+                          c.Name,
+                          IsSelected = ecr != null
+                      };
+
+            Assert.True(res.Where(x => x.IsSelected == true).Count() > 0);
         }
     }
 }
