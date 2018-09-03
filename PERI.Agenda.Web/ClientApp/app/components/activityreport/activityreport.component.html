@@ -1,1 +1,37 @@
-﻿
+﻿<div class="modal fade" id="modalActivityReport" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Activity Report</h4>
+            </div>
+            <form class="form-group" #frmActivityReport (ngSubmit)="onSubmit(frmActivityReport)" ngNativeValidate id="frmActivityReport">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Report</label>
+                        <select class="form-control" name="reportId" ngModel required>
+                            <option value="">--SELECT--</option>
+                            <option *ngFor="let r of reports" [value]="r.reportId">{{ r.name }}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label>Date (from)</label>
+                                <input type="date" class="form-control" name="dateTimeStart" ngModel>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Date (to)</label>
+                                <input type="date" class="form-control" name="dateTimeEnd" ngModel>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
