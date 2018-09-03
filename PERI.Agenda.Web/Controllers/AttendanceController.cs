@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PERI.Agenda.BLL;
+using PERI.Agenda.Core;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -197,6 +199,26 @@ namespace PERI.Agenda.Web.Controllers
                 return await res.Where(x => x.DateTimeLogged == null).CountAsync();
             else
                 return await res.CountAsync();
+        }
+
+        [HttpGet("[action]")]
+        [Route("{id}/DownloadAttendees")]
+        public async Task<IActionResult> DownloadAttendees(int id)
+        {
+            var bll_a = new BLL.Attendance(unitOfWork);
+
+            var res = from r in bll_a.Find(new EF.Attendance { EventId = id }).OrderBy(x => x.Member.Name)
+                      select new
+                      {
+                          r.Member.Name,
+                          r.DateTimeLogged
+                      };
+
+            var bytes = Encoding.ASCII.GetBytes((await res.ToListAsync()).ExportToCsv().ToString());
+
+            var result = new FileContentResult(bytes, "text/csv");
+            result.FileDownloadName = "my-csv-file.csv";
+            return result;
         }
     }
 }

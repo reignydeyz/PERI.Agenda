@@ -18,6 +18,8 @@ import { MemberModule, Member } from '../member/member.component';
 import { Rsvp, RsvpModule } from '../rsvp/rsvp.component';
 import { LookUp, LookUpModule } from '../lookup/lookup.component';
 
+import { saveAs } from 'file-saver';
+
 export class AttendanceModule {
     public http: Http;
     public baseUrl: string;
@@ -395,6 +397,26 @@ export class AttendanceComponent {
         this.suggestions.length = 0;
 
         f.controls['invitedBy'].setValue(s);
+    }
+
+    sortByMemberName() {
+        this.chunkAttendees.attendees.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    sortByTimeLogged() {
+        this.chunkAttendees.attendees.sort((a, b) => a.dateTimeLogged.localeCompare(b.dateTimeLogged));
+    }
+
+    downloadFile(data: any) {
+        var blob = new Blob([data], { type: 'text/csv' });
+        saveAs(blob, "data.csv");
+    }
+
+    downloadAttendees() {
+        this.http.get(this.baseUrl + 'api/attendance/' + this.id + '/downloadattendees').subscribe(result => {
+            let parsedResponse = result.text();
+            this.downloadFile(parsedResponse);
+        }, error => this.am.ex.catchError(error));;
     }
 }
 
