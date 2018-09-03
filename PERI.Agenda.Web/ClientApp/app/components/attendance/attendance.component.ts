@@ -342,6 +342,15 @@ export class AttendanceComponent {
                 $("table > *").width(tbl1.width() + tbl1.scrollLeft());
             };
         }
+
+        if (this.firstTimers) {
+            var tbl = <HTMLTableElement>document.getElementById("tbl2");
+            let tbl1: any;
+            tbl1 = $("table");
+            tbl.onscroll = function () {
+                $("table > *").width(tbl1.width() + tbl1.scrollLeft());
+            };
+        }
     }
 
     onGoingClick() {
