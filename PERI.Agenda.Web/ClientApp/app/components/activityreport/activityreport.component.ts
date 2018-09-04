@@ -8,6 +8,9 @@ import { NgForm, NgModel } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Report, ReportModule } from '../reporttemplate/reporttemplate.component';
 
+import { saveAs } from 'file-saver';
+import { IMyDpOptions } from 'mydatepicker';
+
 @Component({
     selector: 'activityreport',
     templateUrl: './activityreport.component.html'
@@ -44,8 +47,14 @@ export class ActivityReportComponent {
         r.dateTimeEnd = f.controls['dateTimeEnd'].value;
 
         this.http.post(this.baseUrl + 'api/activityreport/generatereport', r).subscribe(result => {
+            let parsedResponse = result.text();
+            this.downloadFile(parsedResponse);
+        }, err => this.ex.catchError(err));
+    }
 
-        });
+    downloadFile(data: any) {
+        var blob = new Blob([data], { type: 'text/csv' });
+        saveAs(blob, "data.csv");
     }
 }
 
