@@ -425,7 +425,11 @@ namespace PERI.Agenda.Web.Controllers
             var o = AutoMapper.Mapper.Map<EF.Member>(obj);
 
             var res = from r in await bll_member.Find(o).ToListAsync()
-                      join m in bll_member.Find(new EF.Member { CommunityId = obj.CommunityId }) on r.InvitedBy equals m.Id into g
+                      join genders in bll_lu.GetByGroup("Gender").Result.Select(x => new { Label = x.Name, Value = int.Parse(x.Value) }) on r.Gender equals genders.Value into e
+                      from e1 in e.DefaultIfEmpty()
+                      join civilStatuses in bll_lu.GetByGroup("Civil Status").Result.Select(x => new { Label = x.Name, Value = int.Parse(x.Value) }) on r.CivilStatus equals civilStatuses.Value into f
+                      from f1 in f.DefaultIfEmpty()
+                      join m in bll_member.Find(new EF.Member { CommunityId = user.Member.CommunityId }) on r.InvitedBy equals m.Id into g
                       from m1 in g.DefaultIfEmpty()
                       select new
                       {
@@ -437,9 +441,11 @@ namespace PERI.Agenda.Web.Controllers
                           r.Email,
                           r.BirthDate,
                           r.Remarks,
-                          r.CivilStatus,
-                          r.Gender,
-                          InvitedBy = m1 == null ? "" : m1.Name
+                          CivilStatus = f1 == null ? "" : f1.Label,
+                          Gender = e1 == null ? "" : e1.Label,
+                          InvitedBy = m1 == null ? "" : m1.Name,
+                          r.IsActive,
+                          r.DateCreated
                       };
 
             var bytes = Encoding.ASCII.GetBytes(res.ToList().ExportToCsv().ToString());
