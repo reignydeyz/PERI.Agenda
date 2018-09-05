@@ -8,7 +8,7 @@
             <form class="form-group" (ngSubmit)="onSubmit(report)" ngNativeValidate id="frmActivityReport">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Report</label>
+                        <label>Report*</label>
                         <select class="form-control" name="report.reportId" [(ngModel)]="report.reportId" required>
                             <option value="">--SELECT--</option>
                             <option *ngFor="let r of reports" [value]="r.reportId">{{ r.name }}</option>
@@ -17,11 +17,11 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label>Date (from)</label>
+                                <label>Date (from)*</label>
                                 <input type="date" class="form-control" name="report.dateTimeStart" [(ngModel)]="report.dateTimeStart" required>
                             </div>
                             <div class="form-group col-md-6">
-                                <label>Date (to)</label>
+                                <label>Date (to)*</label>
                                 <input type="date" class="form-control" name="report.dateTimeEnd" [(ngModel)]="report.dateTimeEnd" required>
                             </div>
                         </div>

@@ -298,6 +298,7 @@ export class GroupComponent {
         var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
         this.report = new ActivityReport();
+        this.report.reportId = '';
         this.report.groupId = id;
         this.report.dateTimeStart = moment(firstDay).format('YYYY-MM-DD');
         this.report.dateTimeEnd = moment(lastDay).format('YYYY-MM-DD');

@@ -42,9 +42,6 @@ export class ActivityReportComponent {
         this.rm.find(new Report()).subscribe(r => {
             this.reports = r;
         });
-
-
-        console.log(this.report);
     }
 
     onSubmit(r: ActivityReport) {
@@ -61,7 +58,7 @@ export class ActivityReportComponent {
 }
 
 export class ActivityReport {
-    reportId: number;
+    reportId: any;
     groupId: number;
     dateTimeStart: any;
     dateTimeEnd: any;
