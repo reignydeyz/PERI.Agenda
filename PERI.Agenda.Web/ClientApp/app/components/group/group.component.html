@@ -62,7 +62,7 @@
                             <li class="divider"></li>
                             <li><a href="#" data-toggle="modal" data-target="#modalMembers" (click)="onMembersLoad(g.id)">Members</a></li>
                             <li class="divider"></li>
-                            <li><a href="#" data-toggle="modal" data-target="#modalActivityReport" (click)="onEditInit(g.id)">Activity Report</a></li>
+                            <li><a href="#" data-toggle="modal" data-target="#modalActivityReport" (click)="onActivityReportInit(g.id)">Activity Report</a></li>
                         </ul>
                     </div>
                 </td>
@@ -128,6 +128,6 @@
     </div>
 </div>
 
-<activityreport [groupId]="group.id">
+<activityreport [report]="report" *ngIf="report">
 
 </activityreport>

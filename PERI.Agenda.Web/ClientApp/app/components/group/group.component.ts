@@ -14,6 +14,7 @@ import { MemberModule } from '../member/member.component';
 
 import * as moment from 'moment';
 import { saveAs } from 'file-saver';
+import { ActivityReport } from '../activityreport/activityreport.component';
 
 export class GroupModule {
     public http: Http;
@@ -66,6 +67,7 @@ export class GroupComponent {
     public chunk: Chunk;
 
     public member: Member;
+    public report: ActivityReport;
 
     public names: string[];
     suggestions: string[] = [];
@@ -288,6 +290,17 @@ export class GroupComponent {
                     this.member.activities = res
                 });
             }, error => this.gm.ex.catchError(error));
+    }
+
+    onActivityReportInit(id: number) {
+        var date = new Date();
+        var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+        var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+        this.report = new ActivityReport();
+        this.report.groupId = id;
+        this.report.dateTimeStart = moment(firstDay).format('YYYY-MM-DD');
+        this.report.dateTimeEnd = moment(lastDay).format('YYYY-MM-DD');
     }
 }
 
