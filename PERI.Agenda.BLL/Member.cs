@@ -141,7 +141,9 @@ namespace PERI.Agenda.BLL
 
         public IQueryable<EF.Member> Find(EF.Member args)
         {
-            var res = _unitOfWork.MemberRepository.Entities.Where(x => x.Name.Contains(args.Name ?? "")
+            var res = _unitOfWork.MemberRepository.Entities
+                .Include(x => x.EndUser).ThenInclude(x => x.Role)
+                .Where(x => x.Name.Contains(args.Name ?? "")
             && ((x.Email ?? "").Contains(args.Email ?? ""))
             && x.CommunityId == args.CommunityId)
                 .OrderBy(x => x.Name).AsQueryable();

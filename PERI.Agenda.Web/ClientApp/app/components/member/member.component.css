@@ -24,3 +24,11 @@ tr td:nth-child(3) {
     min-width: 85px;
     max-width: 85px;
 }
+
+a.assigned {
+    font-weight: bold;
+}
+
+a.normal {
+    font-weight: normal;
+}

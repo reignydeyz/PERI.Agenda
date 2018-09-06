@@ -112,7 +112,7 @@
                 <th>Remarks</th>
             </tr>
         </thead>
-        <tbody style="padding-bottom: 75px">
+        <tbody style="padding-bottom: 150px">
             <tr *ngFor="let m of chunk.members; let i = index">
                 <td [ngClass]="{active: m.isActive == true || m.isActive == 'true', inactive: m.isActive == false || m.isActive == 'false'}"></td>
                 <td><input type="checkbox" value="{{ m.id }}" class="checkBox" /></td>
@@ -127,6 +127,12 @@
                             <li><a href="#" data-toggle="modal" data-target="#modalEdit" (click)="onEditInit(m.id)">Edit</a></li>
                             <li class="divider"></li>
                             <li><a href="#" data-toggle="modal" data-target="#modalProfile" (click)="onModalProfileInit(m.id)">Profile</a></li>
+                            <ng-container *ngIf="m.roleId != 0">
+                                <li class="divider"></li>
+                                <li><a href="#" (click)="onRoleChange(m, 1)" [ngClass]="{assigned: m.roleId == 1 , normal: m.roleId != 1}">Admin</a></li>
+                                <li><a href="#" (click)="onRoleChange(m, 3)" [ngClass]="{assigned: m.roleId == 3 , normal: m.roleId != 3}">Developer</a></li>
+                                <li><a href="#" (click)="onRoleChange(m, 2)" [ngClass]="{assigned: m.roleId == 2 , normal: m.roleId != 2}">User</a></li>
+                            </ng-container>
                         </ul>
                     </div>
                 </td>

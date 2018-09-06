@@ -107,7 +107,8 @@ namespace PERI.Agenda.Web.Controllers
                           r.CivilStatus,
                           r.Gender,
                           InvitedByMemberName = m1 == null ? "" : m1.Name,
-                          r.IsActive
+                          r.IsActive,
+                          RoleId = r.EndUser == null ? 0 : r.EndUser.RoleId
                       };
 
             dynamic obj1 = new ExpandoObject();

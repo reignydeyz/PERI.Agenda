@@ -54,6 +54,10 @@ export class MemberModule {
         return this.http.get(this.baseUrl + 'api/member/' + id + '/activities').map(response => response.json());
     }
 
+    public updateRole(m: Member) {
+        return this.http.post(this.baseUrl + 'api/user/updaterole', m);
+    }
+
     public edit(m: Member) {
         this.ex = new ErrorExceptionModule();
 
@@ -465,6 +469,26 @@ export class MemberComponent {
         this.suggestionsForEdit.length = 0;
 
         this.member.invitedByMemberName = s;
+    }
+
+    onRoleChange(member: Member, roleId: number) {
+        var flag = confirm('This will change the user`s role. Continue?');
+
+        if (!flag)
+            return false;
+
+        member.roleId = roleId;
+
+        this.mm.updateRole(member).subscribe(r => {
+            for (let m of this.chunk.members) {
+                if (m.id == member.id) {
+                    let index: number = this.chunk.members.indexOf(m);
+                    this.chunk.members[index] = member;
+                }
+            }
+        });
+
+        return false;
     }
 }
 

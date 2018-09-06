@@ -123,5 +123,13 @@ namespace PERI.Agenda.BLL
 
             return rec;
         }
+
+        public async Task UpdateRole(EF.EndUser endUser)
+        {
+            var rec = unitOfWork.EndUserRepository.Entities.First(x => x.MemberId == endUser.MemberId);
+            rec.RoleId = endUser.RoleId;
+
+            await unitOfWork.CommitAsync();
+        }
     }
 }
