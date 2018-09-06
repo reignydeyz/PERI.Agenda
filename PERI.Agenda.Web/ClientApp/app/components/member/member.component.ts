@@ -168,6 +168,7 @@ export class MemberComponent {
         m.name = f.controls['name'].value;
         m.email = f.controls['email'].value;
         m.roleId = f.controls['roleId'].value;
+        m.isActive = f.controls['isActive'].value;
 
         this.paginate(m, 1);
         this.search = m;
@@ -476,7 +477,7 @@ export class Member {
     email: string;
     address: string;
     mobile: string;
-    isActive: boolean;
+    isActive?: boolean;
     roleId: number;
     leading: number;
     following: number;

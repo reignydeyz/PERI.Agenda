@@ -87,7 +87,7 @@ namespace PERI.Agenda.Web.Controllers
             if (obj.RoleId != null)
                 o.EndUser = new EF.EndUser { RoleId = obj.RoleId.Value };
 
-            var members = bll_member.Find(o);
+            var members = bll_member.Find(o).Where(x => x.IsActive == (obj.IsActive ?? x.IsActive));
             var page = id;
             var pager = new Core.Pager(await members.CountAsync(), page == 0 ? 1 : page, 100);
 
@@ -242,7 +242,7 @@ namespace PERI.Agenda.Web.Controllers
                     Gender = r.Gender,
                     Id = r.Id,
                     InvitedBy = r.InvitedBy,
-                    InvitedByMemberName = r.InvitedBy > 0 ? bll_member.GetById(r.InvitedBy.Value).Result.Name : "",
+                    InvitedByMemberName = r.InvitedBy > 0 ? (await bll_member.GetById(r.InvitedBy.Value)).Name : "",
                     IsActive = r.IsActive,
                     Mobile = r.Mobile,
                     Name = r.Name,
@@ -424,10 +424,10 @@ namespace PERI.Agenda.Web.Controllers
 
             var o = AutoMapper.Mapper.Map<EF.Member>(obj);
 
-            var res = from r in await bll_member.Find(o).ToListAsync()
-                      join genders in bll_lu.GetByGroup("Gender").Result.Select(x => new { Label = x.Name, Value = int.Parse(x.Value) }) on r.Gender equals genders.Value into e
+            var res = from r in await bll_member.Find(o).Where(x => x.IsActive == (obj.IsActive ?? x.IsActive)).ToListAsync()
+                      join genders in (await bll_lu.GetByGroup("Gender")).Select(x => new { Label = x.Name, Value = int.Parse(x.Value) }) on r.Gender equals genders.Value into e
                       from e1 in e.DefaultIfEmpty()
-                      join civilStatuses in bll_lu.GetByGroup("Civil Status").Result.Select(x => new { Label = x.Name, Value = int.Parse(x.Value) }) on r.CivilStatus equals civilStatuses.Value into f
+                      join civilStatuses in (await bll_lu.GetByGroup("Civil Status")).Select(x => new { Label = x.Name, Value = int.Parse(x.Value) }) on r.CivilStatus equals civilStatuses.Value into f
                       from f1 in f.DefaultIfEmpty()
                       join m in bll_member.Find(new EF.Member { CommunityId = user.Member.CommunityId }) on r.InvitedBy equals m.Id into g
                       from m1 in g.DefaultIfEmpty()
