@@ -191,7 +191,8 @@ export class EventComponent {
                     var g = result.json();
 
                     // Add new event to the list
-                    this.chunk.events.push(g);
+                    //this.chunk.events.push(g);
+                    this.chunk.events.splice(0, 0, g);
                     this.chunk.pager.totalItems++;
 
                 }, error => this.em.ex.catchError(error));
@@ -244,6 +245,8 @@ export class EventComponent {
                 for (let e of this.chunk.events) {
                     if (e.id == id) {
                         this.chunk.events.splice(this.chunk.events.indexOf(e), 1);
+
+                        this.chunk.pager.totalItems--;
                     }
                 }
             }

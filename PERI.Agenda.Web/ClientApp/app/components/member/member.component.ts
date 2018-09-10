@@ -213,7 +213,9 @@ export class MemberComponent {
         this.mm.add(m).subscribe(
             result => {
                 m.id = result;
-                this.chunk.members.push(m);
+                //this.chunk.members.push(m);
+                this.chunk.members.splice(0, 0, m);
+                this.chunk.pager.totalItems++;
 
                 this.actives += 1;
                 this.total += 1;
@@ -323,6 +325,8 @@ export class MemberComponent {
                         }
 
                         this.chunk.members.splice(this.chunk.members.indexOf(m), 1);
+
+                        this.chunk.pager.totalItems--;
                     }
                 }
             }

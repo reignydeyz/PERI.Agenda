@@ -206,7 +206,8 @@ export class GroupComponent {
                     var g = result.json();
 
                     // Add new group to the list
-                    this.chunk.groups.push(g);
+                    //this.chunk.groups.push(g);
+                    this.chunk.groups.splice(0, 0, g);
                     this.chunk.pager.totalItems++;
 
                 }, error => this.gm.ex.catchError(error));
@@ -240,6 +241,7 @@ export class GroupComponent {
                 for (let g of this.chunk.groups) {
                     if (g.id == id) {
                         this.chunk.groups.splice(this.chunk.groups.indexOf(g), 1);
+                        this.chunk.pager.totalItems--;
                     }
                 }
             }

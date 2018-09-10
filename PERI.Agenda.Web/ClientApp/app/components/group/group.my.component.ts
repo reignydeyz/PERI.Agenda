@@ -165,7 +165,8 @@ export class GroupMyComponent {
                     var g = result.json();
 
                     // Add new group to the list
-                    this.chunk.groups.push(g);
+                    //this.chunk.groups.push(g);
+                    this.chunk.groups.splice(0, 0, g);
                     this.chunk.pager.totalItems++;
 
                 }, error => this.gm.ex.catchError(error));
