@@ -74,7 +74,7 @@
         <div id="menu1" class="tab-pane fade">
             <p *ngIf="!chunkAttendees"><em>Loading...</em></p>
             <small *ngIf="chunkAttendees">Found: {{ chunkAttendees.pager.totalItems }}</small>
-            <button (click)="downloadAttendees()" class="btn btn-default pull-right">Download</button>
+            <button *ngIf="chunkAttendees" (click)="downloadAttendees()" class="btn btn-default pull-right">Download</button>
             <table id="tbl" class="table table-striped table-hover tbl" *ngIf="chunkAttendees">
                 <thead>
                     <tr>
