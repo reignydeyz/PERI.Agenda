@@ -100,7 +100,7 @@ export class GroupMyComponent {
         this.pager = new Pager();
         this.paginate(this.group, 1);
 
-        this.titleService.setTitle('Groups');
+        this.titleService.setTitle('My Agenda - Groups');
     }
 
     ngAfterViewInit() {

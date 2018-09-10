@@ -112,7 +112,12 @@ export class EventComponent {
         this.pager = new Pager();
         this.paginate(this.event, 1);
 
-        this.titleService.setTitle('Events');
+        if (this.isAdmin) {
+            this.titleService.setTitle('Events');
+        }
+        else {
+            this.titleService.setTitle('My Agenda - Events');
+        }
 
         var ecc = new EventCategoryModule();
         ecc.http = this.http;
