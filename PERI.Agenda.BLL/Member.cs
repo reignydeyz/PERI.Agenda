@@ -118,25 +118,23 @@ namespace PERI.Agenda.BLL
                 // Check if member is same
                 if (args.Id != m.Id)
                     throw new ArgumentException("The email you entered is being used by another member.");
-                else
-                {
-                    var user = await _unitOfWork.MemberRepository.Entities.FirstAsync(x => x.Id == args.Id
-                        && x.CommunityId == args.CommunityId);
-
-                    user.Name = args.Name;
-                    user.NickName = args.NickName;
-                    user.BirthDate = args.BirthDate;
-                    user.Gender = args.Gender;
-                    user.Email = args.Email;
-                    user.Address = args.Address;
-                    user.Mobile = args.Mobile;
-                    user.IsActive = args.IsActive;
-                    user.InvitedBy = args.InvitedBy;
-                    user.Remarks = args.Remarks;
-
-                    await _unitOfWork.CommitAsync();
-                }
             }
+
+            var user = await _unitOfWork.MemberRepository.Entities.FirstAsync(x => x.Id == args.Id
+                       && x.CommunityId == args.CommunityId);
+
+            user.Name = args.Name;
+            user.NickName = args.NickName;
+            user.BirthDate = args.BirthDate;
+            user.Gender = args.Gender;
+            user.Email = args.Email;
+            user.Address = args.Address;
+            user.Mobile = args.Mobile;
+            user.IsActive = args.IsActive;
+            user.InvitedBy = args.InvitedBy;
+            user.Remarks = args.Remarks;
+
+            await _unitOfWork.CommitAsync();
         }
 
         public IQueryable<EF.Member> Find(EF.Member args)

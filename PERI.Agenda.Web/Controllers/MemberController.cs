@@ -295,9 +295,9 @@ namespace PERI.Agenda.Web.Controllers
                 });
 
                 // Send email
-                await smtp.SendEmail(obj.Email,
+                /*await smtp.SendEmail(obj.Email,
                     "Your Agenda Credentials",
-                    "Please click the link below to validate and change your password:<br/>http://" + Request.Host.Value + "/authentication/newpassword/?userid=" + newId + "&code=" + guidString);
+                    "Please click the link below to validate and change your password:<br/>http://" + Request.Host.Value + "/authentication/newpassword/?userid=" + newId + "&code=" + guidString);*/
             }
 
             return Ok();
