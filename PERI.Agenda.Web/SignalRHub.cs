@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace PERI.Agenda.Web
 {
+    /// <summary>
+    /// <see cref="https://docs.microsoft.com/en-us/aspnet/signalr/overview/security/hub-authorization"/>
+    /// </summary>
+    [BLL.VerifyUser]
     public class SignalRHub : Hub<ITypedHubClient>
     {
         /// <summary>
