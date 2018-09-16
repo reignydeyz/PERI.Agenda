@@ -70,7 +70,7 @@ namespace PERI.Agenda.BLL
 
         public Task<EF.Attendance> Get(EF.Attendance args)
         {
-            throw new NotImplementedException();
+            return unitOfWork.AttendanceRepository.Entities.FirstOrDefaultAsync(x => x.EventId == args.EventId && x.MemberId == args.MemberId);
         }
 
         public async Task<IQueryable<EF.Attendance>> Registrants(int eventId)

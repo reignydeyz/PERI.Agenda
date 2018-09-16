@@ -20,6 +20,8 @@ import { LookUp, LookUpModule } from '../lookup/lookup.component';
 
 import { saveAs } from 'file-saver';
 
+import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';  
+
 export class AttendanceModule {
     public http: Http;
     public baseUrl: string;
@@ -101,6 +103,7 @@ export class AttendanceComponent {
     public firstTimers: Attendance[];
 
     private sub: any;
+    private _hubConnection: HubConnection;  
 
     public myDatePickerOptions: IMyDpOptions = {
         // other options...
@@ -122,6 +125,10 @@ export class AttendanceComponent {
         this.rm = new RsvpModule();
         this.rm.http = http;
         this.rm.baseUrl = baseUrl;
+
+        this.createConnection(); 
+        this.startConnection(); 
+        this.registerOnServerEvents();
     }
 
     private paginate(obj: string, page: number) {
@@ -155,6 +162,10 @@ export class AttendanceComponent {
     }
 
     ngOnDestroy() {
+
+        // Leave SignalRHub
+        this.leaveGroup(this.id.toString());
+
         this.sub.unsubscribe();
 
         let div: any;
@@ -264,32 +275,10 @@ export class AttendanceComponent {
     public toggle(a: Attendance) {
         if (a.dateTimeLogged != null && a.dateTimeLogged != '') {
             this.am.delete(this.id, a).subscribe(r => {
-                for (let r of this.chunk.registrants) {
-                    if (r.memberId == a.memberId) {
-                        let index: number = this.chunk.registrants.indexOf(r);
-
-                        a.dateTimeLogged = '';
-                        this.chunk.registrants[index] = a;
-                    }
-                }
-                this.totalAttendees--;
-                this.totalPending++;
-                //alert('Success');
             }, error => this.am.ex.catchError(error));
         }
         else {
             this.am.add(this.id, a).subscribe(r => {
-                for (let r of this.chunk.registrants) {
-                    if (r.memberId == a.memberId) {
-                        let index: number = this.chunk.registrants.indexOf(r);
-
-                        a.dateTimeLogged = moment().format('MM/DD/YYYY, h:mm:ss a');
-                        this.chunk.registrants[index] = a;
-                    }
-                }
-                this.totalAttendees++;
-                this.totalPending--;
-                //alert('Success');
             }, error => this.am.ex.catchError(error));
         }        
     }
@@ -433,6 +422,75 @@ export class AttendanceComponent {
             this.downloadFile(parsedResponse);
         }, error => this.am.ex.catchError(error));;
     }
+
+    // ============================================================
+    // SignalR
+    // https://www.c-sharpcorner.com/article/getting-started-with-signalr-using-aspnet-co-using-angular-5/
+    private createConnection() {
+        this._hubConnection = new HubConnectionBuilder()
+            .withUrl(this.baseUrl + 'AttendanceBroadcast')
+            .build();
+    }  
+
+    private startConnection(): void {
+        this._hubConnection
+            .start()
+            .then(() => {
+
+                this.route.params.subscribe(params => {
+                    this.joinGroup(params["id"]);
+                });
+
+                console.log('Hub connection started');
+            })
+            .catch(err => {
+                console.log('Error while establishing connection, retrying...');
+                console.log(err);
+                setTimeout(this.startConnection(), 5000);
+            });
+    }
+
+    private registerOnServerEvents(): void {
+        this._hubConnection.on('AttendanceBroadcast', (data: any) => {
+
+            for (let r of this.chunk.registrants) {
+                if (r.memberId == data.memberId) {
+                    let index: number = this.chunk.registrants.indexOf(r);
+
+                    var a = this.chunk.registrants[index];
+
+                    if (data.dateTimeLogged != null && data.dateTimeLogged != '' && data.dateTimeLogged != undefined) {
+                        a.dateTimeLogged = moment().format('MM/DD/YYYY, h:mm:ss a');
+                        this.chunk.registrants[index] = a;
+
+                        this.totalAttendees++;
+                        this.totalPending--;
+                    }
+                    else {
+                        a.dateTimeLogged = '';
+                        this.chunk.registrants[index] = a;
+
+                        this.totalAttendees--;
+                        this.totalPending++;
+                    }
+                }
+            }
+        });
+    }  
+
+    // https://damienbod.com/2017/09/18/signalr-group-messages-with-ngrx-and-angular/
+    joinGroup(group: string): void {
+        if (this._hubConnection) {
+            this._hubConnection.invoke('JoinGroup', group);
+        }
+    }
+
+    leaveGroup(group: string): void {
+        if (this._hubConnection) {
+            this._hubConnection.invoke('LeaveGroup', group);
+        }
+    }
+    // ============================================================
 }
 
 export class Attendance {

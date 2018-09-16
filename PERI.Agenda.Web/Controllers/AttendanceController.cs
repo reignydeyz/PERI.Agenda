@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using PERI.Agenda.BLL;
 using PERI.Agenda.Core;
@@ -18,10 +19,12 @@ namespace PERI.Agenda.Web.Controllers
     public class AttendanceController : Controller
     {
         private readonly UnitOfWork unitOfWork;
+        private IHubContext<SignalRHub, ITypedHubClient> _hubContext;
 
-        public AttendanceController()
+        public AttendanceController(IHubContext<SignalRHub, ITypedHubClient> hubContext)
         {
             unitOfWork = new UnitOfWork(new EF.AARSContext());
+            _hubContext = hubContext;
         }
 
         /// <summary>
@@ -169,6 +172,8 @@ namespace PERI.Agenda.Web.Controllers
 
             await bll_ft.ValidateThenAdd(new EF.FirstTimer { AttendanceId = attendanceid });
 
+            await _hubContext.Clients.Group(id.ToString()).AttendanceBroadcast(new Models.Attendance { MemberId = obj.MemberId, EventId = id, DateTimeLogged = obj.DateTimeLogged ?? DateTime.Now });
+
             return attendanceid;
         }
         
@@ -184,6 +189,8 @@ namespace PERI.Agenda.Web.Controllers
                 throw new ArgumentException("Event Id is invalid.");
 
             await bll_a.Delete(new EF.Attendance { EventId = id, MemberId = obj.MemberId });
+
+            await _hubContext.Clients.Group(id.ToString()).AttendanceBroadcast(new Models.Attendance { MemberId = obj.MemberId, EventId = id });
         }
         
         [HttpGet("[action]")]
