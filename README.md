@@ -26,13 +26,15 @@ You may need to understand the nature of ASP-MVC before going through the entire
 ### Technology Used
 
 - [MVC Core](https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/?view=aspnetcore-2.1)
-- [.Net Core 2.0](https://www.microsoft.com/net/download/windows)
+- ~~.Net Core 2.0~~
+- [.Net Core 2.1](https://www.microsoft.com/net/download/windows)
 - [.Net Standard 2.0](#)
 - [EntityFramework Core](https://docs.microsoft.com/en-us/ef/core/)
 - [ASP.Net Identity](https://www.asp.net/identity)
 - [Angular 4](https://angular.io)
 - [Chart.js](https://www.chartjs.org/)
 - [XUnit](https://xunit.github.io)
+- [SignalR](https://www.asp.net/signalr)
 
 ### Solution Structure
 
