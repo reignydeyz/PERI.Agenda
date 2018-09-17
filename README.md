@@ -31,7 +31,8 @@ You may need to understand the nature of ASP-MVC before going through the entire
 - [.Net Standard 2.0](#)
 - [EntityFramework Core](https://docs.microsoft.com/en-us/ef/core/)
 - [ASP.Net Identity](https://www.asp.net/identity)
-- [Angular 4](https://angular.io)
+- ~~Angular 4~~
+- [Angular 5](https://angular.io)
 - [Chart.js](https://www.chartjs.org/)
 - [XUnit](https://xunit.github.io)
 - [SignalR](https://www.asp.net/signalr)
