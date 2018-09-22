@@ -275,10 +275,30 @@ export class AttendanceComponent {
     public toggle(a: Attendance) {
         if (a.dateTimeLogged != null && a.dateTimeLogged != '') {
             this.am.delete(this.id, a).subscribe(r => {
+
+                for (let r of this.chunk.registrants) {
+                    if (r.memberId == a.memberId) {
+                        let index: number = this.chunk.registrants.indexOf(r);
+
+                        a.dateTimeLogged = '';
+                        this.chunk.registrants[index] = a;
+                    }
+                }
+
             }, error => this.am.ex.catchError(error));
         }
         else {
             this.am.add(this.id, a).subscribe(r => {
+
+                for (let r of this.chunk.registrants) {
+                    if (r.memberId == a.memberId) {
+                        let index: number = this.chunk.registrants.indexOf(r);
+
+                        a.dateTimeLogged = moment().format('MM/DD/YYYY, h:mm:ss a');
+                        this.chunk.registrants[index] = a;
+                    }
+                }
+
             }, error => this.am.ex.catchError(error));
         }        
     }
@@ -460,7 +480,7 @@ export class AttendanceComponent {
                     var a = this.chunk.registrants[index];
 
                     if (data.dateTimeLogged != null && data.dateTimeLogged != '' && data.dateTimeLogged != undefined) {
-                        a.dateTimeLogged = moment().format('MM/DD/YYYY, h:mm:ss a');
+                        a.dateTimeLogged = moment(data.dateTimeLogged).format('MM/DD/YYYY, h:mm:ss a');
                         this.chunk.registrants[index] = a;
 
                         this.totalAttendees++;
