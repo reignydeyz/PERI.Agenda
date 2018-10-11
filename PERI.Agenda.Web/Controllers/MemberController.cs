@@ -27,13 +27,13 @@ namespace PERI.Agenda.Web.Controllers
 
         private readonly Emailer smtp;
         private readonly EF.AARSContext context;
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
-        public MemberController(IOptions<Core.Emailer> settingsOptions)
+        public MemberController(IOptions<Core.Emailer> settingsOptions, IUnitOfWork unitOfWork, EF.AARSContext context)
         {
             smtp = settingsOptions.Value;
-            context = new EF.AARSContext();
-            unitOfWork = new UnitOfWork(context);
+            this.context = context;
+            this.unitOfWork = unitOfWork;
         }
 
         [BLL.VerifyUser(AllowedRoles = "Admin,Developer")]

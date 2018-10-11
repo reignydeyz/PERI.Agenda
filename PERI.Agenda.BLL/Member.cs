@@ -9,9 +9,9 @@ namespace PERI.Agenda.BLL
 {
     public class Member
     {
-        private UnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public Member(UnitOfWork unitOfWork)
+        public Member(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }

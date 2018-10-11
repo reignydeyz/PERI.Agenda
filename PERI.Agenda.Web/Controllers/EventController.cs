@@ -18,13 +18,13 @@ namespace PERI.Agenda.Web.Controllers
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
         private readonly EF.AARSContext context;
 
-        public EventController()
+        public EventController(IUnitOfWork unitOfWork, EF.AARSContext context)
         {
-            context = new EF.AARSContext();
-            unitOfWork = new UnitOfWork(context);
+            this.context = context;
+            this.unitOfWork = unitOfWork;
         }
 
         [HttpPost("[action]")]

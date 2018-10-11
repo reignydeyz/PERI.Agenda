@@ -13,11 +13,11 @@ namespace PERI.Agenda.Web.Controllers
     [Route("api/LookUp")]
     public class LookUpController : Controller
     {
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
-        public LookUpController()
+        public LookUpController(IUnitOfWork unitOfWork)
         {
-            unitOfWork = new UnitOfWork(new EF.AARSContext());
+            this.unitOfWork = unitOfWork;
         }
 
         [HttpGet("[action]")]

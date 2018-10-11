@@ -20,15 +20,15 @@ namespace PERI.Agenda.Web.Controllers
 
         private readonly Core.Emailer smtp;
         private readonly Core.GoogleReCaptcha captcha;
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
         private readonly EF.AARSContext context;
 
-        public AuthenticationController(IOptions<Core.Emailer> settingsOptions, IOptions<Core.GoogleReCaptcha> options)
+        public AuthenticationController(IOptions<Core.Emailer> settingsOptions, IOptions<Core.GoogleReCaptcha> options, IUnitOfWork unitOfWork, EF.AARSContext context)
         {
             smtp = settingsOptions.Value;
             captcha = options.Value;
-            context = new EF.AARSContext();
-            unitOfWork = new UnitOfWork(context);
+            this.context = context;
+            this.unitOfWork = unitOfWork;
         }
 
         private async Task AddClaimsAndSignIn(EF.EndUser args)

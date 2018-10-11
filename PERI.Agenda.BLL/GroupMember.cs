@@ -9,9 +9,9 @@ namespace PERI.Agenda.BLL
 {
     public class GroupMember
     {
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
-        public GroupMember(UnitOfWork _unitOfWork)
+        public GroupMember(IUnitOfWork _unitOfWork)
         {
             unitOfWork = _unitOfWork;
         }

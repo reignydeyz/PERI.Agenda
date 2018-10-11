@@ -14,11 +14,11 @@ namespace PERI.Agenda.Web.Controllers
     [Route("api/Rsvp")]
     public class RsvpController : Controller
     {
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
-        public RsvpController()
+        public RsvpController(IUnitOfWork unitOfWork)
         {
-            unitOfWork = new UnitOfWork(new EF.AARSContext());
+            this.unitOfWork = unitOfWork;
         }
 
         [BLL.ValidateModelState]

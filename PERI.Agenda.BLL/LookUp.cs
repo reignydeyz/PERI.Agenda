@@ -10,8 +10,8 @@ namespace PERI.Agenda.BLL
 {
     public class LookUp
     {
-        private readonly UnitOfWork unitOfWork;
-        public LookUp(UnitOfWork _unitOfWork)
+        private readonly IUnitOfWork unitOfWork;
+        public LookUp(IUnitOfWork _unitOfWork)
         {
             unitOfWork = _unitOfWork;
         }

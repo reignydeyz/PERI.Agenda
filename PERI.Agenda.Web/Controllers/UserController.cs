@@ -12,11 +12,11 @@ namespace PERI.Agenda.Web.Controllers
     [ApiController]
     public class UserController : Controller
     {
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
-        public UserController()
+        public UserController(IUnitOfWork unitOfWork)
         {
-            unitOfWork = new UnitOfWork(new EF.AARSContext());
+            this.unitOfWork = unitOfWork;
         }
 
         /// <summary>

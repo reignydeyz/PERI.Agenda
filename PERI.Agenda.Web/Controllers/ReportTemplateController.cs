@@ -14,11 +14,11 @@ namespace PERI.Agenda.Web.Controllers
     [ApiController]
     public class ReportTemplateController : Controller
     {
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
-        public ReportTemplateController()
+        public ReportTemplateController(IUnitOfWork unitOfWork)
         {
-            unitOfWork = new UnitOfWork(new EF.AARSContext());
+            this.unitOfWork = unitOfWork;
         }
         
         [HttpPost("[action]")]

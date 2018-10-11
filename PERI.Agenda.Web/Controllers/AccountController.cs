@@ -20,12 +20,12 @@ namespace PERI.Agenda.Web.Controllers
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly Emailer smtp;
-        private readonly UnitOfWork unitOfWork; 
+        private readonly IUnitOfWork unitOfWork; 
 
-        public AccountController(IOptions<Core.Emailer> settingsOptions)
+        public AccountController(IOptions<Core.Emailer> settingsOptions, IUnitOfWork unitOfWork)
         {
             smtp = settingsOptions.Value;
-            unitOfWork = new UnitOfWork(new EF.AARSContext());
+            this.unitOfWork = unitOfWork;
         }
 
         [HttpGet("[action]")]

@@ -18,12 +18,12 @@ namespace PERI.Agenda.Web.Controllers
     [Route("api/Attendance")]
     public class AttendanceController : Controller
     {
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
         private IHubContext<SignalRHub, ITypedHubClient> _hubContext;
 
-        public AttendanceController(IHubContext<SignalRHub, ITypedHubClient> hubContext)
+        public AttendanceController(IHubContext<SignalRHub, ITypedHubClient> hubContext, IUnitOfWork unitOfWork)
         {
-            unitOfWork = new UnitOfWork(new EF.AARSContext());
+            this.unitOfWork = unitOfWork;
             _hubContext = hubContext;
         }
 

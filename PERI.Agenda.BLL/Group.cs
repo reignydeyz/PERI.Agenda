@@ -11,9 +11,9 @@ namespace PERI.Agenda.BLL
     public class Group
     {
 
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
-        public Group(UnitOfWork _unitOfWork)
+        public Group(IUnitOfWork _unitOfWork)
         {
             unitOfWork = _unitOfWork;
         }

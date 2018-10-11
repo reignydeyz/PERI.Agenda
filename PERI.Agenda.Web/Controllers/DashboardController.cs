@@ -16,11 +16,11 @@ namespace PERI.Agenda.Web.Controllers
     public class DashboardController : Controller
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
-        public DashboardController()
+        public DashboardController(IUnitOfWork unitOfWork)
         {
-            unitOfWork = new UnitOfWork(new EF.AARSContext());
+            this.unitOfWork = unitOfWork;
         }
 
         [HttpGet("[action]")]

@@ -15,11 +15,11 @@ namespace PERI.Agenda.Web.Controllers
     [Route("api/Location")]
     public class LocationController : Controller
     {
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
-        public LocationController()
+        public LocationController(IUnitOfWork unitOfWork)
         {
-            unitOfWork = new UnitOfWork(new EF.AARSContext());
+            this.unitOfWork = unitOfWork;
         }
 
         [BLL.VerifyUser(AllowedRoles = "Admin")]

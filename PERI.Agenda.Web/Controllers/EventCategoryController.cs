@@ -17,11 +17,11 @@ namespace PERI.Agenda.Web.Controllers
     [Route("api/EventCategory")]
     public class EventCategoryController : Controller
     {
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
-        public EventCategoryController()
+        public EventCategoryController(IUnitOfWork unitOfWork)
         {
-            unitOfWork = new UnitOfWork(new EF.AARSContext());
+            this.unitOfWork = unitOfWork;
         }
 
         [HttpPost("[action]")]

@@ -11,9 +11,9 @@ namespace PERI.Agenda.BLL
     public class Event
     {
 
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
-        public Event(UnitOfWork _unitOfWork)
+        public Event(IUnitOfWork _unitOfWork)
         {
             unitOfWork = _unitOfWork;
         }

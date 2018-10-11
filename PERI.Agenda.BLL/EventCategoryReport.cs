@@ -9,9 +9,9 @@ namespace PERI.Agenda.BLL
 {
     public class EventCategoryReport
     {
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
-        public EventCategoryReport(UnitOfWork _unitOfWork)
+        public EventCategoryReport(IUnitOfWork _unitOfWork)
         {
             unitOfWork = _unitOfWork;
         }

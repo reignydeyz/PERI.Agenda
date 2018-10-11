@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace PERI.Agenda.BLL
 {
@@ -30,6 +31,8 @@ namespace PERI.Agenda.BLL
         /// Commits all changes
         /// </summary>
         void Commit();
+
+        Task CommitAsync();
         
         /// <summary>
         /// Discards all changes that has not been commited

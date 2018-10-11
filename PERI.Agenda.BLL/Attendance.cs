@@ -10,9 +10,9 @@ namespace PERI.Agenda.BLL
 {
     public class Attendance
     {
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
-        public Attendance(UnitOfWork _unitOfWork)
+        public Attendance(IUnitOfWork _unitOfWork)
         {
             unitOfWork = _unitOfWork;
         }

@@ -8,9 +8,9 @@ namespace PERI.Agenda.BLL
 {
     public class FirstTimer
     {
-        private readonly UnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public FirstTimer(UnitOfWork unitOfWork)
+        public FirstTimer(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }

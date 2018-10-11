@@ -15,11 +15,11 @@ namespace PERI.Agenda.Web.Controllers
     [Route("api/GroupCategory")]
     public class GroupCategoryController : Controller
     {
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
-        public GroupCategoryController()
+        public GroupCategoryController(IUnitOfWork unitOfWork)
         {
-            unitOfWork = new UnitOfWork(new EF.AARSContext());
+            this.unitOfWork = unitOfWork;
         }
 
         [HttpPost("[action]")]

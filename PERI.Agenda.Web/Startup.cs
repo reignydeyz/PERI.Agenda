@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using NLog.Web;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace PERI.Agenda.Web
 {
@@ -58,6 +59,9 @@ namespace PERI.Agenda.Web
             services.Configure<Core.GoogleReCaptcha>(options => Core.Setting.Configuration.GetSection("GoogleReCaptcha").Bind(options));
 
             services.AddScoped<BLL.ValidateReCaptchaAttribute>();
+
+            services.AddDbContext<EF.AARSContext>(options => options.UseSqlServer(Core.Setting.Configuration.GetValue<string>("ConnectionStrings:DefaultConnection")));
+            services.AddScoped<BLL.IUnitOfWork, BLL.UnitOfWork>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

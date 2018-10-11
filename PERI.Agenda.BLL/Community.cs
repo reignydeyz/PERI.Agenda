@@ -10,9 +10,9 @@ namespace PERI.Agenda.BLL
 {
     public class Community
     {
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
-        public Community(UnitOfWork _unitOfWork)
+        public Community(IUnitOfWork _unitOfWork)
         {
             unitOfWork = _unitOfWork;
         }

@@ -10,9 +10,9 @@ namespace PERI.Agenda.BLL
 {
     public class EndUser
     {
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
-        public EndUser(UnitOfWork _unitOfWork)
+        public EndUser(IUnitOfWork _unitOfWork)
         {
             unitOfWork = _unitOfWork;
         }
