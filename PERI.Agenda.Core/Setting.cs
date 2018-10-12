@@ -2,7 +2,7 @@
 
 namespace PERI.Agenda.Core
 {
-    public class Setting
+    public static class Setting
     {
         public static IConfigurationRoot Configuration { get; set; }
     }

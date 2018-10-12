@@ -7,7 +7,7 @@ using System.Text;
 
 namespace PERI.Agenda.Core
 {
-    public class JWT
+    public static class JWT
     {
         /// <summary>
         /// Generates JWT

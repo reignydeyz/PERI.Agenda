@@ -28,10 +28,8 @@ namespace PERI.Agenda.BLL
 
         public async Task<int> Add(EF.Member args)
         {
-            var m = new EF.Member();
-
             // Validate Email
-            m = await Find(new EF.Member
+            var m = await Find(new EF.Member
             {
                 Email = String.IsNullOrEmpty(args.Email) ? "email" : args.Email.Trim(),
                 CommunityId = args.CommunityId
@@ -104,20 +102,17 @@ namespace PERI.Agenda.BLL
 
         public async Task Edit(EF.Member args)
         {
-            var m = new EF.Member();
-
             // Validate Email
-            m = await Find(new EF.Member
+            var m = await Find(new EF.Member
             {
                 Email = String.IsNullOrEmpty(args.Email) ? "email" : args.Email.Trim(),
                 CommunityId = args.CommunityId
             }).FirstOrDefaultAsync();
 
-            if (m != null)
+            if (m != null && args.Id != m.Id)
             {
                 // Check if member is same
-                if (args.Id != m.Id)
-                    throw new ArgumentException("The email you entered is being used by another member.");
+                throw new ArgumentException("The email you entered is being used by another member.");
             }
 
             var user = await _unitOfWork.MemberRepository.Entities.FirstAsync(x => x.Id == args.Id

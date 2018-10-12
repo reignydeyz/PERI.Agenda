@@ -9,7 +9,7 @@ namespace PERI.Agenda.BLL
 {
     public class Role
     {
-        private IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
         public Role(IUnitOfWork unitOfWork)
         {

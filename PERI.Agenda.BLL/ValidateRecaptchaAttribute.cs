@@ -17,7 +17,6 @@ namespace PERI.Agenda.BLL
         private const string ApiVerificationEndpoint = "https://www.google.com/recaptcha/api/siteverify";
         private readonly IConfiguration m_configuration;
         private readonly Lazy<string> m_reCaptchaSecret;
-        private readonly Core.GoogleReCaptcha captcha;
 
         public ValidateReCaptchaAttribute(IConfiguration configuration, IOptions<Core.GoogleReCaptcha> captchaOptions)
         {

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace PERI.Agenda.Core
 {
-    public class Crypto
+    public static class Crypto
     {
         /// <summary>
         /// Hash an ordinary string via salt

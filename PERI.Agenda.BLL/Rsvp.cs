@@ -50,7 +50,7 @@ namespace PERI.Agenda.BLL
                 .Where(x => x.EventId == eventId
                 && x.IsGoing == (isGoing ?? x.IsGoing)
                 && x.Member.Name.Contains(String.IsNullOrEmpty(name) ? "" : name)
-                && x.Member.Attendance.Where(y => y.EventId == eventId).Count() == 0)
+                && x.Member.Attendance.Count(y => y.EventId == eventId) == 0)
                 .OrderBy(x => x.Member.Name);
         }
     }
