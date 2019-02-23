@@ -24,6 +24,11 @@ namespace PERI.Agenda.Web.Controllers
             this.unitOfWork = unitOfWork;
         }
 
+        /// <summary>
+        /// Searches event categories
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("find")]
         public async Task<IActionResult> Find([FromBody]EF.EventCategory args)

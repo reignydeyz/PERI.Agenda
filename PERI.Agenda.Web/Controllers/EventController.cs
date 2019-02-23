@@ -27,6 +27,11 @@ namespace PERI.Agenda.Web.Controllers
             this.unitOfWork = unitOfWork;
         }
 
+        /// <summary>
+        /// Searches events
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("find")]
         public async Task<IActionResult> Find([FromBody] EF.Event obj)
@@ -53,6 +58,12 @@ namespace PERI.Agenda.Web.Controllers
             return Json(res);
         }
 
+        /// <summary>
+        /// Searches events (with pagination)
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("Find/Page/{id}")]
         public async Task<IActionResult> Page([FromBody] EF.Event obj, int id)
@@ -85,6 +96,12 @@ namespace PERI.Agenda.Web.Controllers
             return Json(obj1);
         }
 
+        /// <summary>
+        /// earches events that are created by the logged in user/member
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("Find/MyPage/{id}")]
         public async Task<IActionResult> MyPage([FromBody] EF.Event obj, int id)
@@ -118,6 +135,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json(obj1);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         [Route("download")]
         public async Task<IActionResult> Download([FromBody] EF.Event obj)
@@ -166,6 +184,12 @@ namespace PERI.Agenda.Web.Controllers
             return await bll_event.Add(o);
         }
 
+        /// <summary>
+        /// Adds an exclusive event for a group
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("New/Exclusive/{groupId}")]
         [BLL.ValidateModelState]
@@ -229,6 +253,11 @@ namespace PERI.Agenda.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// Gets the event detail
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("Get/{id}")]
         public async Task<IActionResult> Get(int id)

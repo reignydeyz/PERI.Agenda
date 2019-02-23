@@ -12,7 +12,6 @@ using PERI.Agenda.Core;
 
 namespace PERI.Agenda.Web.Controllers
 {
-    [ApiExplorerSettings(IgnoreApi = true)]
     [BLL.VerifyUser]
     [Produces("application/json")]
     [Route("api/Group")]
@@ -25,7 +24,13 @@ namespace PERI.Agenda.Web.Controllers
             this.unitOfWork = unitOfWork;
         }
 
-        [HttpPost("[action]")]
+        /// <summary>
+        /// Searches members
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("find")]
         public async Task<IActionResult> Find([FromBody] Models.Group obj)
         {
             var bll_g = new BLL.Group(unitOfWork);
@@ -59,7 +64,13 @@ namespace PERI.Agenda.Web.Controllers
             return Json(await res.ToListAsync());
         }
 
-        [HttpPost("[action]")]
+        /// <summary>
+        /// Searches members (with pagination)
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
         [Route("Find/Page/{id}")]
         public async Task<IActionResult> Page([FromBody] Models.Group obj, int id)
         {
@@ -99,7 +110,9 @@ namespace PERI.Agenda.Web.Controllers
 
             return Json(obj1);
         }
-        
+
+
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet("[action]")]
         [Route("Get/{id}")]
         public async Task<IActionResult> Get(int id)
@@ -124,7 +137,13 @@ namespace PERI.Agenda.Web.Controllers
             return Json(obj);
         }
 
-        [HttpPost("[action]")]
+        /// <summary>
+        /// Adds a new group
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("new")]
         [BLL.ValidateModelState]
         public async Task<IActionResult> New([FromBody] Models.Group obj)
         {
@@ -155,6 +174,7 @@ namespace PERI.Agenda.Web.Controllers
             }
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost("[action]")]
         [BLL.ValidateModelState]
         public async Task<IActionResult> Edit([FromBody] Models.Group obj)
@@ -189,6 +209,7 @@ namespace PERI.Agenda.Web.Controllers
             }
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost("[action]")]
         public async Task<IActionResult> Delete([FromBody] int[] ids)
         {
@@ -204,6 +225,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json("Success!");
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost("[action]")]
         public async Task<IActionResult> Download([FromBody] EF.Group obj)
         {

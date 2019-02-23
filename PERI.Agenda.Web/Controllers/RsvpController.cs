@@ -9,7 +9,6 @@ using PERI.Agenda.BLL;
 
 namespace PERI.Agenda.Web.Controllers
 {
-    [ApiExplorerSettings(IgnoreApi = true)]
     [BLL.VerifyUser]
     [Produces("application/json")]
     [Route("api/Rsvp")]
@@ -23,7 +22,7 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [BLL.ValidateModelState]
-        [HttpPut("[action]")]
+        [HttpPut]
         [Route("Add")]
         public async Task Add([FromBody] Models.Rsvp obj)
         {
@@ -40,6 +39,7 @@ namespace PERI.Agenda.Web.Controllers
                 await bll_r.Update(new EF.Rsvp { EventId = obj.EventId, MemberId = obj.MemberId, IsGoing = obj.IsGoing });
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [BLL.ValidateModelState]
         [HttpPost("[action]")]
         [Route("Delete")]
@@ -54,7 +54,7 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [BLL.ValidateModelState]
-        [HttpPost("[action]")]
+        [HttpPost]
         [Route("Find")]
         public async Task<IActionResult> Find([FromBody] Models.Rsvp obj)
         {

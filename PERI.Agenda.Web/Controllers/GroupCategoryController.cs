@@ -10,7 +10,6 @@ using PERI.Agenda.BLL;
 
 namespace PERI.Agenda.Web.Controllers
 {
-    [ApiExplorerSettings(IgnoreApi = true)]
     [BLL.VerifyUser]
     [Produces("application/json")]
     [Route("api/GroupCategory")]
@@ -23,7 +22,13 @@ namespace PERI.Agenda.Web.Controllers
             this.unitOfWork = unitOfWork;
         }
 
-        [HttpPost("[action]")]
+        /// <summary>
+        /// Searches group categories
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("find")]
         public async Task<IActionResult> Find([FromBody]EF.GroupCategory args)
         {
             var bll_gc = new BLL.GroupCategory(unitOfWork);
@@ -43,6 +48,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json(res);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet("[action]")]
         [Route("Get/{id}")]
         public async Task<IActionResult> Get(int id)
@@ -61,6 +67,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json(obj);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpPost("[action]")]
         public async Task<int> New([FromBody]EF.GroupCategory args)
@@ -73,6 +80,7 @@ namespace PERI.Agenda.Web.Controllers
             return await bll_gc.Add(args);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpPost("[action]")]
         public async Task<IActionResult> Edit([FromBody]EF.GroupCategory args)
@@ -89,6 +97,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json("Success!");
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpPost("[action]")]
         public async Task<IActionResult> Delete([FromBody] int[] ids)
@@ -104,6 +113,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json("Success!");
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpGet("[action]")]
         [Route("Stats/{id}")]
@@ -124,6 +134,7 @@ namespace PERI.Agenda.Web.Controllers
             };
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpGet("[action]")]
         [Route("Groups/{id}")]

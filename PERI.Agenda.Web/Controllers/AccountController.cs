@@ -28,6 +28,10 @@ namespace PERI.Agenda.Web.Controllers
             this.unitOfWork = unitOfWork;
         }
 
+        /// <summary>
+        /// Gets the account info of user/member
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("profile")]
         public async Task<Models.Member> Profile()
@@ -55,7 +59,12 @@ namespace PERI.Agenda.Web.Controllers
                 Remarks = r.Remarks
             };
         }
-       
+
+        /// <summary>
+        /// Updates client's password
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("changepassword")]
         [BLL.ValidateModelState]
@@ -88,6 +97,10 @@ namespace PERI.Agenda.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// Gets the role of user/member
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("role")]
         public IActionResult Role()

@@ -36,6 +36,11 @@ namespace PERI.Agenda.Web.Controllers
             this.unitOfWork = unitOfWork;
         }
 
+        /// <summary>
+        /// Searches members
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         [BLL.VerifyUser(AllowedRoles = "Admin,Developer")]
         [HttpPost]
         [Route("find")]
@@ -72,6 +77,12 @@ namespace PERI.Agenda.Web.Controllers
             return Json(res);
         }
 
+        /// <summary>
+        /// Searches members (with pagination)
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpPost]
         [Route("Find/Page/{id}")]
@@ -119,6 +130,11 @@ namespace PERI.Agenda.Web.Controllers
             return Json(obj1);
         }
 
+        /// <summary>
+        /// Adds a member which also becomes a user when email is present
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
         [BLL.VerifyUser]
         [HttpPost]
         [Route("new")]
@@ -222,6 +238,11 @@ namespace PERI.Agenda.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// Gets the detail of specific member
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [BLL.VerifyUser]
         [HttpGet]
         [Route("Get/{id}")]
@@ -254,6 +275,11 @@ namespace PERI.Agenda.Web.Controllers
                 });
         }
 
+        /// <summary>
+        /// Updates a member
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("edit")]
         [BLL.ValidateModelState]

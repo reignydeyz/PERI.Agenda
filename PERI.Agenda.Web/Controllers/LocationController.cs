@@ -58,7 +58,12 @@ namespace PERI.Agenda.Web.Controllers
 
             await bll_l.Edit(o);
         }
-        
+
+        /// <summary>
+        /// Searches locations
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("find")]
         public async Task<IActionResult> Find(EF.Location args)

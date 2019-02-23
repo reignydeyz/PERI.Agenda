@@ -13,6 +13,7 @@ using NLog.Extensions.Logging;
 using NLog.Web;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace PERI.Agenda.Web
 {
@@ -46,6 +47,10 @@ namespace PERI.Agenda.Web
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info { Title = "API", Description = "Endpoints" });
+
+                // Configure Swagger to use the xml documentation file
+                var xmlFile = Path.ChangeExtension(typeof(Startup).Assembly.Location, ".xml");
+                c.IncludeXmlComments(xmlFile);
             });
             services.ConfigureSwaggerGen(options =>
             {

@@ -10,7 +10,6 @@ using PERI.Agenda.BLL;
 
 namespace PERI.Agenda.Web.Controllers
 {
-    [ApiExplorerSettings(IgnoreApi = true)]
     [BLL.VerifyUser]
     [Produces("application/json")]
     [Route("api/GroupMember")]
@@ -23,6 +22,7 @@ namespace PERI.Agenda.Web.Controllers
             this.unitOfWork = unitOfWork;
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost("[action]")]
         [Route("Find/{id}")]
         public async Task<IActionResult> Members([FromBody] EF.Member obj, int id)
@@ -33,6 +33,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json(await bll_gm.Members(obj, id).ToListAsync());
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost("[action]")]
         [Route("{id}/Checklist/Page/{p}")]
         public async Task<IActionResult> Page([FromBody] string member, int id, int p)
@@ -68,7 +69,13 @@ namespace PERI.Agenda.Web.Controllers
             return Json(obj1);
         }
 
-        [HttpPost("[action]")]
+        /// <summary>
+        /// Checklist of the group (for member assignment)
+        /// </summary>
+        /// <param name="member"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
         [Route("{id}/Checklist")]
         public async Task<IActionResult> Checklist([FromBody] string member, int id)
         {
@@ -96,7 +103,12 @@ namespace PERI.Agenda.Web.Controllers
             return Json(await res.ToListAsync());
         }
 
-        [HttpPut("[action]")]
+        /// <summary>
+        /// Adds a member to a group
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        [HttpPut]
         [BLL.ValidateModelState]
         [Route("Add")]
         public async Task<int> Add([FromBody] Models.GroupMember obj)
@@ -114,7 +126,12 @@ namespace PERI.Agenda.Web.Controllers
             });
         }
 
-        [HttpPost("[action]")]
+        /// <summary>
+        /// Removes a member from a group
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        [HttpPost]
         [BLL.ValidateModelState]
         [Route("Delete")]
         public async Task Delete([FromBody] Models.GroupMember obj)

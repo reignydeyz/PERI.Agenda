@@ -32,6 +32,10 @@ namespace PERI.Agenda.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// Gets the happening/upcoming events
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("events")]
         public async Task<IActionResult> Events()

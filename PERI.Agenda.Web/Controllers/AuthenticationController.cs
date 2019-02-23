@@ -112,7 +112,12 @@ namespace PERI.Agenda.Web.Controllers
             TempData["notice"] = "Access denied.";
             return View(args);
         }
-        
+
+        /// <summary>
+        /// Authenticates the client
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("Signin")]
         public async Task<IActionResult> SignIn([FromBody] Models.Login args)

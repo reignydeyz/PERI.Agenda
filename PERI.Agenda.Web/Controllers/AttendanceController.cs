@@ -49,6 +49,11 @@ namespace PERI.Agenda.Web.Controllers
             return Json(await res.ToListAsync());
         }
 
+        /// <summary>
+        /// Gets the attendees of the event
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{id}/Attendees")]
         public async Task<IActionResult> Attendees(int id)
@@ -66,6 +71,11 @@ namespace PERI.Agenda.Web.Controllers
             return Json(await res.ToListAsync());
         }
 
+        /// <summary>
+        /// Gets the fisrt-timers from the event
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{id}/FirstTimers")]
         public async Task<IActionResult> FirstTimers(int id)
@@ -106,7 +116,14 @@ namespace PERI.Agenda.Web.Controllers
 
             return Json(await res.ToListAsync());
         }
-        
+
+        /// <summary>
+        /// Search or filter Registrants (with pagination)
+        /// </summary>
+        /// <param name="member"></param>
+        /// <param name="id"></param>
+        /// <param name="p"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("{id}/Search/Page/{p}")]
         public async Task<IActionResult> Page([FromBody] string member, int id, int p)
@@ -131,6 +148,12 @@ namespace PERI.Agenda.Web.Controllers
             return Json(obj1);
         }
 
+        /// <summary>
+        /// Gets the attendees of the event
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="p"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{id}/Attendees/Page/{p}")]
         public async Task<IActionResult> PageAttendees(int id, int p)
@@ -155,6 +178,12 @@ namespace PERI.Agenda.Web.Controllers
             return Json(obj1);
         }
 
+        /// <summary>
+        /// Logs an attendee of an event
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPut]
         [BLL.ValidateModelState]
         [Route("{id}/Add")]
@@ -176,7 +205,13 @@ namespace PERI.Agenda.Web.Controllers
 
             return attendanceid;
         }
-        
+
+        /// <summary>
+        /// Deletes an attendee of an event
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("{id}/Delete")]
         public async Task Delete([FromBody] EF.Attendance obj, int id)
@@ -192,7 +227,8 @@ namespace PERI.Agenda.Web.Controllers
 
             await _hubContext.Clients.Group(id.ToString()).AttendanceBroadcast(new Models.Attendance { MemberId = obj.MemberId, EventId = id });
         }
-        
+
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet]
         [Route("{id}/Total/{status}")]
         public async Task<int> Total(int id, string status)
@@ -208,6 +244,7 @@ namespace PERI.Agenda.Web.Controllers
                 return await res.CountAsync();
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet]
         [Route("{id}/DownloadAttendees")]
         public async Task<IActionResult> DownloadAttendees(int id)
@@ -228,6 +265,7 @@ namespace PERI.Agenda.Web.Controllers
             return result;
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet]
         [Route("{id}/DownloadFirstTimers")]
         public async Task<IActionResult> DownloadFirstTimers(int id)
