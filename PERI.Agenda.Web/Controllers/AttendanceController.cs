@@ -32,7 +32,7 @@ namespace PERI.Agenda.Web.Controllers
         /// </summary>
         /// <param name="id">Event Id</param>
         /// <returns>List of registered Members</returns>
-        [HttpGet("[action]")]
+        [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> Registrants(int id)
         {
@@ -49,7 +49,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json(await res.ToListAsync());
         }
 
-        [HttpGet("[action]")]
+        [HttpGet]
         [Route("{id}/Attendees")]
         public async Task<IActionResult> Attendees(int id)
         {
@@ -66,7 +66,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json(await res.ToListAsync());
         }
 
-        [HttpGet("[action]")]
+        [HttpGet]
         [Route("{id}/FirstTimers")]
         public async Task<IActionResult> FirstTimers(int id)
         {
@@ -90,7 +90,7 @@ namespace PERI.Agenda.Web.Controllers
         /// <param name="member">Member Name</param>
         /// <param name="id">Event Id</param>
         /// <returns>List of registered Members</returns>
-        [HttpPost("[action]")]
+        [HttpPost]
         [Route("{id}/Search")]
         public async Task<IActionResult> Search([FromBody] string member, int id)
         {
@@ -107,7 +107,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json(await res.ToListAsync());
         }
         
-        [HttpPost("[action]")]
+        [HttpPost]
         [Route("{id}/Search/Page/{p}")]
         public async Task<IActionResult> Page([FromBody] string member, int id, int p)
         {
@@ -131,7 +131,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json(obj1);
         }
 
-        [HttpGet("[action]")]
+        [HttpGet]
         [Route("{id}/Attendees/Page/{p}")]
         public async Task<IActionResult> PageAttendees(int id, int p)
         {
@@ -155,7 +155,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json(obj1);
         }
 
-        [HttpPut("[action]")]
+        [HttpPut]
         [BLL.ValidateModelState]
         [Route("{id}/Add")]
         public async Task<int> Add([FromBody] Models.Attendance obj, int id)
@@ -177,7 +177,7 @@ namespace PERI.Agenda.Web.Controllers
             return attendanceid;
         }
         
-        [HttpPost("[action]")]
+        [HttpPost]
         [Route("{id}/Delete")]
         public async Task Delete([FromBody] EF.Attendance obj, int id)
         {
@@ -193,7 +193,7 @@ namespace PERI.Agenda.Web.Controllers
             await _hubContext.Clients.Group(id.ToString()).AttendanceBroadcast(new Models.Attendance { MemberId = obj.MemberId, EventId = id });
         }
         
-        [HttpGet("[action]")]
+        [HttpGet]
         [Route("{id}/Total/{status}")]
         public async Task<int> Total(int id, string status)
         {
@@ -208,7 +208,7 @@ namespace PERI.Agenda.Web.Controllers
                 return await res.CountAsync();
         }
 
-        [HttpGet("[action]")]
+        [HttpGet]
         [Route("{id}/DownloadAttendees")]
         public async Task<IActionResult> DownloadAttendees(int id)
         {
@@ -228,7 +228,7 @@ namespace PERI.Agenda.Web.Controllers
             return result;
         }
 
-        [HttpGet("[action]")]
+        [HttpGet]
         [Route("{id}/DownloadFirstTimers")]
         public async Task<IActionResult> DownloadFirstTimers(int id)
         {

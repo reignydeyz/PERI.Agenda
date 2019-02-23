@@ -14,6 +14,7 @@ using PERI.Agenda.BLL;
 
 namespace PERI.Agenda.Web.Controllers
 {
+    
     public class AuthenticationController : Controller
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -53,6 +54,7 @@ namespace PERI.Agenda.Web.Controllers
             await HttpContext.SignInAsync("MyCookieMiddlewareInstance", principal);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult Index()
         {
             if (User.Identity.IsAuthenticated)
@@ -64,6 +66,7 @@ namespace PERI.Agenda.Web.Controllers
             }
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(Models.Login args)
@@ -111,6 +114,7 @@ namespace PERI.Agenda.Web.Controllers
         }
         
         [HttpPost]
+        [Route("Signin")]
         public async Task<IActionResult> SignIn([FromBody] Models.Login args)
         {
             var buser = new BLL.EndUser(unitOfWork);
@@ -145,6 +149,7 @@ namespace PERI.Agenda.Web.Controllers
             return Unauthorized();
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<IActionResult> SignOut()
         {
             await HttpContext.SignOutAsync("MyCookieMiddlewareInstance");
@@ -152,6 +157,7 @@ namespace PERI.Agenda.Web.Controllers
             return RedirectToAction("Index", "Authentication");
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<IActionResult> SignUp()
         {
             ViewData["Title"] = "Sign-up";
@@ -162,6 +168,7 @@ namespace PERI.Agenda.Web.Controllers
             return View();
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ServiceFilter(typeof(BLL.ValidateReCaptchaAttribute))]
@@ -250,6 +257,7 @@ namespace PERI.Agenda.Web.Controllers
             }
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult ForgotPassword()
         {
             ViewData["Title"] = "Forgot Password";
@@ -257,6 +265,7 @@ namespace PERI.Agenda.Web.Controllers
             return View();
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ServiceFilter(typeof(BLL.ValidateReCaptchaAttribute))]
@@ -303,6 +312,7 @@ namespace PERI.Agenda.Web.Controllers
             }
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<IActionResult> NewPassword()
         {
             ViewData["Title"] = "New password";
@@ -325,6 +335,7 @@ namespace PERI.Agenda.Web.Controllers
                 return new NotFoundResult();
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> NewPassword(Models.NewPassword args)

@@ -22,6 +22,7 @@ namespace PERI.Agenda.Web.Controllers
             this.unitOfWork = unitOfWork;
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpPost("[action]")]
         [BLL.ValidateModelState]
@@ -40,6 +41,7 @@ namespace PERI.Agenda.Web.Controllers
             return Ok(id);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpPost("[action]")]
         [BLL.ValidateModelState]
@@ -56,8 +58,9 @@ namespace PERI.Agenda.Web.Controllers
 
             await bll_l.Edit(o);
         }
-
-        [HttpPost("[action]")]
+        
+        [HttpPost]
+        [Route("find")]
         public async Task<IActionResult> Find(EF.Location args)
         {
             var bll_location = new BLL.Location(unitOfWork);
@@ -80,6 +83,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json(res);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet("[action]")]
         [Route("Get/{id}")]
         public async Task<IActionResult> Get(int id)
@@ -101,6 +105,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json(obj);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpPost("[action]")]
         public async Task<IActionResult> Delete([FromBody] int[] ids)
@@ -116,6 +121,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json("Success!");
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpGet("[action]")]
         [Route("Stats/{id}")]
@@ -136,6 +142,7 @@ namespace PERI.Agenda.Web.Controllers
             };
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpGet("[action]")]
         [Route("Events/{id}")]

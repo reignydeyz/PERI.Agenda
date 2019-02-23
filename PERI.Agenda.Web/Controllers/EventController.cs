@@ -27,7 +27,8 @@ namespace PERI.Agenda.Web.Controllers
             this.unitOfWork = unitOfWork;
         }
 
-        [HttpPost("[action]")]
+        [HttpPost]
+        [Route("find")]
         public async Task<IActionResult> Find([FromBody] EF.Event obj)
         {
             var bll_event = new BLL.Event(unitOfWork);
@@ -52,7 +53,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json(res);
         }
 
-        [HttpPost("[action]")]
+        [HttpPost]
         [Route("Find/Page/{id}")]
         public async Task<IActionResult> Page([FromBody] EF.Event obj, int id)
         {
@@ -84,7 +85,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json(obj1);
         }
 
-        [HttpPost("[action]")]
+        [HttpPost]
         [Route("Find/MyPage/{id}")]
         public async Task<IActionResult> MyPage([FromBody] EF.Event obj, int id)
         {
@@ -117,7 +118,8 @@ namespace PERI.Agenda.Web.Controllers
             return Json(obj1);
         }
 
-        [HttpPost("[action]")]
+        [HttpPost]
+        [Route("download")]
         public async Task<IActionResult> Download([FromBody] EF.Event obj)
         {
             var bll_event = new BLL.Event(unitOfWork);
@@ -146,8 +148,10 @@ namespace PERI.Agenda.Web.Controllers
             return result;
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [BLL.VerifyUser(AllowedRoles = "Admin")]
-        [HttpPost("[action]")]
+        [HttpPost]
+        [Route("new")]
         [BLL.ValidateModelState]
         public async Task<int> New([FromBody] Models.Event obj)
         {
@@ -162,7 +166,7 @@ namespace PERI.Agenda.Web.Controllers
             return await bll_event.Add(o);
         }
 
-        [HttpPost("[action]")]
+        [HttpPost]
         [Route("New/Exclusive/{groupId}")]
         [BLL.ValidateModelState]
         public async Task<IActionResult> NewExclusive([FromBody] Models.Event obj, int groupId)
@@ -225,7 +229,7 @@ namespace PERI.Agenda.Web.Controllers
             }
         }
 
-        [HttpGet("[action]")]
+        [HttpGet]
         [Route("Get/{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -249,6 +253,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json(obj);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpPost("[action]")]
         public async Task Edit([FromBody] EF.Event obj)
@@ -261,6 +266,7 @@ namespace PERI.Agenda.Web.Controllers
             await bll_event.Edit(obj);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpPost("[action]")]
         public async Task<IActionResult> Delete([FromBody] int[] ids)

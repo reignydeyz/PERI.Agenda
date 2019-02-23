@@ -8,6 +8,7 @@ using PERI.Agenda.BLL;
 
 namespace PERI.Agenda.Web.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     [BLL.VerifyUser]
     [Produces("application/json")]
     [Route("api/LookUp")]

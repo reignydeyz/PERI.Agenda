@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PERI.Agenda.Web.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     [Route("api/[controller]")]
     public class SampleDataController : Controller
     {

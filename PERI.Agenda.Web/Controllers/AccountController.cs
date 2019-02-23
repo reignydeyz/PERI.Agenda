@@ -28,7 +28,8 @@ namespace PERI.Agenda.Web.Controllers
             this.unitOfWork = unitOfWork;
         }
 
-        [HttpGet("[action]")]
+        [HttpGet]
+        [Route("profile")]
         public async Task<Models.Member> Profile()
         {
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
@@ -54,8 +55,9 @@ namespace PERI.Agenda.Web.Controllers
                 Remarks = r.Remarks
             };
         }
-
-        [HttpPost("[action]")]
+       
+        [HttpPost]
+        [Route("changepassword")]
         [BLL.ValidateModelState]
         public async Task<IActionResult> ChangePassword([FromBody] Models.ChangePassword args)
         {
@@ -86,7 +88,8 @@ namespace PERI.Agenda.Web.Controllers
             }
         }
 
-        [HttpGet("[action]")]
+        [HttpGet]
+        [Route("role")]
         public IActionResult Role()
         {
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
@@ -98,6 +101,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json(obj1);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost("[action]")]
         public async Task<IActionResult> Deactivate([FromBody] Models.Login args)
         {

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PERI.Agenda.Web.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     [BLL.VerifyUser]
     [Produces("application/json")]
     [Route("api/ActivityReport")]

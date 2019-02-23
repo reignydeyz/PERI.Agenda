@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using PERI.Agenda.BLL;
 
 namespace PERI.Agenda.Web.Controllers
-{
+{    
     [BLL.VerifyUser]
     [Produces("application/json")]
     [Route("api/Calendar")]
@@ -32,7 +32,8 @@ namespace PERI.Agenda.Web.Controllers
             }
         }
 
-        [HttpGet("[action]")]
+        [HttpGet]
+        [Route("events")]
         public async Task<IActionResult> Events()
         {
             var bll_e = new BLL.Event(unitOfWork);

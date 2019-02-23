@@ -12,6 +12,7 @@ using PERI.Agenda.Core;
 
 namespace PERI.Agenda.Web.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     [BLL.VerifyUser]
     [Produces("application/json")]
     [Route("api/Group")]

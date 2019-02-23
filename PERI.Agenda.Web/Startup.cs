@@ -42,6 +42,15 @@ namespace PERI.Agenda.Web
         {
             services.AddSignalR();
             services.AddMvc();
+            
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info { Title = "API", Description = "Endpoints" });
+            });
+            services.ConfigureSwaggerGen(options =>
+            {
+                options.CustomSchemaIds(x => x.FullName);
+            });
             services.AddAutoMapper();
 
             services.AddAuthentication("MyCookieMiddlewareInstance")
@@ -94,10 +103,20 @@ namespace PERI.Agenda.Web
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+            });
 
-                routes.MapSpaFallbackRoute(
+            app.MapWhen(r => !r.Request.Path.Value.StartsWith("/swagger"), builder => {
+                builder.UseMvc(routes => {
+                    routes.MapSpaFallbackRoute(
                     name: "spa-fallback",
                     defaults: new { controller = "Home", action = "Index" });
+                });
+            });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API");
             });
         }
     }

@@ -37,7 +37,8 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [BLL.VerifyUser(AllowedRoles = "Admin,Developer")]
-        [HttpPost("[action]")]
+        [HttpPost]
+        [Route("find")]
         public async Task<IActionResult> Find([FromBody] Models.Member obj)
         {
             obj = obj ?? new Models.Member();
@@ -72,7 +73,7 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [BLL.VerifyUser(AllowedRoles = "Admin")]
-        [HttpPost("[action]")]
+        [HttpPost]
         [Route("Find/Page/{id}")]
         public async Task<IActionResult> Page([FromBody] Models.Member obj, int id)
         {
@@ -119,7 +120,8 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [BLL.VerifyUser]
-        [HttpPost("[action]")]
+        [HttpPost]
+        [Route("new")]
         [BLL.ValidateModelState]
         public async Task<IActionResult> New([FromBody] Models.Member args)
         {
@@ -221,7 +223,7 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [BLL.VerifyUser]
-        [HttpGet("[action]")]
+        [HttpGet]
         [Route("Get/{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -252,7 +254,8 @@ namespace PERI.Agenda.Web.Controllers
                 });
         }
 
-        [HttpPost("[action]")]
+        [HttpPost]
+        [Route("edit")]
         [BLL.ValidateModelState]
         public async Task<IActionResult> Edit([FromBody] Models.Member obj)
         {
@@ -304,7 +307,8 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         [BLL.VerifyUser(AllowedRoles = "Admin,Developer")]
-        [HttpPost("[action]")]
+        [HttpPost]
+        [Route("delete")]
         public async Task<IActionResult> Delete([FromBody] int[] ids)
         {
             
@@ -319,6 +323,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json("Success!");
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [BLL.VerifyUser(AllowedRoles = "Admin,Developer")]
         [HttpPost("[action]")]
         public async Task<IActionResult> Activate([FromBody] int[] ids)
@@ -335,6 +340,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json("Success!");
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [BLL.VerifyUser(AllowedRoles = "Admin,Developer")]
         [HttpPost("[action]")]
         public async Task<IActionResult> Deactivate([FromBody] int[] ids)
@@ -351,6 +357,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json("Success!");
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet("[action]")]
         [Route("{id}/Leading")]
         public async Task<int> Leading(int id)
@@ -359,6 +366,7 @@ namespace PERI.Agenda.Web.Controllers
             return await bll_member.Leading(id);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet("[action]")]
         [Route("{id}/Following")]
         public async Task<int> Following(int id)
@@ -367,6 +375,7 @@ namespace PERI.Agenda.Web.Controllers
             return await bll_member.Following(id);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet("[action]")]
         [Route("{id}/Invites")]
         public async Task<int> Invites(int id)
@@ -375,6 +384,7 @@ namespace PERI.Agenda.Web.Controllers
             return await bll_member.Invites(id);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet("[action]")]
         [Route("{id}/Activities")]
         public async Task<IActionResult> Activities(int id)
@@ -395,6 +405,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json(await res.ToListAsync());
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet("[action]")]
         [Route("Total/{status}")]
         public async Task<int> Total(string status)
@@ -413,6 +424,7 @@ namespace PERI.Agenda.Web.Controllers
                 return await members.CountAsync();
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost("[action]")]
         public async Task<IActionResult> Download([FromBody] Models.Member obj)
         {
@@ -456,6 +468,7 @@ namespace PERI.Agenda.Web.Controllers
             return result;
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet("[action]")]
         public async Task<IActionResult> AllNames()
         {
