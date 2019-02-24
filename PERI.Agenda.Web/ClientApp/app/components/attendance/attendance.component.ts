@@ -74,6 +74,7 @@ export class AttendanceModule {
     ]
 })
 export class AttendanceComponent {
+    showLoader: boolean = true;
     private rm: RsvpModule;
     private am: AttendanceModule;
     private mm: MemberModule;
@@ -132,12 +133,14 @@ export class AttendanceComponent {
     }
 
     private paginate(obj: string, page: number) {
+        this.showLoader = true;
         let body = JSON.stringify(obj);
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 
         this.http.post(this.baseUrl + 'api/attendance/' + this.id + '/search/page/' + page, body, options).subscribe(result => {
             this.chunk = result.json() as Chunk;
+            this.showLoader = false;
         }, error => this.am.ex.catchError(error));
     }
 
@@ -273,6 +276,7 @@ export class AttendanceComponent {
     }
 
     public toggle(a: Attendance) {
+        this.showLoader = true;
         if (a.dateTimeLogged != null && a.dateTimeLogged != '') {
             this.am.delete(this.id, a).subscribe(r => {
 
@@ -284,7 +288,7 @@ export class AttendanceComponent {
                         this.chunk.registrants[index] = a;
                     }
                 }
-
+                this.showLoader = false;
             }, error => this.am.ex.catchError(error));
         }
         else {
@@ -298,7 +302,7 @@ export class AttendanceComponent {
                         this.chunk.registrants[index] = a;
                     }
                 }
-
+                this.showLoader = false;
             }, error => this.am.ex.catchError(error));
         }        
     }
