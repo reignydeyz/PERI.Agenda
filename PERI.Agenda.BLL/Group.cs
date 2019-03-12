@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace PERI.Agenda.BLL
 {
-    public class Group
+    public class Group : IGroup
     {
 
         private readonly IUnitOfWork unitOfWork;

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PERI.Agenda.BLL
 {
-    public class LookUp
+    public class LookUp : ILookUp
     {
         private readonly IUnitOfWork unitOfWork;
         public LookUp(IUnitOfWork _unitOfWork)

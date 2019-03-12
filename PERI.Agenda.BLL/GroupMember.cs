@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PERI.Agenda.BLL
 {
-    public class GroupMember
+    public class GroupMember : IGroupMember
     {
         private readonly IUnitOfWork unitOfWork;
 

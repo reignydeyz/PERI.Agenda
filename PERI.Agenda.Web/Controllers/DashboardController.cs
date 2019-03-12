@@ -17,17 +17,24 @@ namespace PERI.Agenda.Web.Controllers
     public class DashboardController : Controller
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IMember memberBusiness;
+        private readonly IEventCategory eventCategoryBusiness;
+        private readonly ILocation locationBusiness;
 
-        public DashboardController(IUnitOfWork unitOfWork)
+        public DashboardController(IMember member,
+            IEventCategory eventCategory,
+            ILocation location,
+            I)
         {
-            this.unitOfWork = unitOfWork;
+            this.memberBusiness = member;
+            this.eventCategoryBusiness = eventCategory;
+            this.locationBusiness = location;
         }
 
         [HttpGet("[action]")]
         public async Task<Models.Graph.Statistics> Member()
         {
-            var bll_member = new BLL.Member(unitOfWork);
+            var bll_member = memberBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var members = bll_member.Find(new EF.Member { CommunityId = user.Member.CommunityId });
@@ -42,7 +49,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpGet("[action]")]
         public async Task<Models.Graph.Statistics> EventCategories()
         {
-            var bll_ec = new BLL.EventCategory(unitOfWork);
+            var bll_ec = eventCategoryBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var ecs = from r in await bll_ec.Find(new EF.EventCategory { CommunityId = user.Member.CommunityId }).ToListAsync()
@@ -68,7 +75,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpGet("[action]")]
         public async Task<Models.Graph.Statistics> Locations()
         {
-            var bll_loc = new BLL.Location(unitOfWork);
+            var bll_loc = locationBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var locs = from r in await bll_loc.Find(new EF.Location { CommunityId = user.Member.CommunityId }).ToListAsync()

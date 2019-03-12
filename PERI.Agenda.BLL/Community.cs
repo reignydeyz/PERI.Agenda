@@ -8,7 +8,7 @@ using PERI.Agenda.EF;
 
 namespace PERI.Agenda.BLL
 {
-    public class Community
+    public class Community : ICommunity
     {
         private readonly IUnitOfWork unitOfWork;
 

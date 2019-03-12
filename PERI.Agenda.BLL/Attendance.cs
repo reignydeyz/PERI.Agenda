@@ -8,13 +8,18 @@ using PERI.Agenda.EF;
 
 namespace PERI.Agenda.BLL
 {
-    public class Attendance
+    public class Attendance : IAttendance
     {
         private readonly IUnitOfWork unitOfWork;
 
         public Attendance(IUnitOfWork _unitOfWork)
         {
             unitOfWork = _unitOfWork;
+        }
+
+        public Task Activate(int[] ids)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<int> Add(EF.Attendance args)

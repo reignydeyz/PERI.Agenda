@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PERI.Agenda.BLL
 {
-    public class FirstTimer
+    public class FirstTimer : IFirstTimer
     {
         private readonly IUnitOfWork _unitOfWork;
 

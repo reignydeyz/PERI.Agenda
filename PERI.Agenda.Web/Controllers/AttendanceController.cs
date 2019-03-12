@@ -18,12 +18,21 @@ namespace PERI.Agenda.Web.Controllers
     [Route("api/Attendance")]
     public class AttendanceController : Controller
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IAttendance attendanceBusiness;
+        private readonly IEvent eventBusiness;
+        private readonly IFirstTimer firstTimerBusiness;
         private IHubContext<SignalRHub, ITypedHubClient> _hubContext;
 
-        public AttendanceController(IHubContext<SignalRHub, ITypedHubClient> hubContext, IUnitOfWork unitOfWork)
+        public AttendanceController(IHubContext<SignalRHub, 
+            ITypedHubClient> hubContext, 
+            IAttendance attendance,
+            IEvent eventBusiness,
+            IFirstTimer firstTimer)
         {
-            this.unitOfWork = unitOfWork;
+            this.attendanceBusiness = attendance;
+            this.eventBusiness = eventBusiness;
+            this.firstTimerBusiness = firstTimer;
+
             _hubContext = hubContext;
         }
 
@@ -36,7 +45,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Registrants(int id)
         {
-            var bll_a = new BLL.Attendance(unitOfWork);
+            var bll_a = attendanceBusiness;
 
             var res = from r in (await bll_a.Registrants(id))
                       select new
@@ -58,7 +67,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/Attendees")]
         public async Task<IActionResult> Attendees(int id)
         {
-            var bll_a = new BLL.Attendance(unitOfWork);
+            var bll_a = attendanceBusiness;
 
             var res = from r in bll_a.Find(new EF.Attendance { EventId = id }).OrderBy(x => x.Member.Name)
                       select new
@@ -80,7 +89,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/FirstTimers")]
         public async Task<IActionResult> FirstTimers(int id)
         {
-            var bll_a = new BLL.Attendance(unitOfWork);
+            var bll_a = attendanceBusiness;
 
             var res = from r in bll_a.Find(new EF.Attendance { EventId = id }).OrderBy(x => x.Member.Name)
                       where r.FirstTimer != null
@@ -104,7 +113,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/Search")]
         public async Task<IActionResult> Search([FromBody] string member, int id)
         {
-            var bll_a = new BLL.Attendance(unitOfWork);
+            var bll_a = attendanceBusiness;
 
             var res = from r in (await bll_a.Registrants(id, member))
                       select new
@@ -128,7 +137,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/Search/Page/{p}")]
         public async Task<IActionResult> Page([FromBody] string member, int id, int p)
         {
-            var bll_a = new BLL.Attendance(unitOfWork);
+            var bll_a = attendanceBusiness;
 
             var res = from r in (await bll_a.Registrants(id, member))
                       select new
@@ -158,7 +167,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/Attendees/Page/{p}")]
         public async Task<IActionResult> PageAttendees(int id, int p)
         {
-            var bll_a = new BLL.Attendance(unitOfWork);
+            var bll_a = attendanceBusiness;
 
             var res = from r in bll_a.Find(new EF.Attendance { EventId = id }).OrderBy(x => x.Member.Name)
                       select new
@@ -189,9 +198,9 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/Add")]
         public async Task<int> Add([FromBody] Models.Attendance obj, int id)
         {
-            var bll_event = new BLL.Event(unitOfWork);
-            var bll_a = new BLL.Attendance(unitOfWork);
-            var bll_ft = new BLL.FirstTimer(unitOfWork);
+            var bll_event = eventBusiness;
+            var bll_a = attendanceBusiness;
+            var bll_ft = firstTimerBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             if (!await bll_event.IsSelectedIdsOk(new int[] { id }, user))
@@ -216,8 +225,8 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/Delete")]
         public async Task Delete([FromBody] EF.Attendance obj, int id)
         {
-            var bll_event = new BLL.Event(unitOfWork);
-            var bll_a = new BLL.Attendance(unitOfWork);
+            var bll_event = eventBusiness;
+            var bll_a = attendanceBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             if (!await bll_event.IsSelectedIdsOk(new int[] { id }, user))
@@ -233,7 +242,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/Total/{status}")]
         public async Task<int> Total(int id, string status)
         {
-            var bll_a = new BLL.Attendance(unitOfWork);
+            var bll_a = attendanceBusiness;
             var res = await bll_a.Registrants(id);
 
             if (status.ToLower() == "attendees")
@@ -249,7 +258,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/DownloadAttendees")]
         public async Task<IActionResult> DownloadAttendees(int id)
         {
-            var bll_a = new BLL.Attendance(unitOfWork);
+            var bll_a = attendanceBusiness;
 
             var res = from r in bll_a.Find(new EF.Attendance { EventId = id }).OrderBy(x => x.Member.Name)
                       select new
@@ -270,7 +279,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/DownloadFirstTimers")]
         public async Task<IActionResult> DownloadFirstTimers(int id)
         {
-            var bll_a = new BLL.Attendance(unitOfWork);
+            var bll_a = attendanceBusiness;
 
             var res = from r in bll_a.Find(new EF.Attendance { EventId = id }).OrderBy(x => x.Member.Name)
                       where r.FirstTimer != null

@@ -8,7 +8,7 @@ using PERI.Agenda.EF;
 
 namespace PERI.Agenda.BLL
 {
-    public class Event
+    public class Event : IEvent
     {
 
         private readonly IUnitOfWork unitOfWork;

@@ -20,12 +20,14 @@ namespace PERI.Agenda.Web.Controllers
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly Emailer smtp;
-        private readonly IUnitOfWork unitOfWork; 
+        private readonly IMember memberBusiness;
+        private readonly IEndUser endUserBusiness;
 
-        public AccountController(IOptions<Core.Emailer> settingsOptions, IUnitOfWork unitOfWork)
+        public AccountController(IOptions<Core.Emailer> settingsOptions, IMember member, IEndUser endUser)
         {
             smtp = settingsOptions.Value;
-            this.unitOfWork = unitOfWork;
+            this.memberBusiness = member;
+            this.endUserBusiness = endUser;
         }
 
         /// <summary>
@@ -38,7 +40,7 @@ namespace PERI.Agenda.Web.Controllers
         {
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var bll_member = new BLL.Member(unitOfWork);
+            var bll_member = memberBusiness;
 
             var r = await bll_member.Get(new EF.Member { Id = user.MemberId, CommunityId = user.Member.CommunityId });
             return new Models.Member
@@ -71,7 +73,7 @@ namespace PERI.Agenda.Web.Controllers
         public async Task<IActionResult> ChangePassword([FromBody] Models.ChangePassword args)
         {
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
-            var bll_user = new BLL.EndUser(unitOfWork);
+            var bll_user = endUserBusiness;
 
             // Validate current password
             var salt = user.PasswordSalt;
@@ -119,7 +121,7 @@ namespace PERI.Agenda.Web.Controllers
         public async Task<IActionResult> Deactivate([FromBody] Models.Login args)
         {
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
-            var bll_user = new BLL.EndUser(unitOfWork);
+            var bll_user = endUserBusiness;
 
             // Validate current password
             var salt = user.PasswordSalt;

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PERI.Agenda.BLL
 {
-    public class Role
+    public class Role : IRole
     {
         private readonly IUnitOfWork _unitOfWork;
 

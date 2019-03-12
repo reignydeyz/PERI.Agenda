@@ -14,6 +14,7 @@ using NLog.Web;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
+using PERI.Agenda.BLL;
 
 namespace PERI.Agenda.Web
 {
@@ -76,6 +77,24 @@ namespace PERI.Agenda.Web
 
             services.AddDbContext<EF.AARSContext>(options => options.UseSqlServer(Core.Setting.Configuration.GetValue<string>("ConnectionStrings:DefaultConnection")));
             services.AddScoped<BLL.IUnitOfWork, BLL.UnitOfWork>();
+
+            services.AddScoped<IAttendance, Attendance>();
+            services.AddScoped<ICommunity, Community>();
+            services.AddScoped<IEndUser, EndUser>();
+            services.AddScoped<IEvent, Event>();
+            services.AddScoped<IEventCategory, EventCategory>();
+            services.AddScoped<IEventCategoryReport, EventCategoryReport>();
+            services.AddScoped<IFirstTimer, FirstTimer>();
+            services.AddScoped<IGroup, Group>();
+            services.AddScoped<IGroupCategory, GroupCategory>();
+            services.AddScoped<IGroupMember, GroupMember>();
+            services.AddScoped<ILocation, Location>();
+            services.AddScoped<ILookUp, LookUp>();
+            services.AddScoped<IMember, Member>();
+            services.AddScoped<IRegistrant, Registrant>();
+            services.AddScoped<IReport, Report>();
+            services.AddScoped<IRole, Role>();
+            services.AddScoped<IRsvp, Rsvp>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

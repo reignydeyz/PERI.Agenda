@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PERI.Agenda.EF;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,13 +8,18 @@ using System.Threading.Tasks;
 
 namespace PERI.Agenda.BLL
 {
-    public class Report
+    public class Report : IReport
     {
         private readonly IUnitOfWork unitOfWork;
 
         public Report(IUnitOfWork _unitOfWork)
         {
             unitOfWork = _unitOfWork;
+        }
+
+        public Task Activate(int[] ids)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<int> Add(EF.Report args)
@@ -26,10 +32,25 @@ namespace PERI.Agenda.BLL
             return args.ReportId;
         }
 
+        public Task Deactivate(int[] ids)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task Delete(int[] ids)
         {
             unitOfWork.ReportRepository.RemoveRange(unitOfWork.ReportRepository.Entities.Where(x => ids.Contains(x.ReportId)));
             await unitOfWork.CommitAsync();
+        }
+
+        public Task Delete(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Delete(EF.Report args)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task Edit(EF.Report args)
@@ -50,6 +71,11 @@ namespace PERI.Agenda.BLL
                 .Where(x => x.Name.Contains(args.Name ?? "")
                 && x.CommunityId == args.CommunityId)
                 .OrderBy(x => x.Name).AsQueryable();
+        }
+
+        public Task<EF.Report> Get(EF.Report args)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<EF.Report> GetById(int id)

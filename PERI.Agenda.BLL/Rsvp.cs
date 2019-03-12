@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PERI.Agenda.EF;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PERI.Agenda.BLL
 {
-    public class Rsvp
+    public class Rsvp : IRsvp
     {
         private readonly IUnitOfWork unitOfWork;
 
@@ -52,6 +53,41 @@ namespace PERI.Agenda.BLL
                 && x.Member.Name.Contains(String.IsNullOrEmpty(name) ? "" : name)
                 && x.Member.Attendance.Count(y => y.EventId == eventId) == 0)
                 .OrderBy(x => x.Member.Name);
+        }
+
+        public Task Activate(int[] ids)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<int> ISampleData<EF.Rsvp>.Add(EF.Rsvp args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Deactivate(int[] ids)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Delete(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Delete(int[] ids)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Edit(EF.Rsvp args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IQueryable<EF.Rsvp> Find(EF.Rsvp args)
+        {
+            throw new NotImplementedException();
         }
     }
 }

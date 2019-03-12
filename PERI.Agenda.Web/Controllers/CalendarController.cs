@@ -14,11 +14,11 @@ namespace PERI.Agenda.Web.Controllers
     [Route("api/Calendar")]
     public class CalendarController : Controller
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IEvent eventBusiness;
 
-        public CalendarController(IUnitOfWork unitOfWork)
+        public CalendarController(IEvent eventBusiness)
         {
-            this.unitOfWork = unitOfWork;
+            this.eventBusiness = eventBusiness;
         }
 
         [NonAction]
@@ -40,7 +40,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("events")]
         public async Task<IActionResult> Events()
         {
-            var bll_e = new BLL.Event(unitOfWork);
+            var bll_e = eventBusiness;
 
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 

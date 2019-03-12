@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PERI.Agenda.BLL
 {
-    public class Member
+    public class Member : IMember
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -238,6 +238,16 @@ namespace PERI.Agenda.BLL
         public async Task<int> Invites(int id)
         {
             return await _unitOfWork.MemberRepository.Entities.CountAsync(x => x.InvitedBy == id);
+        }
+
+        public Task Delete(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Delete(EF.Member args)
+        {
+            throw new NotImplementedException();
         }
     }
 }

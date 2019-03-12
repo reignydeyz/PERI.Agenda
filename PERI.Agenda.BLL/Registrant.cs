@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PERI.Agenda.BLL
 {
-    public class Registrant
+    public class Registrant : IRegistrant
     {
         private readonly IUnitOfWork unitOfWork;
 

@@ -8,7 +8,7 @@ using PERI.Agenda.EF;
 
 namespace PERI.Agenda.BLL
 {
-    public class EndUser
+    public class EndUser : IEndUser
     {
         private readonly IUnitOfWork unitOfWork;
 
@@ -130,6 +130,11 @@ namespace PERI.Agenda.BLL
             rec.RoleId = endUser.RoleId;
 
             await unitOfWork.CommitAsync();
+        }
+
+        public Task<EF.EndUser> Get(EF.EndUser args)
+        {
+            throw new NotImplementedException();
         }
     }
 }

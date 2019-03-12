@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PERI.Agenda.BLL
 {
-    public class EventCategoryReport
+    public class EventCategoryReport : IEventCategoryReport
     {
         private readonly IUnitOfWork unitOfWork;
 

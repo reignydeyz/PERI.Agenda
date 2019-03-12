@@ -21,15 +21,24 @@ namespace PERI.Agenda.Web.Controllers
 
         private readonly Core.Emailer smtp;
         private readonly Core.GoogleReCaptcha captcha;
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IEndUser endUserBusiness;
+        private readonly IMember memberBusiness;
+        private readonly ICommunity communityBusiness;
         private readonly EF.AARSContext context;
 
-        public AuthenticationController(IOptions<Core.Emailer> settingsOptions, IOptions<Core.GoogleReCaptcha> options, IUnitOfWork unitOfWork, EF.AARSContext context)
+        public AuthenticationController(IOptions<Core.Emailer> settingsOptions,
+            IOptions<Core.GoogleReCaptcha> options,
+            IEndUser endUser,
+            IMember member,
+            ICommunity community,
+            EF.AARSContext context)
         {
             smtp = settingsOptions.Value;
             captcha = options.Value;
             this.context = context;
-            this.unitOfWork = unitOfWork;
+            this.endUserBusiness = endUser;
+            this.memberBusiness = member;
+            this.communityBusiness = community;
         }
 
         private async Task AddClaimsAndSignIn(EF.EndUser args)
@@ -73,14 +82,14 @@ namespace PERI.Agenda.Web.Controllers
         {
             ViewData["Title"] = "Sign-in";
             
-            var buser = new BLL.EndUser(unitOfWork);
+            var buser = endUserBusiness;
 
             var user = await buser.GetByEmail(args.Email);
 
             if (user != null)
             {
                 // Get member info
-                var bll_m = new BLL.Member(unitOfWork);
+                var bll_m = memberBusiness;
                 var member = await bll_m.GetById(user.MemberId);
 
                 // Check if active
@@ -122,7 +131,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Signin")]
         public async Task<IActionResult> SignIn([FromBody] Models.Login args)
         {
-            var buser = new BLL.EndUser(unitOfWork);
+            var buser = endUserBusiness;
 
             var user = await buser.GetByEmail(args.Email);
 
@@ -167,7 +176,7 @@ namespace PERI.Agenda.Web.Controllers
         {
             ViewData["Title"] = "Sign-up";
             
-            ViewBag.Communities = new SelectList(await new BLL.Community(unitOfWork).Get(), "Id", "Name");
+            ViewBag.Communities = new SelectList(await communityBusiness.Get(), "Id", "Name");
             ViewBag.ReCaptcha = captcha;
 
             return View();
@@ -183,7 +192,7 @@ namespace PERI.Agenda.Web.Controllers
             
             using (var txn = context.Database.BeginTransaction())
             {
-                ViewBag.Communities = new SelectList(await new BLL.Community(unitOfWork).Get(), "Id", "Name");
+                ViewBag.Communities = new SelectList(await communityBusiness.Get(), "Id", "Name");
                 ViewBag.ReCaptcha = captcha;
 
                 try
@@ -192,7 +201,7 @@ namespace PERI.Agenda.Web.Controllers
                         return View(args);
                     else
                     {
-                        var bll_member = new BLL.Member(unitOfWork);
+                        var bll_member = memberBusiness;
 
                         var midlleInitial = String.IsNullOrEmpty(args.MiddleInitial) ? " " : $" {args.MiddleInitial}. ";
                         var name = args.FirstName.Trim() + midlleInitial + args.LastName.Trim();
@@ -211,7 +220,7 @@ namespace PERI.Agenda.Web.Controllers
                         guidString = guidString.Replace("=", "");
                         guidString = guidString.Replace("+", "");
 
-                        var bll_user = new BLL.EndUser(unitOfWork);
+                        var bll_user = endUserBusiness;
                         var newId = await bll_user.Add(new EF.EndUser
                         {
                             MemberId = memberId,
@@ -284,7 +293,7 @@ namespace PERI.Agenda.Web.Controllers
 
             
 
-            var bll_user = new BLL.EndUser(unitOfWork);
+            var bll_user = endUserBusiness;
 
             var user = await bll_user.GetByEmail(args.Email);
 
@@ -325,7 +334,7 @@ namespace PERI.Agenda.Web.Controllers
             var userId = Request.Query["userid"].ToString();
             var code = Request.Query["code"].ToString();
             
-            var bll_user = new BLL.EndUser(unitOfWork);
+            var bll_user = endUserBusiness;
 
             var user = await bll_user.GetById(Convert.ToInt32(userId));
 
@@ -350,7 +359,7 @@ namespace PERI.Agenda.Web.Controllers
             if (!ModelState.IsValid)
                 return View();
 
-            var bll_user = new BLL.EndUser(unitOfWork);
+            var bll_user = endUserBusiness;
 
             var user = await bll_user.GetById(args.EndUser.UserId);
 
