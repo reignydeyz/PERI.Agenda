@@ -14,18 +14,18 @@ namespace PERI.Agenda.Web.Controllers
     [ApiController]
     public class EventCategoryReportController : Controller
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IEventCategoryReport eventCategoryReportBusiness;
 
-        public EventCategoryReportController(IUnitOfWork unitOfWork)
+        public EventCategoryReportController(IEventCategoryReport eventCategoryReport)
         {
-            this.unitOfWork = unitOfWork;
+            this.eventCategoryReportBusiness = eventCategoryReport;
         }
 
         [HttpPost("[action]")]
         [Route("Update/{id}")]
         public async Task<IActionResult> Update([FromBody] int[] ids, int id)
         {
-            var bll_ecr = new BLL.EventCategoryReport(unitOfWork);
+            var bll_ecr = eventCategoryReportBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var ecrs = new List<EF.EventCategoryReport>();
@@ -41,7 +41,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("AddRange/{id}")]
         public async Task<IActionResult> AddRange([FromBody] int[] ids, int id)
         {
-            var bll_ecr = new BLL.EventCategoryReport(unitOfWork);
+            var bll_ecr = eventCategoryReportBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var ecrs = new List<EF.EventCategoryReport>();

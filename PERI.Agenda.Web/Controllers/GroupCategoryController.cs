@@ -15,11 +15,17 @@ namespace PERI.Agenda.Web.Controllers
     [Route("api/GroupCategory")]
     public class GroupCategoryController : Controller
     {
-        private readonly IUnitOfWork unitOfWork;
-
-        public GroupCategoryController(IUnitOfWork unitOfWork)
+        private readonly IGroupCategory groupCategoryBusiness;
+        private readonly IGroup groupBusiness;
+        private readonly IMember memberBusiness;
+        
+        public GroupCategoryController(IGroupCategory groupCategory,
+            IGroup group,
+            IMember member)
         {
-            this.unitOfWork = unitOfWork;
+            this.groupCategoryBusiness = groupCategory;
+            this.groupBusiness = group;
+            this.memberBusiness = member;
         }
 
         /// <summary>
@@ -31,7 +37,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("find")]
         public async Task<IActionResult> Find([FromBody]EF.GroupCategory args)
         {
-            var bll_gc = new BLL.GroupCategory(unitOfWork);
+            var bll_gc = groupCategoryBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             args.CommunityId = user.Member.CommunityId;
@@ -53,7 +59,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Get/{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var bll_gc = new BLL.GroupCategory(unitOfWork);
+            var bll_gc = groupCategoryBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var r = await bll_gc.Get(new EF.GroupCategory { Id = id, CommunityId = user.Member.CommunityId });
@@ -72,7 +78,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task<int> New([FromBody]EF.GroupCategory args)
         {
-            var bll_gc = new BLL.GroupCategory(unitOfWork);
+            var bll_gc = groupCategoryBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             args.CommunityId = user.Member.CommunityId;
@@ -85,7 +91,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Edit([FromBody]EF.GroupCategory args)
         {
-            var bll_gc = new BLL.GroupCategory(unitOfWork);
+            var bll_gc = groupCategoryBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             args.CommunityId = user.Member.CommunityId;
@@ -102,7 +108,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Delete([FromBody] int[] ids)
         {
-            var bll_gc = new BLL.GroupCategory(unitOfWork);
+            var bll_gc = groupCategoryBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             if (!await bll_gc.AreSelectedIdsOk(ids, user))
@@ -119,7 +125,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Stats/{id}")]
         public async Task<Models.Graph.GraphDataSet> Stats(int id)
         {
-            var bll_group = new BLL.Group(unitOfWork);
+            var bll_group = groupBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var res = bll_group.Find(new EF.Group { GroupCategory = new EF.GroupCategory { CommunityId = user.Member.CommunityId }, GroupCategoryId = id });
@@ -140,8 +146,8 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Groups/{id}")]
         public async Task<IActionResult> Events(int id)
         {
-            var bll_group = new BLL.Group(unitOfWork);
-            var bll_m = new BLL.Member(unitOfWork);
+            var bll_group = groupBusiness;
+            var bll_m = memberBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var res = from r in (await bll_group.Find(new EF.Group { GroupCategory = new EF.GroupCategory { CommunityId = user.Member.CommunityId }, GroupCategoryId = id }).OrderByDescending(x => x.GroupMember.Count).Take(20).ToListAsync())

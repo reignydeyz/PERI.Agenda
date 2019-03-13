@@ -18,13 +18,23 @@ namespace PERI.Agenda.Web.Controllers
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IEventCategory eventCategoryBusiness;
+        private readonly IEvent eventBusiness;
+        private readonly IRegistrant registrantBusiness;
+        private readonly IGroup groupBusiness;
         private readonly EF.AARSContext context;
 
-        public EventController(IUnitOfWork unitOfWork, EF.AARSContext context)
+        public EventController(IEventCategory eventCategory,
+            IEvent eventBusiness,
+            IRegistrant registrant,
+            IGroup group,
+            EF.AARSContext context)
         {
             this.context = context;
-            this.unitOfWork = unitOfWork;
+            this.eventCategoryBusiness = eventCategory;
+            this.eventBusiness = eventBusiness;
+            this.registrantBusiness = registrant;
+            this.groupBusiness = group;
         }
 
         /// <summary>
@@ -36,7 +46,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("find")]
         public async Task<IActionResult> Find([FromBody] EF.Event obj)
         {
-            var bll_event = new BLL.Event(unitOfWork);
+            var bll_event = eventBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             obj.EventCategory = new EF.EventCategory { CommunityId = user.Member.CommunityId };
@@ -68,7 +78,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Find/Page/{id}")]
         public async Task<IActionResult> Page([FromBody] EF.Event obj, int id)
         {
-            var bll_event = new BLL.Event(unitOfWork);
+            var bll_event = eventBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             obj.EventCategory = new EF.EventCategory { CommunityId = user.Member.CommunityId };
@@ -106,7 +116,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Find/MyPage/{id}")]
         public async Task<IActionResult> MyPage([FromBody] EF.Event obj, int id)
         {
-            var bll_event = new BLL.Event(unitOfWork);
+            var bll_event = eventBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             obj.EventCategory = new EF.EventCategory { CommunityId = user.Member.CommunityId };
@@ -140,7 +150,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("download")]
         public async Task<IActionResult> Download([FromBody] EF.Event obj)
         {
-            var bll_event = new BLL.Event(unitOfWork);
+            var bll_event = eventBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             obj.EventCategory = new EF.EventCategory { CommunityId = user.Member.CommunityId };
@@ -173,7 +183,7 @@ namespace PERI.Agenda.Web.Controllers
         [BLL.ValidateModelState]
         public async Task<int> New([FromBody] Models.Event obj)
         {
-            var bll_event = new BLL.Event(unitOfWork);
+            var bll_event = eventBusiness;
 
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
@@ -195,9 +205,9 @@ namespace PERI.Agenda.Web.Controllers
         [BLL.ValidateModelState]
         public async Task<IActionResult> NewExclusive([FromBody] Models.Event obj, int groupId)
         {
-            var bll_e = new BLL.Event(unitOfWork);
-            var bll_r = new BLL.Registrant(unitOfWork);
-            var bll_g = new BLL.Group(unitOfWork);
+            var bll_e = eventBusiness;
+            var bll_r = registrantBusiness;
+            var bll_g = groupBusiness;
 
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
@@ -262,7 +272,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Get/{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var bll_event = new BLL.Event(unitOfWork);
+            var bll_event = eventBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var r = await bll_event.Get(new EF.Event { Id = id, EventCategory = new EF.EventCategory { CommunityId = user.Member.CommunityId } });
@@ -287,7 +297,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task Edit([FromBody] EF.Event obj)
         {
-            var bll_event = new BLL.Event(unitOfWork);
+            var bll_event = eventBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             obj.EventCategory = new EF.EventCategory { CommunityId = user.Member.CommunityId };
@@ -300,7 +310,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Delete([FromBody] int[] ids)
         {
-            var bll_event = new BLL.Event(unitOfWork);
+            var bll_event = eventBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             if (!await bll_event.IsSelectedIdsOk(ids, user))

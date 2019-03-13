@@ -19,16 +19,18 @@ namespace PERI.Agenda.Web.Controllers
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private readonly IMember memberBusiness;
         private readonly IEventCategory eventCategoryBusiness;
+        private readonly IGroupCategory groupCategoryBusiness;
         private readonly ILocation locationBusiness;
 
         public DashboardController(IMember member,
             IEventCategory eventCategory,
             ILocation location,
-            I)
+            IGroupCategory groupCategory)
         {
             this.memberBusiness = member;
             this.eventCategoryBusiness = eventCategory;
             this.locationBusiness = location;
+            this.groupCategoryBusiness = groupCategory;
         }
 
         [HttpGet("[action]")]
@@ -101,7 +103,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpGet("[action]")]
         public async Task<Models.Graph.GraphDataSet> GroupCategories()
         {
-            var bll_gc = new BLL.GroupCategory(unitOfWork);
+            var bll_gc = groupCategoryBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var gcs = from r in bll_gc.Find(new EF.GroupCategory { CommunityId = user.Member.CommunityId })
