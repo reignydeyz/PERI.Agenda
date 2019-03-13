@@ -15,18 +15,20 @@ namespace PERI.Agenda.Web.Controllers
     [ApiController]
     public class ReportTemplateController : Controller
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IReport reportBusiness;
+        private readonly IEventCategory eventCategoryBusiness;
 
-        public ReportTemplateController(IUnitOfWork unitOfWork)
+        public ReportTemplateController(IReport report, IEventCategory eventCategory)
         {
-            this.unitOfWork = unitOfWork;
+            this.reportBusiness = report;
+            this.eventCategoryBusiness = eventCategory;
         }
         
         [HttpPost("[action]")]
         [BLL.ValidateModelState]
         public async Task<IActionResult> New([FromBody] Models.ReportTemplate args)
         {
-            var bll_rt = new BLL.Report(unitOfWork);
+            var bll_rt = reportBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var o = AutoMapper.Mapper.Map<EF.Report>(args);
@@ -42,7 +44,7 @@ namespace PERI.Agenda.Web.Controllers
         [BLL.ValidateModelState]
         public async Task<IActionResult> Edit([FromBody] Models.ReportTemplate args) 
         {
-            var bll_rt = new BLL.Report(unitOfWork);
+            var bll_rt = reportBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var o = AutoMapper.Mapper.Map<EF.Report>(args);
@@ -58,7 +60,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Delete([FromBody] int[] ids)
         {
-            var bll_rt = new BLL.Report(unitOfWork);
+            var bll_rt = reportBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             if (!await bll_rt.IsSelectedIdsOk(ids, user))
@@ -72,7 +74,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Find(EF.Report args)
         {
-            var bll_rt = new BLL.Report(unitOfWork);
+            var bll_rt = reportBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             args.CommunityId = user.Member.CommunityId.Value;
@@ -91,8 +93,8 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Checklist/{id}")]
         public async Task<IActionResult> Checklist(int id)
         {
-            var bll_ec = new BLL.EventCategory(unitOfWork);
-            var bll_rt = new BLL.Report(unitOfWork);
+            var bll_ec = eventCategoryBusiness;
+            var bll_rt = reportBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var categories = await bll_ec.Find(new EF.EventCategory { CommunityId = user.Member.CommunityId }).ToListAsync();

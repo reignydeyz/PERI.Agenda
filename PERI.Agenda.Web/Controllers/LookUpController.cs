@@ -14,18 +14,18 @@ namespace PERI.Agenda.Web.Controllers
     [Route("api/LookUp")]
     public class LookUpController : Controller
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly ILookUp lookUpBusiness;
 
-        public LookUpController(IUnitOfWork unitOfWork)
+        public LookUpController(ILookUp lookUp)
         {
-            this.unitOfWork = unitOfWork;
+            this.lookUpBusiness = lookUp;
         }
 
         [HttpGet("[action]")]
         [Route("Get/{group}")]
         public async Task<IEnumerable<EF.LookUp>> Get(string group)
         {
-            var bll_lookup = new BLL.LookUp(unitOfWork);
+            var bll_lookup = lookUpBusiness;
 
             return await bll_lookup.GetByGroup(group);
         }

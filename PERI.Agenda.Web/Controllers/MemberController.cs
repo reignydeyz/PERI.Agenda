@@ -27,13 +27,21 @@ namespace PERI.Agenda.Web.Controllers
 
         private readonly Emailer smtp;
         private readonly EF.AARSContext context;
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IMember memberBusiness;
+        private readonly IEndUser endUserBusiness;
+        private readonly ILookUp lookUpBusiness;
 
-        public MemberController(IOptions<Core.Emailer> settingsOptions, IUnitOfWork unitOfWork, EF.AARSContext context)
+        public MemberController(IOptions<Core.Emailer> settingsOptions, 
+            IMember member,
+            IEndUser endUser,
+            ILookUp lookUp,
+            EF.AARSContext context)
         {
             smtp = settingsOptions.Value;
             this.context = context;
-            this.unitOfWork = unitOfWork;
+            this.memberBusiness = member;
+            this.endUserBusiness = endUser;
+            this.lookUpBusiness = lookUp;
         }
 
         /// <summary>
@@ -49,7 +57,7 @@ namespace PERI.Agenda.Web.Controllers
             obj = obj ?? new Models.Member();
 
             
-            var bll_member = new BLL.Member(unitOfWork);
+            var bll_member = memberBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             obj.CommunityId = user.Member.CommunityId;
@@ -89,7 +97,7 @@ namespace PERI.Agenda.Web.Controllers
         public async Task<IActionResult> Page([FromBody] Models.Member obj, int id)
         {
             
-            var bll_member = new BLL.Member(unitOfWork);
+            var bll_member = memberBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             obj.CommunityId = user.Member.CommunityId.Value;
@@ -145,7 +153,7 @@ namespace PERI.Agenda.Web.Controllers
             {
                 try
                 {
-                    var bll_member = new BLL.Member(unitOfWork);
+                    var bll_member = memberBusiness;
                     var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
                     var m = AutoMapper.Mapper.Map<EF.Member>(args);
@@ -182,7 +190,7 @@ namespace PERI.Agenda.Web.Controllers
                         guidString = guidString.Replace("=", "");
                         guidString = guidString.Replace("+", "");
 
-                        var bll_user = new BLL.EndUser(unitOfWork);
+                        var bll_user = endUserBusiness;
                         var newId = await bll_user.Add(new EF.EndUser
                         {
                             MemberId = memberId,
@@ -249,7 +257,7 @@ namespace PERI.Agenda.Web.Controllers
         public async Task<IActionResult> Get(int id)
         {
             
-            var bll_member = new BLL.Member(unitOfWork);
+            var bll_member = memberBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             if (!await bll_member.IsSelectedIdsOk(new int[] { id }, user))
@@ -286,8 +294,8 @@ namespace PERI.Agenda.Web.Controllers
         public async Task<IActionResult> Edit([FromBody] Models.Member obj)
         {
             
-            var bll_member = new BLL.Member(unitOfWork);
-            var bll_user = new BLL.EndUser(unitOfWork);
+            var bll_member = memberBusiness;
+            var bll_user = endUserBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             obj.CommunityId = user.Member.CommunityId;
@@ -338,7 +346,7 @@ namespace PERI.Agenda.Web.Controllers
         public async Task<IActionResult> Delete([FromBody] int[] ids)
         {
             
-            var bll_member = new BLL.Member(unitOfWork);
+            var bll_member = memberBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             if (!await bll_member.IsSelectedIdsOk(ids, user))
@@ -355,7 +363,7 @@ namespace PERI.Agenda.Web.Controllers
         public async Task<IActionResult> Activate([FromBody] int[] ids)
         {
             
-            var bll_member = new BLL.Member(unitOfWork);
+            var bll_member = memberBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             if (!await bll_member.IsSelectedIdsOk(ids, user))
@@ -372,7 +380,7 @@ namespace PERI.Agenda.Web.Controllers
         public async Task<IActionResult> Deactivate([FromBody] int[] ids)
         {
             
-            var bll_member = new BLL.Member(unitOfWork);
+            var bll_member = memberBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             if (!await bll_member.IsSelectedIdsOk(ids, user))
@@ -388,7 +396,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/Leading")]
         public async Task<int> Leading(int id)
         {
-            var bll_member = new BLL.Member(unitOfWork);
+            var bll_member = memberBusiness;
             return await bll_member.Leading(id);
         }
 
@@ -397,7 +405,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/Following")]
         public async Task<int> Following(int id)
         {
-            var bll_member = new BLL.Member(unitOfWork);
+            var bll_member = memberBusiness;
             return await bll_member.Following(id);
         }
 
@@ -406,7 +414,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/Invites")]
         public async Task<int> Invites(int id)
         {
-            var bll_member = new BLL.Member(unitOfWork);
+            var bll_member = memberBusiness;
             return await bll_member.Invites(id);
         }
 
@@ -415,7 +423,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/Activities")]
         public async Task<IActionResult> Activities(int id)
         {
-            var bll_member = new BLL.Member(unitOfWork);
+            var bll_member = memberBusiness;
             var res = from a in bll_member.Activities(id)
                       .OrderByDescending(x => x.Event.DateTimeStart)
                       .Take(20)
@@ -437,7 +445,7 @@ namespace PERI.Agenda.Web.Controllers
         public async Task<int> Total(string status)
         {
 
-            var bll_member = new BLL.Member(unitOfWork);
+            var bll_member = memberBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var members = bll_member.Find(new EF.Member { CommunityId = user.Member.CommunityId });
@@ -455,8 +463,8 @@ namespace PERI.Agenda.Web.Controllers
         public async Task<IActionResult> Download([FromBody] Models.Member obj)
         {
             
-            var bll_member = new BLL.Member(unitOfWork);
-            var bll_lu = new BLL.LookUp(unitOfWork);
+            var bll_member = memberBusiness;
+            var bll_lu = lookUpBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             obj.CommunityId = user.Member.CommunityId;
@@ -498,7 +506,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpGet("[action]")]
         public async Task<IActionResult> AllNames()
         {
-            var bll_member = new BLL.Member(unitOfWork);
+            var bll_member = memberBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var res = await bll_member.Find(new EF.Member { CommunityId = user.Member.CommunityId }).Select(x => x.Name).ToListAsync();

@@ -17,11 +17,15 @@ namespace PERI.Agenda.Web.Controllers
     [Route("api/Group")]
     public class GroupController : Controller
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IGroup groupBusiness;
+        private readonly IGroupCategory groupCategoryBusiness;
+        private readonly IMember memberBusiness;
 
-        public GroupController(IUnitOfWork unitOfWork)
+        public GroupController(IGroup group, IGroupCategory groupCategory, IMember member)
         {
-            this.unitOfWork = unitOfWork;
+            this.groupBusiness = group;
+            this.groupCategoryBusiness = groupCategory;
+            this.memberBusiness = member;
         }
 
         /// <summary>
@@ -33,7 +37,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("find")]
         public async Task<IActionResult> Find([FromBody] Models.Group obj)
         {
-            var bll_g = new BLL.Group(unitOfWork);
+            var bll_g = groupBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var o = AutoMapper.Mapper.Map<EF.Group>(obj);
@@ -41,7 +45,7 @@ namespace PERI.Agenda.Web.Controllers
             o.GroupCategory = new EF.GroupCategory { CommunityId = user.Member.CommunityId };
 
             // Get group leader id
-            var bll_m = new BLL.Member(unitOfWork);
+            var bll_m = memberBusiness;
             var glid = await bll_m.GetIdByName(obj.Leader ?? "", user.Member.CommunityId.Value);
 
             o.GroupLeader = glid;
@@ -74,7 +78,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Find/Page/{id}")]
         public async Task<IActionResult> Page([FromBody] Models.Group obj, int id)
         {
-            var bll_g = new BLL.Group(unitOfWork);
+            var bll_g = groupBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var o = AutoMapper.Mapper.Map<EF.Group>(obj);
@@ -82,7 +86,7 @@ namespace PERI.Agenda.Web.Controllers
             o.GroupCategory = new EF.GroupCategory { CommunityId = user.Member.CommunityId };
 
             // Get group leader id
-            var bll_m = new BLL.Member(unitOfWork);
+            var bll_m = memberBusiness;
             var glid = await bll_m.GetIdByName(obj.Leader ?? "", user.Member.CommunityId.Value);
 
             o.GroupLeader = glid;
@@ -117,8 +121,8 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Get/{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var bll_m = new BLL.Member(unitOfWork);
-            var bll_g = new BLL.Group(unitOfWork);
+            var bll_m = memberBusiness;
+            var bll_g = groupBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var r = await bll_g.Get(new EF.Group { Id = id });
@@ -147,13 +151,13 @@ namespace PERI.Agenda.Web.Controllers
         [BLL.ValidateModelState]
         public async Task<IActionResult> New([FromBody] Models.Group obj)
         {
-            var bll_g = new BLL.Group(unitOfWork);
+            var bll_g = groupBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var o = AutoMapper.Mapper.Map<EF.Group>(obj);
 
             // Get group leader id
-            var bll_m = new BLL.Member(unitOfWork);
+            var bll_m = memberBusiness;
             var glid = await bll_m.GetIdByName(obj.Leader ?? user.Member.Name, user.Member.CommunityId.Value);
 
             if (glid == null)
@@ -179,13 +183,13 @@ namespace PERI.Agenda.Web.Controllers
         [BLL.ValidateModelState]
         public async Task<IActionResult> Edit([FromBody] Models.Group obj)
         {
-            var bll_g = new BLL.Group(unitOfWork);
+            var bll_g = groupBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var o = AutoMapper.Mapper.Map<EF.Group>(obj);
 
             // Get group leader id
-            var bll_m = new BLL.Member(unitOfWork);
+            var bll_m = memberBusiness;
             var glid = await bll_m.GetIdByName(obj.Leader ?? user.Member.Name, user.Member.CommunityId.Value);
 
             if (!await bll_g.IsSelectedIdsOk(new int[] { obj.Id }, user))
@@ -214,7 +218,7 @@ namespace PERI.Agenda.Web.Controllers
         public async Task<IActionResult> Delete([FromBody] int[] ids)
         {
 
-            var bll_g = new BLL.Group(unitOfWork);
+            var bll_g = groupBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             if (!await bll_g.IsSelectedIdsOk(ids, user))
@@ -229,8 +233,8 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Download([FromBody] EF.Group obj)
         {
-            var bll_g = new BLL.Group(unitOfWork);
-            var bll_m = new BLL.Member(unitOfWork);
+            var bll_g = groupBusiness;
+            var bll_m = memberBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             obj.GroupCategory = new EF.GroupCategory { CommunityId = user.Member.CommunityId };

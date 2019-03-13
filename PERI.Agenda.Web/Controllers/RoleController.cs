@@ -16,20 +16,17 @@ namespace PERI.Agenda.Web.Controllers
     public class RoleController : Controller
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
-        private readonly EF.AARSContext context;
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IRole roleBusiness;
 
-        public RoleController(IUnitOfWork unitOfWork, EF.AARSContext context)
+        public RoleController(IRole role)
         {
-            this.context = context;
-            this.unitOfWork = unitOfWork;
+            this.roleBusiness = role;
         }
 
         [HttpGet("[action]")]
         public async Task<IEnumerable<EF.Role>> GetAll()
         {
-            var bll_r = new BLL.Role(unitOfWork);
-            return await bll_r.GetAll();
+            return await roleBusiness.GetAll();
         }
     }
 }

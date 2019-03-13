@@ -155,7 +155,7 @@ namespace PERI.Agenda.Web.Controllers
             var result = new FileContentResult(bytes, "text/csv");
             result.FileDownloadName = "my-csv-file.csv";
             return result;
-        }-
+        }
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [BLL.VerifyUser(AllowedRoles = "Admin")]

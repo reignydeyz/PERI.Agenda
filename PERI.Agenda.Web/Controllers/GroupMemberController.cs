@@ -15,11 +15,13 @@ namespace PERI.Agenda.Web.Controllers
     [Route("api/GroupMember")]
     public class GroupMemberController : Controller
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IGroup groupBusiness;
+        private readonly IGroupMember groupMemberBusiness;
 
-        public GroupMemberController(IUnitOfWork unitOfWork)
+        public GroupMemberController(IGroup group, IGroupMember groupMember)
         {
-            this.unitOfWork = unitOfWork;
+            this.groupBusiness = group;
+            this.groupMemberBusiness = groupMember;
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
@@ -27,7 +29,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Find/{id}")]
         public async Task<IActionResult> Members([FromBody] EF.Member obj, int id)
         {
-            var bll_gm = new BLL.GroupMember(unitOfWork);
+            var bll_gm = groupMemberBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             return Json(await bll_gm.Members(obj, id).ToListAsync());
@@ -38,8 +40,8 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/Checklist/Page/{p}")]
         public async Task<IActionResult> Page([FromBody] string member, int id, int p)
         {
-            var bll_g = new BLL.Group(unitOfWork);
-            var bll_gm = new BLL.GroupMember(unitOfWork);
+            var bll_g = groupBusiness;
+            var bll_gm = groupMemberBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             if (!await bll_g.IsSelectedIdsOk(new int[] { id }, user))
@@ -79,8 +81,8 @@ namespace PERI.Agenda.Web.Controllers
         [Route("{id}/Checklist")]
         public async Task<IActionResult> Checklist([FromBody] string member, int id)
         {
-            var bll_g = new BLL.Group(unitOfWork);
-            var bll_gm = new BLL.GroupMember(unitOfWork);
+            var bll_g = groupBusiness;
+            var bll_gm = groupMemberBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             if (!await bll_g.IsSelectedIdsOk(new int[] { id }, user))
@@ -113,8 +115,8 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Add")]
         public async Task<int> Add([FromBody] Models.GroupMember obj)
         {
-            var bll_g = new BLL.Group(unitOfWork);
-            var bll_gm = new BLL.GroupMember(unitOfWork);
+            var bll_g = groupBusiness;
+            var bll_gm = groupMemberBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             if (!await bll_g.IsSelectedIdsOk(new int[] { obj.GroupId }, user))
@@ -136,8 +138,8 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Delete")]
         public async Task Delete([FromBody] Models.GroupMember obj)
         {
-            var bll_g = new BLL.Group(unitOfWork);
-            var bll_gm = new BLL.GroupMember(unitOfWork);
+            var bll_g = groupBusiness;
+            var bll_gm = groupMemberBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             if (!await bll_g.IsSelectedIdsOk(new int[] { obj.GroupId }, user))

@@ -15,11 +15,13 @@ namespace PERI.Agenda.Web.Controllers
     [Route("api/Location")]
     public class LocationController : Controller
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly ILocation locationBusiness;
+        private readonly IEvent eventBusiness;
 
-        public LocationController(IUnitOfWork unitOfWork)
+        public LocationController(ILocation location, IEvent eventBusiness)
         {
-            this.unitOfWork = unitOfWork;
+            this.locationBusiness = location;
+            this.eventBusiness = eventBusiness;
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
@@ -28,7 +30,7 @@ namespace PERI.Agenda.Web.Controllers
         [BLL.ValidateModelState]
         public async Task<IActionResult> New([FromBody] Models.Location args)
         {
-            var bll_l = new BLL.Location(unitOfWork);
+            var bll_l = locationBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var o = AutoMapper.Mapper.Map<EF.Location>(args);
@@ -47,7 +49,7 @@ namespace PERI.Agenda.Web.Controllers
         [BLL.ValidateModelState]
         public async Task Edit([FromBody] Models.Location obj)
         {
-            var bll_l = new BLL.Location(unitOfWork);
+            var bll_l = locationBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             obj.CommunityId = user.Member.CommunityId;
@@ -68,7 +70,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("find")]
         public async Task<IActionResult> Find(EF.Location args)
         {
-            var bll_location = new BLL.Location(unitOfWork);
+            var bll_location = locationBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             args.CommunityId = user.Member.CommunityId;
@@ -93,7 +95,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Get/{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var bll_l = new BLL.Location(unitOfWork);
+            var bll_l = locationBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var r = await bll_l.Get(new EF.Location { Id = id, CommunityId = user.Member.CommunityId });
@@ -115,7 +117,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Delete([FromBody] int[] ids)
         {
-            var bll_l = new BLL.Location(unitOfWork);
+            var bll_l = locationBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             if (!await bll_l.IsSelectedIdsOk(ids, user))
@@ -132,7 +134,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Stats/{id}")]
         public async Task<Models.Graph.GraphDataSet> Stats(int id)
         {
-            var bll_event = new BLL.Event(unitOfWork);
+            var bll_event = eventBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var res = bll_event.Find(new EF.Event { EventCategory = new EF.EventCategory { CommunityId = user.Member.CommunityId }, LocationId = id }).Take(20);
@@ -153,7 +155,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Events/{id}")]
         public async Task<IActionResult> Events(int id)
         {
-            var bll_event = new BLL.Event(unitOfWork);
+            var bll_event = eventBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
             var res = from r in (await bll_event.Find(new EF.Event { EventCategory = new EF.EventCategory { CommunityId = user.Member.CommunityId }, LocationId = id }).Take(20).ToListAsync())

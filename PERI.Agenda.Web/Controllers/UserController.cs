@@ -13,11 +13,11 @@ namespace PERI.Agenda.Web.Controllers
     [ApiController]
     public class UserController : Controller
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IEndUser endUserBusiness;
 
-        public UserController(IUnitOfWork unitOfWork)
+        public UserController(IEndUser endUser)
         {
-            this.unitOfWork = unitOfWork;
+            this.endUserBusiness = endUser;
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace PERI.Agenda.Web.Controllers
         [HttpPost("[action]")]
         public async Task UpdateRole([FromBody] Models.Member args)
         {
-            var bll_u = new BLL.EndUser(unitOfWork);
+            var bll_u = endUserBusiness;
 
             var u = new EF.EndUser();
             u.MemberId = args.Id;

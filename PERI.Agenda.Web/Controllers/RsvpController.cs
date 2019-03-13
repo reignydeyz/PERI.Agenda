@@ -14,11 +14,11 @@ namespace PERI.Agenda.Web.Controllers
     [Route("api/Rsvp")]
     public class RsvpController : Controller
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IRsvp rsvpBusiness;
 
-        public RsvpController(IUnitOfWork unitOfWork)
+        public RsvpController(IRsvp rsvp)
         {
-            this.unitOfWork = unitOfWork;
+            this.rsvpBusiness = rsvp;
         }
 
         [BLL.ValidateModelState]
@@ -26,7 +26,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Add")]
         public async Task Add([FromBody] Models.Rsvp obj)
         {
-            var bll_r = new BLL.Rsvp(unitOfWork);
+            var bll_r = rsvpBusiness;
 
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
             obj.MemberId = obj.MemberId == 0 ? user.MemberId : obj.MemberId;
@@ -45,7 +45,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Delete")]
         public async Task Delete([FromBody] Models.Rsvp obj)
         {
-            var bll_r = new BLL.Rsvp(unitOfWork);
+            var bll_r = rsvpBusiness;
 
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
             obj.MemberId = obj.MemberId == 0 ? user.Member.Id : obj.MemberId;
@@ -58,7 +58,7 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Find")]
         public async Task<IActionResult> Find([FromBody] Models.Rsvp obj)
         {
-            var bll_r = new BLL.Rsvp(unitOfWork);
+            var bll_r = rsvpBusiness;
 
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
             obj.MemberId = obj.MemberId == 0 ? user.Member.Id : obj.MemberId;
