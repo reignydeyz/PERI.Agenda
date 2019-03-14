@@ -4,7 +4,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace PERI.Agenda.Test
@@ -110,21 +109,21 @@ namespace PERI.Agenda.Test
             mockMemberRepo.SetupGet(x => x.Entities).Returns(TestRepo.Members.AsQueryable());
             mockUnitOfWork.SetupGet(x => x.MemberRepository).Returns(mockMemberRepo.Object);
 
-            var mockRoleRepo = new Mock<Repository.IRepository<EF.Role>>();
+            /*var mockRoleRepo = new Mock<Repository.IRepository<EF.Role>>();
             mockRoleRepo.SetupGet(x => x.Entities).Returns(TestRepo.Roles.AsQueryable());
             mockUnitOfWork.SetupGet(x => x.RoleRepository).Returns(mockRoleRepo.Object);
 
             var mockEndUserRepo = new Mock<Repository.IRepository<EF.EndUser>>();
             mockEndUserRepo.SetupGet(x => x.Entities).Returns(TestRepo.EndUsers.AsQueryable());
-            mockUnitOfWork.SetupGet(x => x.EndUserRepository).Returns(mockEndUserRepo.Object);
+            mockUnitOfWork.SetupGet(x => x.EndUserRepository).Returns(mockEndUserRepo.Object);*/
 
             var mockMemberBusiness = new BLL.Member(mockUnitOfWork.Object);
 
             // Act
-            var id = Task.FromResult(mockMemberBusiness.Add(args));
+            var id = mockMemberBusiness.Add(args).Result;
 
             // Assert
-            Assert.True(1 > 0);
+            Assert.True(id >= 0);
         }
     }
 }
