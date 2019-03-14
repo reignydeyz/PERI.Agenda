@@ -29,20 +29,20 @@ namespace PERI.Agenda.BLL
         public async Task<int> Add(EF.Member args)
         {
             // Validate Email
-            var m = await Find(new EF.Member
+            var m = Find(new EF.Member
             {
                 Email = String.IsNullOrEmpty(args.Email) ? "email" : args.Email.Trim(),
                 CommunityId = args.CommunityId
-            }).FirstOrDefaultAsync();
+            }).FirstOrDefault();
 
             if (m == null)
             {
                 // Validate Name
-                m = await Find(new EF.Member
+                m = Find(new EF.Member
                 {
                     Name = (args.Name).ToUpper(),
                     CommunityId = args.CommunityId
-                }).FirstOrDefaultAsync();
+                }).FirstOrDefault();
             }
 
             if (m == null)
