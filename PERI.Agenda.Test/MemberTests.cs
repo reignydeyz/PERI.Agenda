@@ -1,15 +1,17 @@
 using Microsoft.Extensions.Configuration;
+using Moq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace PERI.Agenda.Test
 {
     public class MemberTests
     {
-        private readonly EF.AARSContext context;
+        /*private readonly EF.AARSContext context;
         private readonly BLL.UnitOfWork unitOfWork;
 
         public MemberTests()
@@ -72,6 +74,57 @@ namespace PERI.Agenda.Test
             var id = bll_m.Add(args).Result;
 
             Assert.True(id > 0);
+        }*/
+
+        private readonly Mock<BLL.IUnitOfWork> mockUnitOfWork;
+
+        public MemberTests()
+        {
+            mockUnitOfWork = new Mock<BLL.IUnitOfWork>();
+        }
+
+        [Theory]
+        [MemberData(nameof(TestDataGenerator.FindMember_HasResultParams), MemberType = typeof(TestDataGenerator))]
+        public void FindMember_HasResult(EF.Member args)
+        {
+            // Arrange
+            var mockMemberRepo = new Mock<Repository.IRepository<EF.Member>>();
+            mockMemberRepo.SetupGet(x => x.Entities).Returns(TestRepo.Members.AsQueryable());
+            mockUnitOfWork.SetupGet(x => x.MemberRepository).Returns(mockMemberRepo.Object);
+
+            var mockMemberBusiness = new BLL.Member(mockUnitOfWork.Object);
+
+            // Act
+            var res = mockMemberBusiness.Find(args);
+
+            // Assert
+            Assert.True(res.Count() > 0);
+        }
+
+        [Theory]
+        [MemberData(nameof(TestDataGenerator.AddMember_SuccessParams), MemberType = typeof(TestDataGenerator))]
+        public void AddMember_Success(EF.Member args)
+        {
+            // Arrange
+            var mockMemberRepo = new Mock<Repository.IRepository<EF.Member>>();
+            mockMemberRepo.SetupGet(x => x.Entities).Returns(TestRepo.Members.AsQueryable());
+            mockUnitOfWork.SetupGet(x => x.MemberRepository).Returns(mockMemberRepo.Object);
+
+            var mockRoleRepo = new Mock<Repository.IRepository<EF.Role>>();
+            mockRoleRepo.SetupGet(x => x.Entities).Returns(TestRepo.Roles.AsQueryable());
+            mockUnitOfWork.SetupGet(x => x.RoleRepository).Returns(mockRoleRepo.Object);
+
+            var mockEndUserRepo = new Mock<Repository.IRepository<EF.EndUser>>();
+            mockEndUserRepo.SetupGet(x => x.Entities).Returns(TestRepo.EndUsers.AsQueryable());
+            mockUnitOfWork.SetupGet(x => x.EndUserRepository).Returns(mockEndUserRepo.Object);
+
+            var mockMemberBusiness = new BLL.Member(mockUnitOfWork.Object);
+
+            // Act
+            var id = Task.FromResult(mockMemberBusiness.Add(args));
+
+            // Assert
+            Assert.True(1 > 0);
         }
     }
 }

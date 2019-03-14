@@ -12,7 +12,7 @@ namespace PERI.Agenda.BLL
     {
         IRepository<EF.Attendance> AttendanceRepository { get; }
         IRepository<EF.Community> CommunityRepository { get; }
-        IRepository<EF.EndUser> EndUserRepository { get; }
+        IRepository<EF.EndUser> EndUserRepository { get; set; }
         IRepository<EF.Event> EventRepository { get; }
         IRepository<EF.EventCategory> EventCategoryRepository { get; }
         IRepository<EF.Group> GroupRepository { get; }
@@ -20,9 +20,9 @@ namespace PERI.Agenda.BLL
         IRepository<EF.GroupMember> GroupMemberRepository { get; }
         IRepository<EF.Location> LocationRepository { get; }
         IRepository<EF.LookUp> LookUpRepository { get; }
-        IRepository<EF.Member> MemberRepository { get; }
+        IRepository<EF.Member> MemberRepository { get; set; }
         IRepository<EF.Registrant> RegistrantRepository { get; }
-        IRepository<EF.Role> RoleRepository { get; }
+        IRepository<EF.Role> RoleRepository { get; set; }
         IRepository<EF.Rsvp> RsvpRepository { get; }
         IRepository<EF.EventCategoryReport> EventCategoryReportRepository { get; }
         IRepository<EF.Report> ReportRepository { get; }

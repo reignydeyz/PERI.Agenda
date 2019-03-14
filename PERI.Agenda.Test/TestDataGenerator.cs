@@ -24,8 +24,8 @@ namespace PERI.Agenda.Test
         public static IEnumerable<object[]> AddMember_SuccessParams()
         {
             yield return new object[] { new EF.Member { Name = "JANE O. DOE", CommunityId = 1 } };
-            yield return new object[] { new EF.Member { Name = "BRAD PIT", CommunityId = 1 } };
-            yield return new object[] { new EF.Member { Name = "Erika Arellano", CommunityId = 1 } };
+            //yield return new object[] { new EF.Member { Name = "BRAD PIT", CommunityId = 1 } };
+            //yield return new object[] { new EF.Member { Name = "Erika Arellano", CommunityId = 1 } };
         }
         #endregion
 
