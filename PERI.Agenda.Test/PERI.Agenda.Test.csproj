@@ -14,9 +14,6 @@
     <Compile Remove="GroupTests.cs" />
     <Compile Remove="ReportTests.cs" />
     <Compile Remove="RsvpTests.cs" />
-    <Compile Remove="TestDataGenerator.cs" />
-    <Compile Remove="TestHelper.cs" />
-    <Compile Remove="TestRepo.cs" />
   </ItemGroup>
 
   <ItemGroup>
