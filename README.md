@@ -12,6 +12,7 @@ These instructions will get you a copy of the project up and running on your loc
 - [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-2016)
 - [SQL Server Management Studio](https://msdn.microsoft.com/en-us/library/mt238290.aspx)
 - [Node.js](https://nodejs.org)
+- [.Net Core SDK](https://dotnet.microsoft.com/download)
 
 ## People to blame
 
@@ -36,6 +37,8 @@ You may need to understand the nature of ASP-MVC before going through the entire
 - [Chart.js](https://www.chartjs.org/)
 - [XUnit](https://xunit.github.io)
 - [SignalR](https://www.asp.net/signalr)
+- [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle)
+- [Moq](https://github.com/Moq/moq4/wiki/Quickstart)
 
 ### Solution Structure
 
@@ -109,11 +112,7 @@ You may need to understand the nature of ASP-MVC before going through the entire
 
 ### Unit Test
 
-You can test the business logics in the project,```PERI.Agenda.Test```. A good knowledge in performing unit testing is required, especially in XUnit.
-
-**Configuration**
-
-The ```appsettings.json``` must be placed in the project folder. In ```Configuration Properties``` make sure ```Copy to Output Directory``` is set to ```Copy if newer```.
+You can test the business logics in the project,```PERI.Agenda.Test```. A good knowledge in performing unit testing is required, especially in XUnit and Moq.
 
 **Sample Data**
 
