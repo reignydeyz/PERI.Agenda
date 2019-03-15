@@ -27,6 +27,20 @@ namespace PERI.Agenda.Test
             yield return new object[] { new EF.Member { Name = "BRAD PIT", CommunityId = 1 } };
             yield return new object[] { new EF.Member { Name = "Erika Arellano", CommunityId = 1 } };
         }
+
+        public static IEnumerable<object[]> EditMember_ExistingEmailParams()
+        {
+            yield return new object[] { new EF.Member { Name = "JANE O. DOE", Email = "abc@y.com", CommunityId = 1 } };
+            yield return new object[] { new EF.Member { Name = "BRAD PIT", Email = "bcd@y.com", CommunityId = 1 } };
+            yield return new object[] { new EF.Member { Name = "Erika Arellano", Email = "cde@y.com", CommunityId = 1 } };
+        }
+
+        public static IEnumerable<object[]> EditMember_Success()
+        {
+            yield return new object[] { new EF.Member { Id=1, Name = "JANE O. DOE", Email = "abc@y.com", CommunityId = 1 } };
+            yield return new object[] { new EF.Member { Id=2, Name = "BRAD PIT", Email = "bcd@y.com", CommunityId = 1 } };
+            yield return new object[] { new EF.Member { Id=3, Name = "Erika Arellano", Email = "cde@y.com", CommunityId = 1 } };
+        }
         #endregion
 
         #region EventTests
