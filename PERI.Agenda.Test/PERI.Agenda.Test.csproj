@@ -6,32 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="AttendanceTests.cs" />
-    <Compile Remove="EventCategoryTests.cs" />
-    <Compile Remove="EventTests.cs" />
-    <Compile Remove="GroupActivityReportTests.cs" />
-    <Compile Remove="GroupMemberTests.cs" />
-    <Compile Remove="GroupTests.cs" />
-    <Compile Remove="ReportTests.cs" />
-    <Compile Remove="RsvpTests.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="appsettings.Development.json" />
-    <None Remove="appsettings.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="appsettings.Development.json">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="appsettings.json">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.7.0" />
     <PackageReference Include="MockQueryable.Moq" Version="1.1.0" />
     <PackageReference Include="Moq" Version="4.10.1" />
