@@ -6,6 +6,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="AttendanceTests.cs" />
+    <Compile Remove="EventCategoryTests.cs" />
+    <Compile Remove="EventTests.cs" />
+    <Compile Remove="GroupActivityReportTests.cs" />
+    <Compile Remove="GroupMemberTests.cs" />
+    <Compile Remove="GroupTests.cs" />
+    <Compile Remove="ReportTests.cs" />
+    <Compile Remove="RsvpTests.cs" />
+    <Compile Remove="TestDataGenerator.cs" />
+    <Compile Remove="TestHelper.cs" />
+    <Compile Remove="TestRepo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="appsettings.Development.json" />
     <None Remove="appsettings.json" />
   </ItemGroup>
