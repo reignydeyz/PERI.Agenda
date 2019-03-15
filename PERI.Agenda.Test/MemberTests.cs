@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Configuration;
+using MockQueryable.Moq;
 using Moq;
 using System;
 using System.Collections;
@@ -24,7 +25,10 @@ namespace PERI.Agenda.Test
             memberBusiness = new BLL.Member(mockUnitOfWork.Object);
 
             mockMemberRepo = new Mock<Repository.IRepository<EF.Member>>();
-            mockMemberRepo.Setup(x => x.Entities).Returns(TestRepo.Members.AsQueryable());
+            // Create mockable IQueryable async
+            // https://stackoverflow.com/questions/40476233/how-to-mock-an-async-repository-with-entity-framework-core/40491640
+            var mockIQueryableMember = TestRepo.Members.AsQueryable().BuildMock();
+            mockMemberRepo.Setup(x => x.Entities).Returns(mockIQueryableMember.Object);
 
             mockUnitOfWork.Setup(x => x.MemberRepository).Returns(mockMemberRepo.Object);
         }
@@ -62,6 +66,30 @@ namespace PERI.Agenda.Test
             var id = memberBusiness.Add(args).Result;
 
             Assert.True(list.Count > count);
+        }
+
+        [Theory]
+        [MemberData(nameof(TestDataGenerator.EditMember_Success), MemberType = typeof(TestDataGenerator))]
+        public void EditMember_Success(EF.Member args)
+        {
+            var completed = false;
+            mockUnitOfWork.Setup(x => x.CommitAsync()).Callback(() =>
+            {
+                completed = true;
+            });
+
+            memberBusiness.Edit(args);
+
+            Assert.True(completed);
+        }
+
+        [Theory]
+        [MemberData(nameof(TestDataGenerator.EditMember_ExistingEmailParams), MemberType = typeof(TestDataGenerator))]
+        public void EditMember_ExistingEmail(EF.Member args)
+        {
+            // Verify if error was thrown
+            // https://stackoverflow.com/questions/16053433/moq-verify-exception-was-thrown
+            Assert.ThrowsAsync<ArgumentException>(() => memberBusiness.Edit(args));
         }
 
         [Theory]
