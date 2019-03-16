@@ -27,7 +27,7 @@ namespace PERI.Agenda.Test
             mockMemberRepo = new Mock<Repository.IRepository<EF.Member>>();
             // Create mockable IQueryable async
             // https://stackoverflow.com/questions/40476233/how-to-mock-an-async-repository-with-entity-framework-core/40491640
-            var mockIQueryableMember = TestRepo.Members.AsQueryable().BuildMock();
+            var mockIQueryableMember = new TestRepo().Members.AsQueryable().BuildMock();
             mockMemberRepo.Setup(x => x.Entities).Returns(mockIQueryableMember.Object);
 
             mockUnitOfWork.Setup(x => x.MemberRepository).Returns(mockMemberRepo.Object);
@@ -55,8 +55,8 @@ namespace PERI.Agenda.Test
         [MemberData(nameof(TestDataGenerator.AddMember_SuccessParams), MemberType = typeof(TestDataGenerator))]
         public void AddMember_Success(EF.Member args)
         {
-            var list = TestRepo.Members;
-            var count = TestRepo.Members.Count;
+            var list = mockMemberRepo.Object.Entities.ToList();
+            var count = list.Count;
 
             mockUnitOfWork.Setup(x => x.Commit()).Callback(() =>
             {
@@ -98,8 +98,8 @@ namespace PERI.Agenda.Test
         [InlineData(2, 3)]
         public void DeleteMember_Success(params int[] args)
         {
-            var list = TestRepo.Members;
-            var count = TestRepo.Members.Count;
+            var list = mockMemberRepo.Object.Entities.ToList();
+            var count = list.Count;
 
             mockUnitOfWork.Setup(x => x.CommitAsync()).Callback(() =>
             {
