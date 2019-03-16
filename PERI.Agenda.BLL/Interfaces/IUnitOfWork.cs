@@ -13,7 +13,7 @@ namespace PERI.Agenda.BLL
         IRepository<EF.Attendance> AttendanceRepository { get; }
         IRepository<EF.Community> CommunityRepository { get; }
         IRepository<EF.EndUser> EndUserRepository { get; set; }
-        IRepository<EF.Event> EventRepository { get; }
+        IRepository<EF.Event> EventRepository { get; set; }
         IRepository<EF.EventCategory> EventCategoryRepository { get; }
         IRepository<EF.Group> GroupRepository { get; }
         IRepository<EF.GroupCategory> GroupCategoryRepository { get; }

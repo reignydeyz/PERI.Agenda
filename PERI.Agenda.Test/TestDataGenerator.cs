@@ -50,6 +50,41 @@ namespace PERI.Agenda.Test
             yield return new object[] { new EF.Event { Name = "EVENT0002", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(2), IsExclusive = true, IsActive = true } };
             yield return new object[] { new EF.Event { Name = "EVENT0003", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(3), IsExclusive = true, IsActive = true } };
         }
+
+        public static IEnumerable<object[]> AddNonExclusiveEvent_SuccessParams()
+        {
+            yield return new object[] { new EF.Event { Name = "EVENT0001", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(1), IsExclusive = false, IsActive = true } };
+            yield return new object[] { new EF.Event { Name = "EVENT0002", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(2), IsExclusive = false, IsActive = true } };
+            yield return new object[] { new EF.Event { Name = "EVENT0003", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(3), IsExclusive = false, IsActive = true } };
+        }
+
+        public static IEnumerable<object[]> FindEvent_HasResultParams()
+        {
+            yield return new object[] { new EF.Event { Name = "EVENT0001", EventCategory = new EF.EventCategory { CommunityId = 1 } } };
+            yield return new object[] { new EF.Event { Name = "EVENT0004", EventCategory = new EF.EventCategory { CommunityId = 1 } } };
+            yield return new object[] { new EF.Event { Name = "EVENT0007", EventCategory = new EF.EventCategory { CommunityId = 1 } } };
+        }
+
+        public static IEnumerable<object[]> FindEvent_HasNoResultParams()
+        {
+            yield return new object[] { new EF.Event { Name = "XEVENT0001", EventCategory = new EF.EventCategory { CommunityId = 1 } } };
+            yield return new object[] { new EF.Event { Name = "XEVENT0004", EventCategory = new EF.EventCategory { CommunityId = 1 } } };
+            yield return new object[] { new EF.Event { Name = "XEVENT0007", EventCategory = new EF.EventCategory { CommunityId = 1 } } };
+        }
+
+        public static IEnumerable<object[]> EditEvent_Success()
+        {
+            yield return new object[] { new EF.Event { Id=1,Name = "YEVENT0001", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(1), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { CommunityId = 1 } } };
+            yield return new object[] { new EF.Event { Id=2,Name = "YEVENT0002", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(2), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { CommunityId = 1 } } };
+            yield return new object[] { new EF.Event { Id=3,Name = "YEVENT0003", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(3), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { CommunityId = 1 } } };
+        }
+
+        public static IEnumerable<object[]> EditEvent_Failed()
+        {
+            yield return new object[] { new EF.Event { Id = 1001, Name = "YEVENT0001", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(1), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { CommunityId = 1 } } };
+            yield return new object[] { new EF.Event { Id = 1002, Name = "YEVENT0002", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(2), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { CommunityId = 1 } } };
+            yield return new object[] { new EF.Event { Id = 1003, Name = "YEVENT0003", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(3), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { CommunityId = 1 } } };
+        }
         #endregion
 
         #region GroupTests
