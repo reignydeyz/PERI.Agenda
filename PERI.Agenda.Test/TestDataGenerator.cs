@@ -7,6 +7,24 @@ namespace PERI.Agenda.Test
 {
     public class TestDataGenerator
     {
+        #region AttendanceTests
+        public static IEnumerable<object[]> GetAttendance_SuccessParams()
+        {
+            yield return new object[] { new EF.Attendance { EventId = 1, MemberId = 1 } };
+            yield return new object[] { new EF.Attendance { EventId = 1, MemberId = 2 } };
+            yield return new object[] { new EF.Attendance { EventId = 2, MemberId = 1 } };
+            yield return new object[] { new EF.Attendance { EventId = 2, MemberId = 2 } };
+        }
+
+        public static IEnumerable<object[]> GetAttendance_HasNoResultParams()
+        {
+            yield return new object[] { new EF.Attendance { EventId = 1, MemberId = 3 } };
+            yield return new object[] { new EF.Attendance { EventId = 2, MemberId = 3 } };
+            yield return new object[] { new EF.Attendance { EventId = 3, MemberId = 3 } };
+            yield return new object[] { new EF.Attendance { EventId = 4, MemberId = 3 } };
+        }
+        #endregion
+
         #region MemberTests
         public static IEnumerable<object[]> FindMember_HasResultParams()
         {
