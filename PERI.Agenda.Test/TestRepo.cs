@@ -60,6 +60,20 @@ namespace PERI.Agenda.Test
             new EF.Event { Id=12,Name = "EVENT0012", EventCategoryId = 4, DateTimeStart = DateTime.Now.AddDays(6), IsExclusive = true, IsActive = true, EventCategory = new EF.EventCategory { Id = 4, Name = "Category4", CommunityId = 1 } },
         };
 
+        public List<EF.EventCategory> EventCategories = new List<EF.EventCategory>
+        {
+            new EF.EventCategory { Id = 1, Name = "Category1", CommunityId = 1 },
+            new EF.EventCategory { Id = 2, Name = "Category2", CommunityId = 1 },
+            new EF.EventCategory { Id = 3, Name = "Category3", CommunityId = 1 },
+            new EF.EventCategory { Id = 4, Name = "Category4", CommunityId = 1 },
+            new EF.EventCategory { Id = 5, Name = "Category5", CommunityId = 1 },
+            new EF.EventCategory { Id = 6, Name = "Category6", CommunityId = 1 },
+            new EF.EventCategory { Id = 7, Name = "Category7", CommunityId = 1 },
+            new EF.EventCategory { Id = 8, Name = "Category8", CommunityId = 1 },
+            new EF.EventCategory { Id = 9, Name = "Category9", CommunityId = 1 },
+            new EF.EventCategory { Id = 10, Name = "Category10", CommunityId = 1 },
+        };
+
         public List<EF.Registrant> Registrants = new List<EF.Registrant>
         {
             new EF.Registrant { Id = 1, EventId = 1, MemberId = 1 },
