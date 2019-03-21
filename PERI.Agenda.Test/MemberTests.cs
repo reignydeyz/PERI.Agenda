@@ -69,7 +69,7 @@ namespace PERI.Agenda.Test
         }
 
         [Theory]
-        [MemberData(nameof(TestDataGenerator.EditMember_Success), MemberType = typeof(TestDataGenerator))]
+        [MemberData(nameof(TestDataGenerator.EditMember_SuccessParams), MemberType = typeof(TestDataGenerator))]
         public void EditMember_Success(EF.Member args)
         {
             var completed = false;
@@ -111,6 +111,27 @@ namespace PERI.Agenda.Test
             memberBusiness.Delete(args);
 
             Assert.True(list.Count < count);
+        }
+
+        [Theory]
+        [InlineData(31, 32, 33)]
+        [InlineData(31, 32)]
+        [InlineData(32, 33)]
+        public void DeleteMember_Failed(params int[] args)
+        {
+            var list = mockMemberRepo.Object.Entities.ToList();
+            var count = list.Count;
+
+            mockUnitOfWork.Setup(x => x.CommitAsync()).Callback(() =>
+            {
+                var objs = list.Where(x => args.Contains(x.Id)).ToList();
+                foreach (var obj in objs)
+                    list.Remove(obj);
+            });
+
+            memberBusiness.Delete(args);
+
+            Assert.True(list.Count == count);
         }
     }
 }

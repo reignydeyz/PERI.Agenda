@@ -23,6 +23,30 @@ namespace PERI.Agenda.Test
             yield return new object[] { new EF.Attendance { EventId = 3, MemberId = 3 } };
             yield return new object[] { new EF.Attendance { EventId = 4, MemberId = 3 } };
         }
+
+        public static IEnumerable<object[]> AddAttendance_SuccessParams()
+        {
+            yield return new object[] { new EF.Attendance { EventId = 1, MemberId = 3 } };
+            yield return new object[] { new EF.Attendance { EventId = 2, MemberId = 3 } };
+            yield return new object[] { new EF.Attendance { EventId = 3, MemberId = 3 } };
+            yield return new object[] { new EF.Attendance { EventId = 4, MemberId = 3 } };
+        }
+
+        public static IEnumerable<object[]> DeleteAttendance_SuccessParams()
+        {
+            yield return new object[] { new EF.Attendance { EventId = 1, MemberId = 1 } };
+            yield return new object[] { new EF.Attendance { EventId = 1, MemberId = 2 } };
+            yield return new object[] { new EF.Attendance { EventId = 2, MemberId = 1 } };
+            yield return new object[] { new EF.Attendance { EventId = 2, MemberId = 2 } };
+        }
+
+        public static IEnumerable<object[]> DeleteAttendance_FailedParams()
+        {
+            yield return new object[] { new EF.Attendance { EventId = 1, MemberId = 31 } };
+            yield return new object[] { new EF.Attendance { EventId = 1, MemberId = 32 } };
+            yield return new object[] { new EF.Attendance { EventId = 2, MemberId = 31 } };
+            yield return new object[] { new EF.Attendance { EventId = 2, MemberId = 32 } };
+        }
         #endregion
 
         #region MemberTests
@@ -53,7 +77,7 @@ namespace PERI.Agenda.Test
             yield return new object[] { new EF.Member { Name = "Erika Arellano", Email = "cde@y.com", CommunityId = 1 } };
         }
 
-        public static IEnumerable<object[]> EditMember_Success()
+        public static IEnumerable<object[]> EditMember_SuccessParams()
         {
             yield return new object[] { new EF.Member { Id=1, Name = "JANE O. DOE", Email = "abc@y.com", CommunityId = 1 } };
             yield return new object[] { new EF.Member { Id=2, Name = "BRAD PIT", Email = "bcd@y.com", CommunityId = 1 } };
@@ -102,6 +126,53 @@ namespace PERI.Agenda.Test
             yield return new object[] { new EF.Event { Id = 1001, Name = "YEVENT0001", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(1), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { CommunityId = 1 } } };
             yield return new object[] { new EF.Event { Id = 1002, Name = "YEVENT0002", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(2), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { CommunityId = 1 } } };
             yield return new object[] { new EF.Event { Id = 1003, Name = "YEVENT0003", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(3), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { CommunityId = 1 } } };
+        }
+        #endregion
+
+        #region EventCategoryTests
+        public static IEnumerable<object[]> FindEventCategory_HasResultParams()
+        {
+            yield return new object[] { new EF.EventCategory { Id = 1, Name = "Category1", CommunityId = 1 } };
+            yield return new object[] { new EF.EventCategory { Id = 1, Name = "Category2", CommunityId = 1 } };
+            yield return new object[] { new EF.EventCategory { Id = 1, Name = "Category3", CommunityId = 1 } };
+            yield return new object[] { new EF.EventCategory { Id = 1, Name = "Category4", CommunityId = 1 } };
+            yield return new object[] { new EF.EventCategory { Id = 1, Name = "Category5", CommunityId = 1 } };
+        }
+
+        public static IEnumerable<object[]> FindEventCategory_HasNoResultParams()
+        {
+            yield return new object[] { new EF.EventCategory { Name = "Category31", CommunityId = 1 } };
+            yield return new object[] { new EF.EventCategory { Name = "Category32", CommunityId = 1 } };
+            yield return new object[] { new EF.EventCategory { Name = "Category33", CommunityId = 1 } };
+            yield return new object[] { new EF.EventCategory { Name = "Category34", CommunityId = 1 } };
+            yield return new object[] { new EF.EventCategory { Name = "Category35", CommunityId = 1 } };
+        }
+
+        public static IEnumerable<object[]> AddEventCategory_SuccessParams()
+        {
+            yield return new object[] { new EF.EventCategory { Name = "Category31", CommunityId = 1 } };
+            yield return new object[] { new EF.EventCategory { Name = "Category32", CommunityId = 1 } };
+            yield return new object[] { new EF.EventCategory { Name = "Category33", CommunityId = 1 } };
+            yield return new object[] { new EF.EventCategory { Name = "Category34", CommunityId = 1 } };
+            yield return new object[] { new EF.EventCategory { Name = "Category35", CommunityId = 1 } };
+        }
+
+        public static IEnumerable<object[]> EditEventCategory_SuccessParams()
+        {
+            yield return new object[] { new EF.EventCategory { Id = 1, Name = "Category31", CommunityId = 1 } };
+            yield return new object[] { new EF.EventCategory { Id = 2, Name = "Category32", CommunityId = 1 } };
+            yield return new object[] { new EF.EventCategory { Id = 3, Name = "Category33", CommunityId = 1 } };
+            yield return new object[] { new EF.EventCategory { Id = 4, Name = "Category34", CommunityId = 1 } };
+            yield return new object[] { new EF.EventCategory { Id = 5, Name = "Category35", CommunityId = 1 } };        
+        }
+
+        public static IEnumerable<object[]> EditEventCategory_FailedParams()
+        {
+            yield return new object[] { new EF.EventCategory { Id = 31, Name = "Category31", CommunityId = 1 } };
+            yield return new object[] { new EF.EventCategory { Id = 32, Name = "Category32", CommunityId = 1 } };
+            yield return new object[] { new EF.EventCategory { Id = 33, Name = "Category33", CommunityId = 1 } };
+            yield return new object[] { new EF.EventCategory { Id = 34, Name = "Category34", CommunityId = 1 } };
+            yield return new object[] { new EF.EventCategory { Id = 35, Name = "Category35", CommunityId = 1 } };
         }
         #endregion
 

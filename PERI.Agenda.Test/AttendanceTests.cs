@@ -89,6 +89,53 @@ namespace PERI.Agenda.Test
         }
 
         [Theory]
+        [MemberData(nameof(TestDataGenerator.AddAttendance_SuccessParams), MemberType = typeof(TestDataGenerator))]
+        public void AddAttendance_Success(EF.Attendance args)
+        {
+            var list = mockAttendanceRepo.Object.Entities.ToList();
+            var count = list.Count;
+
+            mockUnitOfWork.Setup(x => x.CommitAsync()).Callback(() =>
+            {
+                list.Add(args);
+            });
+
+            attendanceBusiness.Add(args);
+
+            Assert.True(list.Count > count);
+        }
+
+        [Theory]
+        [MemberData(nameof(TestDataGenerator.DeleteAttendance_SuccessParams), MemberType = typeof(TestDataGenerator))]
+        public void DeleteAttendance_Success(EF.Attendance args)
+        {
+            var completed = false;
+            mockUnitOfWork.Setup(x => x.Commit()).Callback(() =>
+            {
+                completed = true;
+            });
+
+            attendanceBusiness.Delete(args);
+
+            Assert.True(completed);
+        }
+
+        [Theory]
+        [MemberData(nameof(TestDataGenerator.DeleteAttendance_FailedParams), MemberType = typeof(TestDataGenerator))]
+        public void DeleteAttendance_Failed(EF.Attendance args)
+        {
+            var completed = false;
+            mockUnitOfWork.Setup(x => x.Commit()).Callback(() =>
+            {
+                completed = true;
+            });
+
+            attendanceBusiness.Delete(args);
+
+            Assert.True(!completed);
+        }
+
+        [Theory]
         [InlineData(1, "ALVIN")]
         [InlineData(1, "CHUA")]
         [InlineData(3, "CHUA")]
