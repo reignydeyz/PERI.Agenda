@@ -179,8 +179,37 @@ namespace PERI.Agenda.Test
         #region GroupTests
         public static IEnumerable<object[]> FindGroup_HasResultParams()
         {
-            yield return new object[] { new EF.Group { Name = "CELL", GroupCategory = new EF.GroupCategory { CommunityId = 1 } } };
-            yield return new object[] { new EF.Group { Name = "NETWORK", GroupCategory = new EF.GroupCategory { CommunityId = 1 } } };
+            yield return new object[] { new EF.Group { Name = "Group1", GroupCategory = new EF.GroupCategory { CommunityId = 1 } } };
+            yield return new object[] { new EF.Group { Name = "Group2", GroupCategory = new EF.GroupCategory { CommunityId = 1 } } };
+            yield return new object[] { new EF.Group { Name = "Group3", GroupCategory = new EF.GroupCategory { CommunityId = 1 } } };
+        }
+
+        public static IEnumerable<object[]> FindGroup_HasNoResultParams()
+        {
+            yield return new object[] { new EF.Group { Name = "Group31", GroupCategory = new EF.GroupCategory { CommunityId = 1 } } };
+            yield return new object[] { new EF.Group { Name = "Group32", GroupCategory = new EF.GroupCategory { CommunityId = 1 } } };
+            yield return new object[] { new EF.Group { Name = "Group33", GroupCategory = new EF.GroupCategory { CommunityId = 1 } } };
+        }
+
+        public static IEnumerable<object[]> AddGroup_SuccessParams()
+        {
+            yield return new object[] { new EF.Group { Name = "Group41", GroupCategory = new EF.GroupCategory { CommunityId = 1 } } };
+            yield return new object[] { new EF.Group { Name = "Group42", GroupCategory = new EF.GroupCategory { CommunityId = 1 } } };
+            yield return new object[] { new EF.Group { Name = "Group43", GroupCategory = new EF.GroupCategory { CommunityId = 1 } } };
+        }
+
+        public static IEnumerable<object[]> EditGroup_SuccessParams()
+        {
+            yield return new object[] { new EF.Group { Id = 1, Name = "Group41", GroupCategory = new EF.GroupCategory { CommunityId = 1 } } };
+            yield return new object[] { new EF.Group { Id = 2, Name = "Group42", GroupCategory = new EF.GroupCategory { CommunityId = 1 } } };
+            yield return new object[] { new EF.Group { Id = 3, Name = "Group43", GroupCategory = new EF.GroupCategory { CommunityId = 1 } } };
+        }
+
+        public static IEnumerable<object[]> EditGroup_FailedParams()
+        {
+            yield return new object[] { new EF.Group { Id = 41, Name = "Group41", GroupCategory = new EF.GroupCategory { CommunityId = 1 } } };
+            yield return new object[] { new EF.Group { Id = 42, Name = "Group42", GroupCategory = new EF.GroupCategory { CommunityId = 1 } } };
+            yield return new object[] { new EF.Group { Id = 43, Name = "Group43", GroupCategory = new EF.GroupCategory { CommunityId = 1 } } };
         }
 
         public static IEnumerable<object[]> FindMembers_HasResultParams()
