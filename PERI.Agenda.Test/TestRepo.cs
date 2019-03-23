@@ -115,5 +115,15 @@ namespace PERI.Agenda.Test
             new EF.Group { Id = 2, Name = "Group2", GroupLeader = 2, GroupCategoryId = 1, GroupCategory = new EF.GroupCategory { CommunityId = 1 } },
             new EF.Group { Id = 3, Name = "Group3", GroupLeader = 3, GroupCategoryId = 1, GroupCategory = new EF.GroupCategory { CommunityId = 1 } },
         };
+
+        public List<EF.GroupCategory> GroupCategories = new List<EF.GroupCategory>
+        {
+            new EF.GroupCategory { Id = 1, Name = "Category1", CommunityId = 1 },
+            new EF.GroupCategory { Id = 2, Name = "Category2", CommunityId = 1 },
+            new EF.GroupCategory { Id = 3, Name = "Category3", CommunityId = 1 },
+            new EF.GroupCategory { Id = 4, Name = "Category4", CommunityId = 1 },
+            new EF.GroupCategory { Id = 5, Name = "Category5", CommunityId = 1 },
+            new EF.GroupCategory { Id = 6, Name = "Category6", CommunityId = 1 },
+        };
     }
 }

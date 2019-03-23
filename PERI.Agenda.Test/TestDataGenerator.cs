@@ -233,6 +233,56 @@ namespace PERI.Agenda.Test
         }
         #endregion
 
+        #region GroupCategoryTests
+        public static IEnumerable<object[]> FindGroupCategory_HasResultParams()
+        {
+            yield return new object[] { new EF.GroupCategory { Name = "Category1", CommunityId = 1 } };
+            yield return new object[] { new EF.GroupCategory { Name = "Category2", CommunityId = 1 } };
+            yield return new object[] { new EF.GroupCategory { Name = "Category3", CommunityId = 1 } };
+            yield return new object[] { new EF.GroupCategory { Name = "Category4", CommunityId = 1 } };
+            yield return new object[] { new EF.GroupCategory { Name = "Category5", CommunityId = 1 } };
+            yield return new object[] { new EF.GroupCategory { Name = "Category6", CommunityId = 1 } };
+        }
+
+        public static IEnumerable<object[]> FindGroupCategory_HasNoResultParams()
+        {
+            yield return new object[] { new EF.GroupCategory { Name = "Category31", CommunityId = 1 } };
+            yield return new object[] { new EF.GroupCategory { Name = "Category32", CommunityId = 1 } };
+            yield return new object[] { new EF.GroupCategory { Name = "Category33", CommunityId = 1 } };
+            yield return new object[] { new EF.GroupCategory { Name = "Category34", CommunityId = 1 } };
+            yield return new object[] { new EF.GroupCategory { Name = "Category35", CommunityId = 1 } };
+            yield return new object[] { new EF.GroupCategory { Name = "Category36", CommunityId = 1 } };
+        }
+
+        public static IEnumerable<object[]> AddGroupCategory_SuccessParams()
+        {
+            yield return new object[] { new EF.GroupCategory { Name = "Category31", CommunityId = 1 } };
+            yield return new object[] { new EF.GroupCategory { Name = "Category32", CommunityId = 1 } };
+            yield return new object[] { new EF.GroupCategory { Name = "Category33", CommunityId = 1 } };
+            yield return new object[] { new EF.GroupCategory { Name = "Category34", CommunityId = 1 } };
+            yield return new object[] { new EF.GroupCategory { Name = "Category35", CommunityId = 1 } };
+            yield return new object[] { new EF.GroupCategory { Name = "Category36", CommunityId = 1 } };
+        }
+
+        public static IEnumerable<object[]> EditGroupCategory_SuccessParams()
+        {
+            yield return new object[] { new EF.GroupCategory { Id = 1, Name = "Category31", CommunityId = 1 } };
+            yield return new object[] { new EF.GroupCategory { Id = 2, Name = "Category32", CommunityId = 1 } };
+            yield return new object[] { new EF.GroupCategory { Id = 3, Name = "Category33", CommunityId = 1 } };
+            yield return new object[] { new EF.GroupCategory { Id = 4, Name = "Category34", CommunityId = 1 } };
+            yield return new object[] { new EF.GroupCategory { Id = 5, Name = "Category35", CommunityId = 1 } };
+        }
+
+        public static IEnumerable<object[]> EditGroupCategory_FailedParams()
+        {
+            yield return new object[] { new EF.GroupCategory { Id = 31, Name = "Category31", CommunityId = 1 } };
+            yield return new object[] { new EF.GroupCategory { Id = 32, Name = "Category32", CommunityId = 1 } };
+            yield return new object[] { new EF.GroupCategory { Id = 33, Name = "Category33", CommunityId = 1 } };
+            yield return new object[] { new EF.GroupCategory { Id = 34, Name = "Category34", CommunityId = 1 } };
+            yield return new object[] { new EF.GroupCategory { Id = 35, Name = "Category35", CommunityId = 1 } };
+        }
+        #endregion
+
         #region GroupActivityReportTests
         public static IEnumerable<object[]> MonitoringReport_HasResultParams()
         {
