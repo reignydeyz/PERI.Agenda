@@ -114,7 +114,7 @@ namespace PERI.Agenda.Test
 
             eventBusiness.Delete(args);
 
-            Assert.True(true);
+            Assert.True(list.Count < count);
         }
 
         [Theory]

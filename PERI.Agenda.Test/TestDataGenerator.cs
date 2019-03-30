@@ -54,6 +54,8 @@ namespace PERI.Agenda.Test
         {
             yield return new object[] { new EF.Member { Name = "ALVIN", CommunityId = 1 } };
             yield return new object[] { new EF.Member { Name = "CHUA", CommunityId = 1 } };
+            yield return new object[] { new EF.Member { Name = "JUAN", CommunityId = 1 } };
+            yield return new object[] { new EF.Member { Name = "JOHN", CommunityId = 1 } };
         }
 
         public static IEnumerable<object[]> FindMember_HasNoResultParams()
@@ -220,16 +222,41 @@ namespace PERI.Agenda.Test
         #endregion
 
         #region GroupMemberTests
-        public static IEnumerable<object[]> Checklist_IsMemberParams()
+        public static IEnumerable<object[]> FindGroupMember_HasResultParams()
         {
-            yield return new object[] { new EF.Member { Name = "JHE", CommunityId = 1 }, 30, };
-            yield return new object[] { new EF.Member { Name = "JOEL", CommunityId = 1 }, 40 };
+            yield return new object[] { new EF.Member { Name = "ALVIN", CommunityId = 1 }, 1, };
+            yield return new object[] { new EF.Member { Name = "CHUA", CommunityId = 1 }, 1 };
+            yield return new object[] { new EF.Member { Name = "JUAN", CommunityId = 1 }, 1 };
         }
 
-        public static IEnumerable<object[]> Checklist_IsNotMemberParams()
+        public static IEnumerable<object[]> FindGroupMember_HasNoResultParams()
         {
-            yield return new object[] { new EF.Member { Name = "JONATHAN", CommunityId = 1 }, 30 };
-            yield return new object[] { new EF.Member { Name = "LEBRON", CommunityId = 1 }, 40 };
+            yield return new object[] { new EF.Member { Name = "JONATHAN", CommunityId = 1 }, 1 };
+            yield return new object[] { new EF.Member { Name = "LEBRON", CommunityId = 1 }, 1 };
+            yield return new object[] { new EF.Member { Name = "JORDAN", CommunityId = 1 }, 1 };
+            yield return new object[] { new EF.Member { Name = "KOBE", CommunityId = 1 }, 1 };
+            yield return new object[] { new EF.Member { Name = "RODMAN", CommunityId = 1 }, 1 };
+        }
+
+        public static IEnumerable<object[]> AddGroupMember_SuccessParams()
+        {
+            yield return new object[] { new EF.GroupMember { GroupId = 1, MemberId = 10 } };
+            yield return new object[] { new EF.GroupMember { GroupId = 1, MemberId = 11 } };
+            yield return new object[] { new EF.GroupMember { GroupId = 1, MemberId = 12 } };
+        }
+
+        public static IEnumerable<object[]> DeleteGroupMember_SuccessParams()
+        {
+            yield return new object[] { new EF.GroupMember { GroupId = 1, MemberId = 1 } };
+            yield return new object[] { new EF.GroupMember { GroupId = 1, MemberId = 2 } };
+            yield return new object[] { new EF.GroupMember { GroupId = 1, MemberId = 3 } };
+        }
+
+        public static IEnumerable<object[]> DeleteGroupMember_FailedParams()
+        {
+            yield return new object[] { new EF.GroupMember { GroupId = 1, MemberId = 10 } };
+            yield return new object[] { new EF.GroupMember { GroupId = 1, MemberId = 11 } };
+            yield return new object[] { new EF.GroupMember { GroupId = 1, MemberId = 12 } };
         }
         #endregion
 

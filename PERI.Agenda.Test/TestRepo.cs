@@ -111,9 +111,9 @@ namespace PERI.Agenda.Test
 
         public List<EF.Group> Groups = new List<EF.Group>
         {
-            new EF.Group { Id = 1, Name = "Group1", GroupLeader = 1, GroupCategoryId = 1, GroupCategory = new EF.GroupCategory { CommunityId = 1 } },
-            new EF.Group { Id = 2, Name = "Group2", GroupLeader = 2, GroupCategoryId = 1, GroupCategory = new EF.GroupCategory { CommunityId = 1 } },
-            new EF.Group { Id = 3, Name = "Group3", GroupLeader = 3, GroupCategoryId = 1, GroupCategory = new EF.GroupCategory { CommunityId = 1 } },
+            new EF.Group { Id = 1, Name = "Group1", GroupLeader = 10, GroupCategoryId = 1, GroupCategory = new EF.GroupCategory { CommunityId = 1 } },
+            new EF.Group { Id = 2, Name = "Group2", GroupLeader = 11, GroupCategoryId = 1, GroupCategory = new EF.GroupCategory { CommunityId = 1 } },
+            new EF.Group { Id = 3, Name = "Group3", GroupLeader = 12, GroupCategoryId = 1, GroupCategory = new EF.GroupCategory { CommunityId = 1 } },
         };
 
         public List<EF.GroupCategory> GroupCategories = new List<EF.GroupCategory>
@@ -124,6 +124,13 @@ namespace PERI.Agenda.Test
             new EF.GroupCategory { Id = 4, Name = "Category4", CommunityId = 1 },
             new EF.GroupCategory { Id = 5, Name = "Category5", CommunityId = 1 },
             new EF.GroupCategory { Id = 6, Name = "Category6", CommunityId = 1 },
+        };
+
+        public List<EF.GroupMember> GroupMembers = new List<EF.GroupMember>
+        {
+            new EF.GroupMember { Member = new EF.Member { Id = 1, Name = "ALVIN" }, MemberId = 1, GroupId = 1, Group = new EF.Group { Id = 1, Name = "Group1", GroupLeader = 10, GroupCategoryId = 1, GroupCategory = new EF.GroupCategory { CommunityId = 1 } } },
+            new EF.GroupMember { Member = new EF.Member { Id = 2, Name = "CHUA" }, MemberId = 2, GroupId = 1, Group = new EF.Group { Id = 1, Name = "Group1", GroupLeader = 10, GroupCategoryId = 1, GroupCategory = new EF.GroupCategory { CommunityId = 1 } } },
+            new EF.GroupMember { Member = new EF.Member { Id = 3, Name = "JUAN" }, MemberId = 3, GroupId = 1, Group = new EF.Group { Id = 1, Name = "Group1", GroupLeader = 10, GroupCategoryId = 1, GroupCategory = new EF.GroupCategory { CommunityId = 1 } } },
         };
     }
 }
