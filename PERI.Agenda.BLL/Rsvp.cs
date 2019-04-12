@@ -17,12 +17,14 @@ namespace PERI.Agenda.BLL
             unitOfWork = _unitOfWork;
         }
 
-        public async Task Add(EF.Rsvp args)
+        public async Task<int> Add(EF.Rsvp args)
         {
             args.DateCreated = DateTime.Now;
             args.DateModified = args.DateCreated;
             await unitOfWork.RsvpRepository.AddAsync(args);
             unitOfWork.Commit();
+
+            return args.EventId;
         }
 
         public async Task Delete(EF.Rsvp args)
@@ -56,11 +58,6 @@ namespace PERI.Agenda.BLL
         }
 
         public Task Activate(int[] ids)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<int> ISampleData<EF.Rsvp>.Add(EF.Rsvp args)
         {
             throw new NotImplementedException();
         }
