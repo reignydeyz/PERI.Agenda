@@ -132,5 +132,18 @@ namespace PERI.Agenda.Test
             new EF.GroupMember { Member = new EF.Member { Id = 2, Name = "CHUA" }, MemberId = 2, GroupId = 1, Group = new EF.Group { Id = 1, Name = "Group1", GroupLeader = 10, GroupCategoryId = 1, GroupCategory = new EF.GroupCategory { CommunityId = 1 } } },
             new EF.GroupMember { Member = new EF.Member { Id = 3, Name = "JUAN" }, MemberId = 3, GroupId = 1, Group = new EF.Group { Id = 1, Name = "Group1", GroupLeader = 10, GroupCategoryId = 1, GroupCategory = new EF.GroupCategory { CommunityId = 1 } } },
         };
+
+        public List<EF.Rsvp> Rsvps = new List<EF.Rsvp>
+        {
+            new EF.Rsvp { EventId = 1, MemberId = 1, IsGoing = true, Member = new EF.Member { Id = 1, Name = "ALVIN", Email = "abc@y.com", CommunityId = 1, IsActive = true, EndUser = new EF.EndUser { RoleId = 1, MemberId = 1 } }, },
+            new EF.Rsvp { EventId = 1, MemberId = 2, IsGoing = true, Member = new EF.Member { Id = 2, Name = "CHUA", Email = "bcd@y.com", CommunityId = 1, IsActive = true, EndUser = new EF.EndUser { RoleId = 1, MemberId = 2 } },},
+            new EF.Rsvp { EventId = 1, MemberId = 3, IsGoing = true, Member = new EF.Member { Id = 3, Name = "JUAN", Email = "cde@y.com", CommunityId = 1, IsActive = true, EndUser = new EF.EndUser { RoleId = 1, MemberId = 3 } }, },
+            new EF.Rsvp { EventId = 1, MemberId = 4, IsGoing = true, Member = new EF.Member { Id = 4, Name = "JOHN", Email = "def@y.com", CommunityId = 1, IsActive = true, EndUser =  new EF.EndUser { RoleId = 1, MemberId = 4 }}, },
+            new EF.Rsvp { EventId = 1, MemberId = 5, IsGoing = true, Member = new EF.Member { Id = 5, Name = "ALVIN1", Email = "abc1@y.com", CommunityId = 1, IsActive = true, EndUser = new EF.EndUser { RoleId = 1, MemberId = 5 } }, },
+            new EF.Rsvp { EventId = 1, MemberId = 6, IsGoing = true, Member = new EF.Member { Id = 6, Name = "CHUA1", Email = "bcd1@y.com", CommunityId = 1, IsActive = true, EndUser = new EF.EndUser { RoleId = 1, MemberId = 6 } }, },
+            new EF.Rsvp { EventId = 1, MemberId = 7, IsGoing = true, Member = new EF.Member { Id = 7, Name = "JUAN1", Email = "cde1@y.com", CommunityId = 1, IsActive = true, EndUser = new EF.EndUser { RoleId = 1, MemberId = 7 } }, },
+            new EF.Rsvp { EventId = 1, MemberId = 8, IsGoing = true, Member = new EF.Member { Id = 8, Name = "JOHN1", Email = "def1@y.com", CommunityId = 1 , IsActive = true, EndUser =  new EF.EndUser { RoleId = 1, MemberId = 8 }}, },
+            new EF.Rsvp { EventId = 1, MemberId = 9, IsGoing = true, Member = new EF.Member { Id = 9, Name = "ALVIN2", Email = "abc2@y.com", CommunityId = 1, IsActive = true, EndUser = new EF.EndUser { RoleId = 1, MemberId = 9 } }, },
+        };
     }
 }

@@ -322,5 +322,67 @@ namespace PERI.Agenda.Test
             } };
         }
         #endregion
+
+        #region RsvpTests
+        public static IEnumerable<object[]> RsvpController_Add_SuccessParams()
+        {
+            yield return new object[] { new Web.Models.Rsvp { EventId = 2, MemberId = 1, IsGoing = true } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 2, MemberId = 2, IsGoing = true } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 2, MemberId = 3, IsGoing = true } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 2, MemberId = 4, IsGoing = true } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 2, MemberId = 5, IsGoing = true } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 2, MemberId = 6, IsGoing = true } };
+        }
+
+        public static IEnumerable<object[]> RsvpController_Update_SuccessParams()
+        {
+            yield return new object[] { new Web.Models.Rsvp { EventId = 1, MemberId = 1, IsGoing = false } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 1, MemberId = 2, IsGoing = false } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 1, MemberId = 3, IsGoing = false } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 1, MemberId = 4, IsGoing = false } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 1, MemberId = 5, IsGoing = false } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 1, MemberId = 6, IsGoing = false } };
+        }
+
+        public static IEnumerable<object[]> RsvpController_Delete_SuccessParams()
+        {
+            yield return new object[] { new Web.Models.Rsvp { EventId = 1, MemberId = 1, IsGoing = true } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 1, MemberId = 2, IsGoing = true } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 1, MemberId = 3, IsGoing = true } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 1, MemberId = 4, IsGoing = true } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 1, MemberId = 5, IsGoing = true } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 1, MemberId = 6, IsGoing = true } };
+        }
+
+        public static IEnumerable<object[]> RsvpController_Delete_FailedParams()
+        {
+            yield return new object[] { new Web.Models.Rsvp { EventId = 2, MemberId = 1, IsGoing = true } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 2, MemberId = 2, IsGoing = true } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 2, MemberId = 3, IsGoing = true } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 2, MemberId = 4, IsGoing = true } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 2, MemberId = 5, IsGoing = true } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 2, MemberId = 6, IsGoing = true } };
+        }
+
+        public static IEnumerable<object[]> RsvpController_Find_HasResultParams()
+        {
+            yield return new object[] { new Web.Models.Rsvp { EventId = 1, MemberId = 1, IsGoing = true, Member = "ALVIN" } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 1, MemberId = 2, IsGoing = true, Member = "CHUA" } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 1, MemberId = 3, IsGoing = true, Member = "JUAN" } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 1, MemberId = 4, IsGoing = true, Member = "JOHN" } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 1, MemberId = 5, IsGoing = true, Member = "ALVIN1" } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 1, MemberId = 6, IsGoing = true, Member = "CHUA1" } };
+        }
+
+        public static IEnumerable<object[]> RsvpController_Find_HasNoResultParams()
+        {
+            yield return new object[] { new Web.Models.Rsvp { EventId = 2, MemberId = 1, IsGoing = true, Member = "ALVIN" } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 2, MemberId = 2, IsGoing = true, Member = "CHUA" } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 2, MemberId = 3, IsGoing = true, Member = "JUAN" } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 2, MemberId = 4, IsGoing = true, Member = "JOHN" } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 2, MemberId = 5, IsGoing = true, Member = "ALVIN1" } };
+            yield return new object[] { new Web.Models.Rsvp { EventId = 2, MemberId = 6, IsGoing = true, Member = "CHUA1" } };
+        }
+        #endregion
     }
 }
