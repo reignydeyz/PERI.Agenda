@@ -384,5 +384,39 @@ namespace PERI.Agenda.Test
             yield return new object[] { new Web.Models.Rsvp { EventId = 2, MemberId = 6, IsGoing = true, Member = "CHUA1" } };
         }
         #endregion
+
+        #region EndUsersTests
+        public static IEnumerable<object[]>UserController_Update_SuccessParams()
+        {
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 1 } };
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 2 } };
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 3 } };
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 4 } };
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 5 } };
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 6 } };
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 7 } };
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 8 } };
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 9 } };
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 10 } };
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 11 } };
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 12 } };
+        }
+
+        public static IEnumerable<object[]> UserController_Update_FailedParams()
+        {
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 111 } };
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 211 } };
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 311 } };
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 411 } };
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 511 } };
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 611 } };
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 711 } };
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 811 } };
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 911 } };
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 101 } };
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 1112 } };
+            yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 1212 } };
+        }
+        #endregion
     }
 }
