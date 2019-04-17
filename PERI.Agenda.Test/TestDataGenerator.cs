@@ -418,5 +418,52 @@ namespace PERI.Agenda.Test
             yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 1212 } };
         }
         #endregion
+
+        #region ReportTests
+        public static IEnumerable<object[]> ReportTemplateController_New_SuccessParams()
+        {
+            yield return new object[] { new Web.Models.ReportTemplate { CommunityId = 1, ReportId = 11, Name = "Report11" }, };
+            yield return new object[] { new Web.Models.ReportTemplate { CommunityId = 1, ReportId = 21, Name = "Report21" }, };
+            yield return new object[] { new Web.Models.ReportTemplate { CommunityId = 1, ReportId = 31, Name = "Report31" }, };
+            yield return new object[] { new Web.Models.ReportTemplate { CommunityId = 1, ReportId = 41, Name = "Report41" }, };
+            yield return new object[] { new Web.Models.ReportTemplate { CommunityId = 1, ReportId = 51, Name = "Report51" }, };            
+        }
+
+        public static IEnumerable<object[]> ReportTemplateController_Edit_SuccessParams()
+        {
+            yield return new object[] { new Web.Models.ReportTemplate { CommunityId = 1, ReportId = 1, Name = "Report11" }, };
+            yield return new object[] { new Web.Models.ReportTemplate { CommunityId = 1, ReportId = 2, Name = "Report21" }, };
+            yield return new object[] { new Web.Models.ReportTemplate { CommunityId = 1, ReportId = 3, Name = "Report31" }, };
+            yield return new object[] { new Web.Models.ReportTemplate { CommunityId = 1, ReportId = 4, Name = "Report41" }, };
+            yield return new object[] { new Web.Models.ReportTemplate { CommunityId = 1, ReportId = 5, Name = "Report51" }, };
+        }
+
+        public static IEnumerable<object[]> ReportTemplateController_Edit_FailedParams()
+        {
+            yield return new object[] { new Web.Models.ReportTemplate { CommunityId = 1, ReportId = 11, Name = "Report11" }, };
+            yield return new object[] { new Web.Models.ReportTemplate { CommunityId = 1, ReportId = 21, Name = "Report21" }, };
+            yield return new object[] { new Web.Models.ReportTemplate { CommunityId = 1, ReportId = 31, Name = "Report31" }, };
+            yield return new object[] { new Web.Models.ReportTemplate { CommunityId = 1, ReportId = 41, Name = "Report41" }, };
+            yield return new object[] { new Web.Models.ReportTemplate { CommunityId = 1, ReportId = 51, Name = "Report51" }, };
+        }
+
+        public static IEnumerable<object[]> ReportTemplateController_Find_HasResultParams()
+        {
+            yield return new object[] { new EF.Report { CommunityId = 1, ReportId = 1, Name = "Report1" }, };
+            yield return new object[] { new EF.Report { CommunityId = 1, ReportId = 2, Name = "Report2" }, };
+            yield return new object[] { new EF.Report { CommunityId = 1, ReportId = 3, Name = "Report3" }, };
+            yield return new object[] { new EF.Report { CommunityId = 1, ReportId = 4, Name = "Report4" }, };
+            yield return new object[] { new EF.Report { CommunityId = 1, ReportId = 5, Name = "Report5" }, };
+        }
+
+        public static IEnumerable<object[]> ReportTemplateController_Find_HasNoResultParams()
+        {
+            yield return new object[] { new EF.Report { CommunityId = 1, ReportId = 12, Name = "Report12" }, };
+            yield return new object[] { new EF.Report { CommunityId = 1, ReportId = 22, Name = "Report22" }, };
+            yield return new object[] { new EF.Report { CommunityId = 1, ReportId = 32, Name = "Report32" }, };
+            yield return new object[] { new EF.Report { CommunityId = 1, ReportId = 42, Name = "Report42" }, };
+            yield return new object[] { new EF.Report { CommunityId = 1, ReportId = 52, Name = "Report52" }, };
+        }
+        #endregion
     }
 }

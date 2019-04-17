@@ -145,5 +145,19 @@ namespace PERI.Agenda.Test
             new EF.Rsvp { EventId = 1, MemberId = 8, IsGoing = true, Member = new EF.Member { Id = 8, Name = "JOHN1", Email = "def1@y.com", CommunityId = 1 , IsActive = true, EndUser =  new EF.EndUser { RoleId = 1, MemberId = 8 }}, },
             new EF.Rsvp { EventId = 1, MemberId = 9, IsGoing = true, Member = new EF.Member { Id = 9, Name = "ALVIN2", Email = "abc2@y.com", CommunityId = 1, IsActive = true, EndUser = new EF.EndUser { RoleId = 1, MemberId = 9 } }, },
         };
+
+        public List<EF.Report> Reports = new List<EF.Report>
+        {
+            new EF.Report { CommunityId = 1, ReportId = 1, Name = "Report1" },
+            new EF.Report { CommunityId = 1, ReportId = 2, Name = "Report2" },
+            new EF.Report { CommunityId = 1, ReportId = 3, Name = "Report3" },
+            new EF.Report { CommunityId = 1, ReportId = 4, Name = "Report4" },
+            new EF.Report { CommunityId = 1, ReportId = 5, Name = "Report5" },
+            new EF.Report { CommunityId = 2, ReportId = 6, Name = "Report19" },
+            new EF.Report { CommunityId = 2, ReportId = 7, Name = "Report29" },
+            new EF.Report { CommunityId = 2, ReportId = 8, Name = "Report39" },
+            new EF.Report { CommunityId = 2, ReportId = 9, Name = "Report49" },
+            new EF.Report { CommunityId = 2, ReportId = 10, Name = "Report59" },
+        };
     }
 }
