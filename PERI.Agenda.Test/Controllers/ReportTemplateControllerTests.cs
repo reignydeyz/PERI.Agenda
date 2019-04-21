@@ -16,6 +16,7 @@ using AutoMapper;
 
 namespace PERI.Agenda.Test.Controllers
 {
+    [Collection("MyCollection")]
     public class ReportTemplateControllerTests
     {
         private readonly Mock<BLL.IUnitOfWork> mockUnitOfWork;
@@ -30,14 +31,6 @@ namespace PERI.Agenda.Test.Controllers
 
         public ReportTemplateControllerTests()
         {
-            // Reset Mapper
-            // https://github.com/AutoMapper/AutoMapper/issues/2607
-            Mapper.Reset();
-
-            // Initialize Mapper
-            // https://stackoverflow.com/questions/14108080/automapper-enum-to-byte-with-implemention-imapperconfigurator/14150006#14150006
-            Mapper.Initialize(m => m.AddProfile<Web.AutoMapperProfileConfiguration>());
-            
             mockUnitOfWork = new Mock<BLL.IUnitOfWork>();
 
             mockReportRepo = new Mock<Repository.IRepository<EF.Report>>();
@@ -65,7 +58,7 @@ namespace PERI.Agenda.Test.Controllers
         public void Add_Success(Web.Models.ReportTemplate obj)
         {
             var complete = controller.New(obj).IsCompletedSuccessfully;
-
+            
             Assert.True(complete);
         }
 
@@ -74,7 +67,7 @@ namespace PERI.Agenda.Test.Controllers
         public void Update_Success(Web.Models.ReportTemplate obj)
         {
             var complete = controller.Edit(obj).IsCompletedSuccessfully;
-
+            
             Assert.True(complete);
         }
 
@@ -105,7 +98,7 @@ namespace PERI.Agenda.Test.Controllers
         public async Task Delete_HasResturnedBadRequest(params int[] args)
         {
             var res = await controller.Delete(args) as StatusCodeResult;
-
+            
             res.StatusCode.Should().Be(400);
         }
 

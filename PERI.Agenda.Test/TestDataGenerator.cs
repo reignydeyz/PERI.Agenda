@@ -323,7 +323,7 @@ namespace PERI.Agenda.Test
         }
         #endregion
 
-        #region RsvpTests
+        #region RsvpControllerTests
         public static IEnumerable<object[]> RsvpController_Add_SuccessParams()
         {
             yield return new object[] { new Web.Models.Rsvp { EventId = 2, MemberId = 1, IsGoing = true } };
@@ -385,7 +385,7 @@ namespace PERI.Agenda.Test
         }
         #endregion
 
-        #region EndUsersTests
+        #region EndUserControllerTests
         public static IEnumerable<object[]>UserController_Update_SuccessParams()
         {
             yield return new object[] { new Web.Models.Member { RoleId = 2, Id = 1 } };
@@ -419,7 +419,7 @@ namespace PERI.Agenda.Test
         }
         #endregion
 
-        #region ReportTests
+        #region ReportControllerTests
         public static IEnumerable<object[]> ReportTemplateController_New_SuccessParams()
         {
             yield return new object[] { new Web.Models.ReportTemplate { CommunityId = 1, ReportId = 11, Name = "Report11" }, };
@@ -463,6 +463,32 @@ namespace PERI.Agenda.Test
             yield return new object[] { new EF.Report { CommunityId = 1, ReportId = 32, Name = "Report32" }, };
             yield return new object[] { new EF.Report { CommunityId = 1, ReportId = 42, Name = "Report42" }, };
             yield return new object[] { new EF.Report { CommunityId = 1, ReportId = 52, Name = "Report52" }, };
+        }
+        #endregion
+
+        #region MemberControllerTests
+        public static IEnumerable<object[]> MemberController_Find_HasResultParams()
+        {
+            yield return new object[] { new Web.Models.Member { Name = "ALVIN", CommunityId = 1 } };
+            yield return new object[] { new Web.Models.Member { Name = "CHUA", CommunityId = 1 } };
+            yield return new object[] { new Web.Models.Member { Name = "JUAN", CommunityId = 1 } };
+            yield return new object[] { new Web.Models.Member { Name = "JOHN", CommunityId = 1 } };
+        }
+
+        public static IEnumerable<object[]> MemberController_New_SuccessParams()
+        {
+            yield return new object[] { new Web.Models.Member { Name = "ALVIN91", CommunityId = 1 } };
+            yield return new object[] { new Web.Models.Member { Name = "CHUA91", CommunityId = 1 } };
+            yield return new object[] { new Web.Models.Member { Name = "JUAN91", CommunityId = 1 } };
+            yield return new object[] { new Web.Models.Member { Name = "JOHN91", CommunityId = 1 } };
+        }
+
+        public static IEnumerable<object[]> MemberController_Find_HasNoResultParams()
+        {
+            yield return new object[] { new Web.Models.Member { Name = "ALVIN91", CommunityId = 1 } };
+            yield return new object[] { new Web.Models.Member { Name = "CHUA91", CommunityId = 1 } };
+            yield return new object[] { new Web.Models.Member { Name = "JUAN91", CommunityId = 1 } };
+            yield return new object[] { new Web.Models.Member { Name = "JOHN91", CommunityId = 1 } };
         }
         #endregion
     }
