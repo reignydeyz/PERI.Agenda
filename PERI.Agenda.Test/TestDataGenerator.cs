@@ -490,6 +490,30 @@ namespace PERI.Agenda.Test
             yield return new object[] { new Web.Models.Member { Name = "JUAN91", CommunityId = 1 } };
             yield return new object[] { new Web.Models.Member { Name = "JOHN91", CommunityId = 1 } };
         }
+
+        public static IEnumerable<object[]> MemberController_Edit_SuccessParams()
+        {
+            yield return new object[] { new Web.Models.Member { Id = 1, Name = "ALVIN91", CommunityId = 1 } };
+            yield return new object[] { new Web.Models.Member { Id = 2, Name = "CHUA91", CommunityId = 1 } };
+            yield return new object[] { new Web.Models.Member { Id = 3, Name = "JUAN91", CommunityId = 1 } };
+            yield return new object[] { new Web.Models.Member { Id = 4, Name = "JOHN91", CommunityId = 1 } };
+        }
+
+        public static IEnumerable<object[]> MemberController_Edit_FailedParams()
+        {
+            yield return new object[] { new Web.Models.Member { Id = 91, Name = "ALVIN91", CommunityId = 1 } };
+            yield return new object[] { new Web.Models.Member { Id = 92, Name = "CHUA91", CommunityId = 1 } };
+            yield return new object[] { new Web.Models.Member { Id = 93, Name = "JUAN91", CommunityId = 1 } };
+            yield return new object[] { new Web.Models.Member { Id = 94, Name = "JOHN91", CommunityId = 1 } };
+        }
+
+        public static IEnumerable<object[]> MemberController_Download_SuccessParams()
+        {
+            yield return new object[] { new Web.Models.Member { Name = "ALVIN91", CommunityId = 1 } };
+            yield return new object[] { new Web.Models.Member { Name = "CHUA91", CommunityId = 1 } };
+            yield return new object[] { new Web.Models.Member { Name = "JUAN91", CommunityId = 1 } };
+            yield return new object[] { new Web.Models.Member { Name = "JOHN91", CommunityId = 1 } };
+        }
         #endregion
     }
 }

@@ -101,12 +101,12 @@ namespace PERI.Agenda.Test
 
         public List<EF.Attendance> Attendances = new List<EF.Attendance>
         {
-            new EF.Attendance { Id = 1, EventId = 1, MemberId = 1 },
-            new EF.Attendance { Id = 2, EventId = 1, MemberId = 2 },
-            new EF.Attendance { Id = 3, EventId = 2, MemberId = 1 },
-            new EF.Attendance { Id = 4, EventId = 2, MemberId = 2 },
-            new EF.Attendance { Id = 5, EventId = 3, MemberId = 1 },
-            new EF.Attendance { Id = 6, EventId = 3, MemberId = 2 },
+            new EF.Attendance { Id = 1, EventId = 1, MemberId = 1, Event = new EF.Event { Id=1, Name = "EVENT0001", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(1), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { Id = 1, Name = "Category1", CommunityId = 1 } } },
+            new EF.Attendance { Id = 2, EventId = 1, MemberId = 2, Event = new EF.Event { Id=1, Name = "EVENT0001", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(1), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { Id = 1, Name = "Category1", CommunityId = 1 } } },
+            new EF.Attendance { Id = 3, EventId = 2, MemberId = 1, Event = new EF.Event { Id=2,Name = "EVENT0002", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(2), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { Id = 1, Name = "Category1", CommunityId = 1 } } },
+            new EF.Attendance { Id = 4, EventId = 2, MemberId = 2, Event = new EF.Event { Id=2,Name = "EVENT0002", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(2), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { Id = 1, Name = "Category1", CommunityId = 1 } } },
+            new EF.Attendance { Id = 5, EventId = 3, MemberId = 1, Event = new EF.Event { Id=3,Name = "EVENT0003", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(3), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { Id = 1, Name = "Category1", CommunityId = 1 } } },
+            new EF.Attendance { Id = 6, EventId = 3, MemberId = 2, Event = new EF.Event { Id=3,Name = "EVENT0003", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(3), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { Id = 1, Name = "Category1", CommunityId = 1 } } },
         };
 
         public List<EF.Group> Groups = new List<EF.Group>
