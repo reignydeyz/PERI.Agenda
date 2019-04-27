@@ -178,15 +178,14 @@ namespace PERI.Agenda.Web.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns>CSV</returns>
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpGet]
         [Route("{id}/Download")]
         public async Task<IActionResult> Download(int id)
         {
             var bll_g = groupBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
-
-            if (!await bll_g.IsSelectedIdsOk(new int[] { id }, user))
-                return Unauthorized();
 
             var res = from r in await groupCategoryBusiness.Members(id)
                       join genders in (await lookUpBusiness.GetByGroup("Gender")).Select(x => new { Label = x.Name, Value = int.Parse(x.Value) }) on r.Gender equals genders.Value into e
