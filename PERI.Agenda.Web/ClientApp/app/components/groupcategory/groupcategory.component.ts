@@ -10,6 +10,7 @@ import { Title } from '@angular/platform-browser';
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
 import { Group } from '../group/group.component';
 import { Statistics, GraphDataSet, GraphData } from '../graph/graph.component';
+import { saveAs } from 'file-saver';
 
 export class GroupCategoryModule {
     public http: Http;
@@ -72,6 +73,18 @@ export class GroupCategoryComponent {
 
         this.gcm.ex = new ErrorExceptionModule();
         this.gcm.ex.baseUrl = this.baseUrl;
+    }
+
+    downloadFile(data: any) {
+        var blob = new Blob([data], { type: 'text/csv' });
+        saveAs(blob, "data.csv");
+    }
+
+    download(id: number) {
+        this.http.get(this.baseUrl + 'api/groupcategory/' + id + '/download').subscribe(result => {
+            let parsedResponse = result.text();
+            this.downloadFile(parsedResponse);
+        }, error => this.gcm.ex.catchError(error));;
     }
 
     checkAll() {

@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PERI.Agenda.BLL;
+using PERI.Agenda.Core;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -17,11 +19,18 @@ namespace PERI.Agenda.Web.Controllers
     {
         private readonly IGroup groupBusiness;
         private readonly IGroupMember groupMemberBusiness;
+        private readonly IMember memberBusiness;
+        private readonly ILookUp lookUpBusiness;
 
-        public GroupMemberController(IGroup group, IGroupMember groupMember)
+        public GroupMemberController(IGroup group, 
+            IGroupMember groupMember,
+            IMember member,
+            ILookUp lookUp)
         {
             this.groupBusiness = group;
             this.groupMemberBusiness = groupMember;
+            this.memberBusiness = member;
+            this.lookUpBusiness = lookUp;
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
@@ -103,6 +112,52 @@ namespace PERI.Agenda.Web.Controllers
                       };
 
             return Json(await res.ToListAsync());
+        }
+
+        /// <summary>
+        /// Download members of the group
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>CSV</returns>
+        [HttpGet]
+        [Route("{id}/Download")]
+        public async Task<IActionResult> Download(int id)
+        {
+            var bll_g = groupBusiness;
+            var bll_gm = groupMemberBusiness;
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            if (!await bll_g.IsSelectedIdsOk(new int[] { id }, user))
+                return Unauthorized();
+
+            var res = from r in await bll_gm.Members(new EF.Member(), id).ToListAsync()
+                      join genders in (await lookUpBusiness.GetByGroup("Gender")).Select(x => new { Label = x.Name, Value = int.Parse(x.Value) }) on r.Gender equals genders.Value into e
+                      from e1 in e.DefaultIfEmpty()
+                      join civilStatuses in (await lookUpBusiness.GetByGroup("Civil Status")).Select(x => new { Label = x.Name, Value = int.Parse(x.Value) }) on r.CivilStatus equals civilStatuses.Value into f
+                      from f1 in f.DefaultIfEmpty()
+                      join m in memberBusiness.Find(new EF.Member { CommunityId = user.Member.CommunityId }) on r.InvitedBy equals m.Id into g
+                      from m1 in g.DefaultIfEmpty()
+                      select new
+                      {
+                          r.Id,
+                          r.Name,
+                          r.NickName,
+                          r.Address,
+                          r.Mobile,
+                          r.Email,
+                          r.BirthDate,
+                          r.Remarks,
+                          r.CivilStatus,
+                          r.Gender,
+                          InvitedByMemberName = m1 == null ? "" : m1.Name,
+                          r.IsActive
+                      };
+
+            var bytes = Encoding.ASCII.GetBytes(res.ToList().ExportToCsv().ToString());
+
+            var result = new FileContentResult(bytes, "text/csv");
+            result.FileDownloadName = "my-csv-file.csv";
+            return result;
         }
 
         /// <summary>

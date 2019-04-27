@@ -85,5 +85,14 @@ namespace PERI.Agenda.BLL
         {
             return await unitOfWork.GroupCategoryRepository.Entities.Where(x => ids.Contains(x.Id) && x.CommunityId == user.Member.CommunityId).CountAsync() == ids.Count();
         }
+
+        public async Task<List<EF.Member>> Members(int id)
+        {
+            return await unitOfWork.GroupMemberRepository.Entities
+                .Include(x => x.Member)
+                .Include(x => x.Group)
+                .Where(x => x.Group.GroupCategoryId == id)
+                .Select(x => x.Member).OrderBy(x => x.Name).ToListAsync();
+        }
     }
 }

@@ -9,6 +9,7 @@ import { Pager } from '../pager/pager.component';
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
 import { NgForm } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
+import { saveAs } from 'file-saver';
 
 export class GroupMemberModule {
     public http: Http;
@@ -72,6 +73,18 @@ export class GroupMemberComponent {
         }, error => this.ex.catchError(error));
     }
 
+    downloadFile(data: any) {
+        var blob = new Blob([data], { type: 'text/csv' });
+        saveAs(blob, "data.csv");
+    }
+
+    private download(groupId: number) {
+        this.http.get(this.baseUrl + 'api/groupmember/' + groupId + '/download').subscribe(result => {
+            let parsedResponse = result.text();
+            this.downloadFile(parsedResponse);
+        }, error => this.gmm.ex.catchError(error));;
+    }
+
     ngOnInit() {
         this.search = "";
         this.pager = new Pager();
@@ -92,6 +105,10 @@ export class GroupMemberComponent {
                 };
             }
         }
+    }
+
+    public onDownloadClick() {
+        this.download(this.group.id);
     }
 
     public onChecklistSearchSubmit(f: NgForm) {

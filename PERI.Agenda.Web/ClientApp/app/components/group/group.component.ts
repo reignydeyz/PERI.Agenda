@@ -263,8 +263,19 @@ export class GroupComponent {
         }, error => this.gm.ex.catchError(error));;
     }
 
+    private downloadMembers(groupId: number) {
+        this.http.get(this.baseUrl + 'api/groupmember/' + groupId + '/download').subscribe(result => {
+            let parsedResponse = result.text();
+            this.downloadFile(parsedResponse);
+        }, error => this.gm.ex.catchError(error));;
+    }
+
     public onDownloadClick() {
         this.download(this.search);
+    }
+
+    public onDownloadMembersClick(id: number) {
+        this.downloadMembers(id);
     }
 
     onModalProfileInit(id: number) {

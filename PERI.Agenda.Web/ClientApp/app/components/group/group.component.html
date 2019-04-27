@@ -69,7 +69,9 @@
                 <td>{{ g.name }}</td>
                 <td>{{ g.category }}</td>
                 <td><a href="#" data-toggle="modal" data-target="#modalProfile" (click)="onModalProfileInit(g.leaderMemberId)">{{ g.leader }}</a></td>
-                <td>{{ g.members }}</td>
+                <td>
+                    <button type="button" class="btn btn-link" (click)="onDownloadMembersClick(g.id)" title="Download Members">{{ g.members }}</button>
+                </td>
             </tr>
         </tbody>
     </table>

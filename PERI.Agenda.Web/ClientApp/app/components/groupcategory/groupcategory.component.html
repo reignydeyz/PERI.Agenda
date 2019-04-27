@@ -38,7 +38,7 @@
                 </td>
                 <td>{{ g.name }}</td>
                 <td>{{ g.groups }}</td>
-                <td>{{ g.members }}</td>
+                <td><button type="button" class="btn btn-link" (click)="download(g.id)" title="Download Members">{{ g.members }}</button></td>
             </tr>
         </tbody>
     </table>
