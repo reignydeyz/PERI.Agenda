@@ -515,5 +515,87 @@ namespace PERI.Agenda.Test
             yield return new object[] { new Web.Models.Member { Name = "JOHN91", CommunityId = 1 } };
         }
         #endregion
+
+        #region LocationControllerTests
+        public static IEnumerable<object[]> LocationController_Add_SuccessParams()
+        {
+            yield return new object[] { new Web.Models.Location { CommunityId = 1, Name = "Location91" }};
+            yield return new object[] { new Web.Models.Location { CommunityId = 1, Name = "Location92" }};
+            yield return new object[] { new Web.Models.Location { CommunityId = 1, Name = "Location93" }};
+            yield return new object[] { new Web.Models.Location { CommunityId = 1, Name = "Location94" }};
+            yield return new object[] { new Web.Models.Location { CommunityId = 1, Name = "Location95" }};
+            yield return new object[] { new Web.Models.Location { CommunityId = 1, Name = "Location919" }};
+            yield return new object[] { new Web.Models.Location { CommunityId = 1, Name = "Location929" }};
+            yield return new object[] { new Web.Models.Location { CommunityId = 1, Name = "Location939" }};
+            yield return new object[] { new Web.Models.Location { CommunityId = 1, Name = "Location949" }};
+            yield return new object[] { new Web.Models.Location { CommunityId = 1, Name = "Location959" }};
+            yield return new object[] { new Web.Models.Location { CommunityId = 1, Name = "Location969" }};
+            yield return new object[] { new Web.Models.Location { CommunityId = 1, Name = "Location799" }};
+        }
+
+        public static IEnumerable<object[]> LocationController_Edit_SuccessParams()
+        {
+            yield return new object[] { new Web.Models.Location {Id = 1, CommunityId = 1, Name = "Location91" } };
+            yield return new object[] { new Web.Models.Location {Id = 2, CommunityId = 1, Name = "Location92" } };
+            yield return new object[] { new Web.Models.Location {Id = 3, CommunityId = 1, Name = "Location93" } };
+            yield return new object[] { new Web.Models.Location {Id = 4, CommunityId = 1, Name = "Location94" } };
+            yield return new object[] { new Web.Models.Location {Id = 5, CommunityId = 1, Name = "Location95" } };
+            yield return new object[] { new Web.Models.Location {Id = 6, CommunityId = 1, Name = "Location919" } };
+            yield return new object[] { new Web.Models.Location {Id = 7, CommunityId = 1, Name = "Location929" } };
+            yield return new object[] { new Web.Models.Location {Id = 8, CommunityId = 1, Name = "Location939" } };
+            yield return new object[] { new Web.Models.Location {Id = 9, CommunityId = 1, Name = "Location949" } };
+            yield return new object[] { new Web.Models.Location {Id = 10,CommunityId = 1, Name = "Location959" } };
+            yield return new object[] { new Web.Models.Location {Id = 11,CommunityId = 1, Name = "Location969" } };
+            yield return new object[] { new Web.Models.Location {Id = 12,CommunityId = 1, Name = "Location799" } };
+        }
+
+        public static IEnumerable<object[]> LocationController_Edit_FailedParams()
+        {
+            yield return new object[] { new Web.Models.Location { Id = 91, CommunityId = 1, Name = "Location91" } };
+            yield return new object[] { new Web.Models.Location { Id = 92, CommunityId = 1, Name = "Location92" } };
+            yield return new object[] { new Web.Models.Location { Id = 93, CommunityId = 1, Name = "Location93" } };
+            yield return new object[] { new Web.Models.Location { Id = 94, CommunityId = 1, Name = "Location94" } };
+            yield return new object[] { new Web.Models.Location { Id = 95, CommunityId = 1, Name = "Location95" } };
+            yield return new object[] { new Web.Models.Location { Id = 96, CommunityId = 1, Name = "Location919" } };
+            yield return new object[] { new Web.Models.Location { Id = 97, CommunityId = 1, Name = "Location929" } };
+            yield return new object[] { new Web.Models.Location { Id = 98, CommunityId = 1, Name = "Location939" } };
+            yield return new object[] { new Web.Models.Location { Id = 99, CommunityId = 1, Name = "Location949" } };
+            yield return new object[] { new Web.Models.Location { Id = 910, CommunityId = 1, Name = "Location959" } };
+            yield return new object[] { new Web.Models.Location { Id = 911, CommunityId = 1, Name = "Location969" } };
+            yield return new object[] { new Web.Models.Location { Id = 912, CommunityId = 1, Name = "Location799" } };
+        }
+
+        public static IEnumerable<object[]> LocationController_Find_HasResultParams()
+        {
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location1" } };
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location2" } };
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location3" } };
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location4" } };
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location5" } };
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location19" } };
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location29" } };
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location39" } };
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location49" } };
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location59" } };
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location69" } };
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location79" } };
+        }
+
+        public static IEnumerable<object[]> LocationController_Find_HasNoResultParams()
+        {
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location91" } };
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location92" } };
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location93" } };
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location94" } };
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location95" } };
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location919" } };
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location929" } };
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location939" } };
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location949" } };
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location959" } };
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location969" } };
+            yield return new object[] { new EF.Location { CommunityId = 1, Name = "Location979" } };
+        }
+        #endregion
     }
 }

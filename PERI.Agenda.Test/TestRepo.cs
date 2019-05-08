@@ -46,18 +46,18 @@ namespace PERI.Agenda.Test
 
         public List<EF.Event> Events = new List<EF.Event>
         {
-            new EF.Event { Id=1, Name = "EVENT0001", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(1), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { Id = 1, Name = "Category1", CommunityId = 1 } },
-            new EF.Event { Id=2,Name = "EVENT0002", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(2), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { Id = 1, Name = "Category1", CommunityId = 1 } },
-            new EF.Event { Id=3,Name = "EVENT0003", EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(3), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { Id = 1, Name = "Category1", CommunityId = 1 } },
-            new EF.Event { Id=4,Name = "EVENT0004", EventCategoryId = 2, DateTimeStart = DateTime.Now.AddDays(4), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { Id = 2, Name = "Category2", CommunityId = 1 } },
-            new EF.Event { Id=5,Name = "EVENT0005", EventCategoryId = 2, DateTimeStart = DateTime.Now.AddDays(5), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { Id = 2, Name = "Category2", CommunityId = 1 } },
-            new EF.Event { Id=6,Name = "EVENT0006", EventCategoryId = 2, DateTimeStart = DateTime.Now.AddDays(6), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { Id = 2, Name = "Category2", CommunityId = 1 } },
-            new EF.Event { Id=7,Name = "EVENT0007", EventCategoryId = 3, DateTimeStart = DateTime.Now.AddDays(4), IsExclusive = true, IsActive = true, EventCategory = new EF.EventCategory { Id = 3, Name = "Category3", CommunityId = 1 } },
-            new EF.Event { Id=8,Name = "EVENT0008", EventCategoryId = 3, DateTimeStart = DateTime.Now.AddDays(5), IsExclusive = true, IsActive = true, EventCategory = new EF.EventCategory { Id = 3, Name = "Category3", CommunityId = 1 } },
-            new EF.Event { Id=9,Name = "EVENT0009", EventCategoryId = 3, DateTimeStart = DateTime.Now.AddDays(6), IsExclusive = true, IsActive = true, EventCategory = new EF.EventCategory { Id = 3, Name = "Category3", CommunityId = 1 } },
-            new EF.Event { Id=10,Name = "EVENT0010", EventCategoryId = 4, DateTimeStart = DateTime.Now.AddDays(4), IsExclusive = true, IsActive = true, EventCategory = new EF.EventCategory { Id = 4, Name = "Category4", CommunityId = 1 } },
-            new EF.Event { Id=11,Name = "EVENT0011", EventCategoryId = 4, DateTimeStart = DateTime.Now.AddDays(5), IsExclusive = true, IsActive = true, EventCategory = new EF.EventCategory { Id = 4, Name = "Category4", CommunityId = 1 } },
-            new EF.Event { Id=12,Name = "EVENT0012", EventCategoryId = 4, DateTimeStart = DateTime.Now.AddDays(6), IsExclusive = true, IsActive = true, EventCategory = new EF.EventCategory { Id = 4, Name = "Category4", CommunityId = 1 } },
+            new EF.Event { Id=1, Name = "EVENT0001",LocationId = 1,  EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(1), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { Id = 1, Name = "Category1", CommunityId = 1 } },
+            new EF.Event { Id=2,Name = "EVENT0002", LocationId = 2,  EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(2), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { Id = 1, Name = "Category1", CommunityId = 1 } },
+            new EF.Event { Id=3,Name = "EVENT0003", LocationId = 3,  EventCategoryId = 1, DateTimeStart = DateTime.Now.AddDays(3), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { Id = 1, Name = "Category1", CommunityId = 1 } },
+            new EF.Event { Id=4,Name = "EVENT0004", LocationId = 4,  EventCategoryId = 2, DateTimeStart = DateTime.Now.AddDays(4), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { Id = 2, Name = "Category2", CommunityId = 1 } },
+            new EF.Event { Id=5,Name = "EVENT0005", LocationId = 5,  EventCategoryId = 2, DateTimeStart = DateTime.Now.AddDays(5), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { Id = 2, Name = "Category2", CommunityId = 1 } },
+            new EF.Event { Id=6,Name = "EVENT0006", LocationId = 6,  EventCategoryId = 2, DateTimeStart = DateTime.Now.AddDays(6), IsExclusive = false, IsActive = true, EventCategory = new EF.EventCategory { Id = 2, Name = "Category2", CommunityId = 1 } },
+            new EF.Event { Id=7,Name = "EVENT0007", LocationId = 7,  EventCategoryId = 3, DateTimeStart = DateTime.Now.AddDays(4), IsExclusive = true, IsActive = true, EventCategory = new EF.EventCategory { Id = 3, Name = "Category3", CommunityId = 1 } },
+            new EF.Event { Id=8,Name = "EVENT0008", LocationId = 8,  EventCategoryId = 3, DateTimeStart = DateTime.Now.AddDays(5), IsExclusive = true, IsActive = true, EventCategory = new EF.EventCategory { Id = 3, Name = "Category3", CommunityId = 1 } },
+            new EF.Event { Id=9,Name = "EVENT0009", LocationId = 9,  EventCategoryId = 3, DateTimeStart = DateTime.Now.AddDays(6), IsExclusive = true, IsActive = true, EventCategory = new EF.EventCategory { Id = 3, Name = "Category3", CommunityId = 1 } },
+            new EF.Event { Id=10,Name = "EVENT0010",LocationId = 10, EventCategoryId = 4, DateTimeStart = DateTime.Now.AddDays(4), IsExclusive = true, IsActive = true, EventCategory = new EF.EventCategory { Id = 4, Name = "Category4", CommunityId = 1 } },
+            new EF.Event { Id=11,Name = "EVENT0011",LocationId = 11, EventCategoryId = 4, DateTimeStart = DateTime.Now.AddDays(5), IsExclusive = true, IsActive = true, EventCategory = new EF.EventCategory { Id = 4, Name = "Category4", CommunityId = 1 } },
+            new EF.Event { Id=12,Name = "EVENT0012",LocationId = 12, EventCategoryId = 4, DateTimeStart = DateTime.Now.AddDays(6), IsExclusive = true, IsActive = true, EventCategory = new EF.EventCategory { Id = 4, Name = "Category4", CommunityId = 1 } },
         };
 
         public List<EF.EventCategory> EventCategories = new List<EF.EventCategory>
@@ -158,6 +158,22 @@ namespace PERI.Agenda.Test
             new EF.Report { CommunityId = 2, ReportId = 8, Name = "Report39" },
             new EF.Report { CommunityId = 2, ReportId = 9, Name = "Report49" },
             new EF.Report { CommunityId = 2, ReportId = 10, Name = "Report59" },
+        };
+
+        public List<EF.Location> Locations = new List<EF.Location>
+        {
+            new EF.Location {Id = 1, CommunityId = 1, Name = "Location1" },
+            new EF.Location {Id = 2, CommunityId = 1, Name = "Location2" },
+            new EF.Location {Id = 3, CommunityId = 1, Name = "Location3" },
+            new EF.Location {Id = 4, CommunityId = 1, Name = "Location4" },
+            new EF.Location {Id = 5, CommunityId = 1, Name = "Location5" },
+            new EF.Location {Id = 6, CommunityId = 1, Name = "Location19" },
+            new EF.Location {Id = 7, CommunityId = 1, Name = "Location29" },
+            new EF.Location {Id = 8, CommunityId = 1, Name = "Location39" },
+            new EF.Location {Id = 9, CommunityId = 1, Name = "Location49" },
+            new EF.Location {Id = 10, CommunityId = 1, Name = "Location59" },
+            new EF.Location {Id = 11, CommunityId = 1, Name = "Location69" },
+            new EF.Location {Id = 12, CommunityId = 1, Name = "Location79" },
         };
     }
 }
