@@ -8,10 +8,12 @@ using Newtonsoft.Json.Linq;
 using PERI.Agenda.Web.Controllers;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using static PERI.Agenda.Web.Models.Graph;
 
 namespace PERI.Agenda.Test.Controllers
 {
@@ -117,6 +119,40 @@ namespace PERI.Agenda.Test.Controllers
 
             var items = JArray.Parse(json);
             items.Count.Should().Be(0);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        [InlineData(9)]
+        public async Task Get_Success(int args)
+        {
+            var res = await controller.Get(args) as JsonResult;
+
+            res.Value.Should().BeOfType<ExpandoObject>();
+        }
+
+        [Theory]
+        [InlineData(91)]
+        [InlineData(92)]
+        [InlineData(93)]
+        [InlineData(94)]
+        [InlineData(95)]
+        [InlineData(96)]
+        [InlineData(97)]
+        [InlineData(98)]
+        [InlineData(99)]
+        public void Get_Failed(int args)
+        {
+            var complete = controller.Get(args).IsFaulted;
+
+            Assert.True(complete);
         }
     }
 }
