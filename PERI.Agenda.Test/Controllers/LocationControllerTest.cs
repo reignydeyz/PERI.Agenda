@@ -37,7 +37,12 @@ namespace PERI.Agenda.Test.Controllers
             var mockIQueryableLocation = new TestRepo().Locations.AsQueryable().BuildMock();
             mockLocationRepo.Setup(x => x.Entities).Returns(mockIQueryableLocation.Object);
 
+            var mockEventRepo = new Mock<Repository.IRepository<EF.Event>>();
+            var mockIQueryableEvent = new TestRepo().Events.AsQueryable().BuildMock();
+            mockEventRepo.Setup(x => x.Entities).Returns(mockIQueryableEvent.Object);
+
             mockUnitOfWork.Setup(x => x.LocationRepository).Returns(mockLocationRepo.Object);
+            mockUnitOfWork.Setup(x => x.EventRepository).Returns(mockEventRepo.Object);
 
             locationBusiness = new BLL.Location(mockUnitOfWork.Object);
             eventBusiness = new BLL.Event(mockUnitOfWork.Object);
@@ -153,6 +158,63 @@ namespace PERI.Agenda.Test.Controllers
             var complete = controller.Get(args).IsFaulted;
 
             Assert.True(complete);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        [InlineData(9)]
+        public async Task Stats_HasResult(int args)
+        {
+            var res = await controller.Stats(args);
+
+            res.Should().BeOfType<GraphDataSet>();
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        [InlineData(9)]
+        public async Task Events_HasResult(int args)
+        {
+            var res = await controller.Events(args) as JsonResult;
+
+            var json = JsonConvert.SerializeObject(res.Value);
+
+            var items = JArray.Parse(json);
+            items.Should().HaveCountGreaterThan(0);
+        }
+
+        [Theory]
+        [InlineData(91)]
+        [InlineData(92)]
+        [InlineData(93)]
+        [InlineData(94)]
+        [InlineData(95)]
+        [InlineData(96)]
+        [InlineData(97)]
+        [InlineData(98)]
+        [InlineData(99)]
+        public async Task Events_HasNoResult(int args)
+        {
+            var res = await controller.Events(args) as JsonResult;
+
+            var json = JsonConvert.SerializeObject(res.Value);
+
+            var items = JArray.Parse(json);
+            items.Count.Should().Be(0);
         }
     }
 }
