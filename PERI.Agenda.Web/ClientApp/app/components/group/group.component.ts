@@ -1,52 +1,23 @@
-﻿import { Component, Inject, AfterViewInit } from '@angular/core';
+﻿import { Component, Inject, AfterViewInit, group } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { NgForm, NgModel, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import * as $ from "jquery";
 
 import { Observable } from 'rxjs/Observable';
 
-import { GroupCategoryModule, GroupCategory } from '../groupcategory/groupcategory.component';
+import { GroupCategoryModule } from '../groupcategory/groupcategory.component';
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
-import { Member } from '../member/member.component';
 import { Pager } from '../pager/pager.component';
 import { Title } from '@angular/platform-browser';
-import { MemberModule } from '../member/member.component';
 
 import * as moment from 'moment';
 import { saveAs } from 'file-saver';
 import { ActivityReport } from '../activityreport/activityreport.component';
-
-export class GroupModule {
-    public http: Http;
-    public baseUrl: string;
-
-    public ex: ErrorExceptionModule;
-
-    public find(e: Group): Observable<Group[]> {
-        return this.http.post(this.baseUrl + 'api/group/find', {
-            name: e.name,
-            groupCategoryId: e.groupCategoryId,
-            leader: e.leader
-        }).map(response => response.json());
-    }
-
-    public add(g: Group): Observable<number> {
-        return this.http.post(this.baseUrl + 'api/group/new', {
-            name: g.name,
-            groupCategoryId: g.groupCategoryId,
-            leader: g.leader
-        }).map(response => response.json());
-    }
-
-    public edit(g: Group) {
-        return this.http.post(this.baseUrl + 'api/group/edit', {
-            id: g.id,
-            name: g.name,
-            groupCategoryId: g.groupCategoryId,
-            leader: g.leader
-        });
-    }
-}
+import { Member } from '../../models/member';
+import { MemberService } from '../../services/member.service';
+import { Group } from '../../models/group';
+import { GroupService } from '../../services/group.service';
+import { GroupCategory } from '../../models/groupcategory';
 
 @Component({
     selector: 'group',
@@ -56,9 +27,6 @@ export class GroupModule {
     ]
 })
 export class GroupComponent {
-    private gm: GroupModule;
-    private mm: MemberModule;
-
     public group: Group;
     public groupCategories: GroupCategory[];
 
@@ -66,7 +34,7 @@ export class GroupComponent {
     public pager: Pager;
     public chunk: Chunk;
 
-    public member: Member;
+    public member: Member = new Member();
     public report: ActivityReport;
 
     public names: string[];
@@ -89,23 +57,12 @@ export class GroupComponent {
         f.controls[fieldName].setValue(s);
     }
 
-    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
-        this.gm = new GroupModule();
-        this.gm.http = http;
-        this.gm.baseUrl = baseUrl;
-
-        this.gm.ex = new ErrorExceptionModule();
-        this.gm.ex.baseUrl = this.baseUrl;
-
-        this.mm = new MemberModule();
-        this.mm.http = http;
-        this.mm.baseUrl = baseUrl;
+    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title,
+    private mm: MemberService, private gm: GroupService) {
     }
 
-    private paginate(obj: Group, page: number) {
-        this.http.post(this.baseUrl + 'api/group/find/page/' + page, obj).subscribe(result => {
-            this.chunk = result.json() as Chunk;
-        }, error => this.gm.ex.catchError(error));
+    async paginate(obj: Group, page: number) {
+        this.chunk = await this.gm.search(obj, page) as Chunk;
     }
 
     public onMembersLoad(groupId: number) {
@@ -115,11 +72,8 @@ export class GroupComponent {
         this.onEditInit(groupId);
     }
 
-    public onEditInit(groupId: number) {
-        this.http.get(this.baseUrl + 'api/group/get/' + groupId)
-            .subscribe(result => {
-                this.group = result.json();
-            }, error => this.gm.ex.catchError(error));
+    async onEditInit(groupId: number) {
+        this.group = await this.gm.get(groupId);
     }
 
     public onPaginate(page: number) {
@@ -144,14 +98,14 @@ export class GroupComponent {
         });
     }
 
-    ngAfterViewInit() {
+    async ngAfterViewInit() {
         var gc = new GroupCategoryModule();
         gc.http = this.http;
         gc.baseUrl = this.baseUrl;
-        gc.ex = this.gm.ex;
+        gc.ex = new ErrorExceptionModule();
         gc.find(new GroupCategory()).subscribe(result => { this.groupCategories = result });
 
-        this.mm.allNames().subscribe(result => { this.names = result });
+        this.names = await this.mm.allNames();
     }
 
     ngAfterViewChecked() {
@@ -179,38 +133,28 @@ export class GroupComponent {
         this.search = g;
     }
 
-    onGroupInfoChange(groupId: number) {
+    async onGroupInfoChange(groupId: number) {
         if (groupId > 0) {
-            // Get group
-            this.http.get(this.baseUrl + 'api/group/get/' + groupId)
-                .subscribe(result => {
-                    var g = result.json();
+            var g = await this.gm.get(groupId);
 
-                    // Update groups view
-                    for (let e of this.chunk.groups) {
-                        if (e.id == groupId) {
-                            let index: number = this.chunk.groups.indexOf(e);
-                            this.chunk.groups[index] = g;
-                        }
-                    }
-
-                }, error => this.gm.ex.catchError(error));
+            // Update groups view
+            for (let e of this.chunk.groups) {
+                if (e.id == groupId) {
+                    let index: number = this.chunk.groups.indexOf(e);
+                    this.chunk.groups[index] = g;
+                }
+            }
         }
     }
 
-    onGroupAdd(groupId: number) {
+    async onGroupAdd(groupId: number) {
         if (groupId > 0) {
-            // Get group
-            this.http.get(this.baseUrl + 'api/group/get/' + groupId)
-                .subscribe(result => {
-                    var g = result.json();
+            var g = await this.gm.get(groupId);
 
-                    // Add new group to the list
-                    //this.chunk.groups.push(g);
-                    this.chunk.groups.splice(0, 0, g);
-                    this.chunk.pager.totalItems++;
-
-                }, error => this.gm.ex.catchError(error));
+            // Add new group to the list
+            //this.chunk.groups.push(g);
+            this.chunk.groups.splice(0, 0, g);
+            this.chunk.pager.totalItems++;
         }
     }
 
@@ -218,7 +162,7 @@ export class GroupComponent {
         this.suggestions.length = 0;
     }
 
-    onDeleteClick() {
+    async onDeleteClick() {
         var flag = confirm('Are you sure you want to delete selected records?');
 
         if (!flag)
@@ -231,24 +175,16 @@ export class GroupComponent {
             }
         });
 
-        let body = JSON.stringify(selectedIds);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+        await this.gm.delete(selectedIds);
 
-        this.http.post(this.baseUrl + 'api/group/delete', body, options).subscribe(result => {
-
-            for (let id of selectedIds) {
-                for (let g of this.chunk.groups) {
-                    if (g.id == id) {
-                        this.chunk.groups.splice(this.chunk.groups.indexOf(g), 1);
-                        this.chunk.pager.totalItems--;
-                    }
+        for (let id of selectedIds) {
+            for (let g of this.chunk.groups) {
+                if (g.id == id) {
+                    this.chunk.groups.splice(this.chunk.groups.indexOf(g), 1);
+                    this.chunk.pager.totalItems--;
                 }
             }
-
-            alert('Success!');
-
-        }, error => this.gm.ex.catchError(error));
+        }
     }
 
     downloadFile(data: any) {
@@ -256,18 +192,12 @@ export class GroupComponent {
         saveAs(blob, "data.csv");
     }
 
-    private download(g: Group) {
-        this.http.post(this.baseUrl + 'api/group/download', g).subscribe(result => {
-            let parsedResponse = result.text();
-            this.downloadFile(parsedResponse);
-        }, error => this.gm.ex.catchError(error));;
+    async download(g: Group) {
+        this.downloadFile(await this.gm.download(g));
     }
 
-    private downloadMembers(groupId: number) {
-        this.http.get(this.baseUrl + 'api/groupmember/' + groupId + '/download').subscribe(result => {
-            let parsedResponse = result.text();
-            this.downloadFile(parsedResponse);
-        }, error => this.gm.ex.catchError(error));;
+    async downloadMembers(groupId: number) {
+        this.downloadFile(await this.gm.downloadMembers(groupId));
     }
 
     public onDownloadClick() {
@@ -278,31 +208,17 @@ export class GroupComponent {
         this.downloadMembers(id);
     }
 
-    onModalProfileInit(id: number) {
-        this.http.get(this.baseUrl + 'api/member/get/' + id)
-            .subscribe(result => {
-                this.member = result.json() as Member;
+    async onModalProfileInit(id: number) {
+        this.member = await this.mm.get(id);
 
-                if (moment(this.member.birthDate).isValid() == true) {
-                    this.member.birthDate = { date: { year: moment(this.member.birthDate).format('YYYY'), month: moment(this.member.birthDate).format('M'), day: moment(this.member.birthDate).format('D') } };
-                }
+        if (moment(this.member.birthDate).isValid() == true) {
+            this.member.birthDate = { date: { year: moment(this.member.birthDate).format('YYYY'), month: moment(this.member.birthDate).format('M'), day: moment(this.member.birthDate).format('D') } };
+        }
 
-                this.mm.leading(this.member.id).subscribe(res => {
-                    this.member.leading = res
-                });
-
-                this.mm.following(this.member.id).subscribe(res => {
-                    this.member.following = res
-                });
-
-                this.mm.invites(this.member.id).subscribe(res => {
-                    this.member.invites = res
-                });
-
-                this.mm.activities(this.member.id).subscribe(res => {
-                    this.member.activities = res
-                });
-            }, error => this.gm.ex.catchError(error));
+        this.member.leading = await this.mm.leading(id);
+        this.member.following = await this.mm.following(id);
+        this.member.invites = await this.mm.invites(id);
+        this.member.activities = await this.mm.activities(id);
     }
 
     onActivityReportInit(id: number) {
@@ -316,18 +232,6 @@ export class GroupComponent {
         this.report.dateTimeStart = moment(firstDay).format('YYYY-MM-DD');
         this.report.dateTimeEnd = moment(lastDay).format('YYYY-MM-DD');
     }
-}
-
-export class Group {
-    id: number;
-    groupCategoryId: number;
-    category: string;
-    name: string;
-    members: number;
-    leader: string;
-    leaderMemberId: number;
-    isLeader: boolean;
-    isMember: boolean;
 }
 
 class Chunk {

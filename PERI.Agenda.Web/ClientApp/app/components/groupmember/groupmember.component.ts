@@ -1,15 +1,16 @@
 ﻿import { Component, Input, Inject, OnChanges, Output, EventEmitter } from '@angular/core';
 import * as $ from "jquery";
 
-import { Group, GroupComponent } from '../group/group.component';
+import { GroupComponent } from '../group/group.component';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { Title } from '@angular/platform-browser';
-import { Member } from '../member/member.component';
 import { Pager } from '../pager/pager.component';
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
 import { NgForm } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { saveAs } from 'file-saver';
+import { Member } from '../../models/member';
+import { Group } from '../../models/group';
 
 export class GroupMemberModule {
     public http: Http;

@@ -8,9 +8,10 @@ import { Observable } from 'rxjs/Observable';
 import { Title } from '@angular/platform-browser';
 
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
-import { Group } from '../group/group.component';
 import { Statistics, GraphDataSet, GraphData } from '../graph/graph.component';
 import { saveAs } from 'file-saver';
+import { Group } from '../../models/group';
+import { GroupCategory } from '../../models/groupcategory';
 
 export class GroupCategoryModule {
     public http: Http;
@@ -208,10 +209,4 @@ export class GroupCategoryComponent {
             this.chartLabels = this.stats.chartLabels;
         }, error => console.error(error));
     }
-}
-
-export class GroupCategory {
-    id: number;
-    name: string;
-    groups: number;
 }

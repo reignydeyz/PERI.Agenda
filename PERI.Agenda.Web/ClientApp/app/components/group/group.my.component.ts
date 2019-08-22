@@ -5,14 +5,15 @@ import * as $ from "jquery";
 
 import { Observable } from 'rxjs/Observable';
 
-import { GroupCategoryModule, GroupCategory } from '../groupcategory/groupcategory.component';
+import { GroupCategoryModule } from '../groupcategory/groupcategory.component';
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
-import { Member } from '../member/member.component';
 import { Pager } from '../pager/pager.component';
 import { Title } from '@angular/platform-browser';
-import { MemberModule } from '../member/member.component';
-import { GroupModule, Group } from './group.component';
 import { GroupMemberModule, GroupMember } from '../groupmember/groupmember.component';
+import { MemberService } from '../../services/member.service';
+import { Group } from '../../models/group';
+import { GroupService } from '../../services/group.service';
+import { GroupCategory } from '../../models/groupcategory';
 
 @Component({
     selector: 'groupmy',
@@ -22,8 +23,6 @@ import { GroupMemberModule, GroupMember } from '../groupmember/groupmember.compo
     ]
 })
 export class GroupMyComponent {
-    private gm: GroupModule;
-    private mm: MemberModule;
     private gmm: GroupMemberModule;
 
     public group: Group;
@@ -53,27 +52,15 @@ export class GroupMyComponent {
         f.controls[fieldName].setValue(s);
     }
 
-    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
-        this.gm = new GroupModule();
-        this.gm.http = http;
-        this.gm.baseUrl = baseUrl;
-
-        this.gm.ex = new ErrorExceptionModule();
-        this.gm.ex.baseUrl = this.baseUrl;
-
-        this.mm = new MemberModule();
-        this.mm.http = http;
-        this.mm.baseUrl = baseUrl;
-
+    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title,
+    private mm: MemberService, private gm: GroupService) {
         this.gmm = new GroupMemberModule();
         this.gmm.http = http;
         this.gmm.baseUrl = baseUrl;
     }
 
-    private paginate(obj: Group, page: number) {
-        this.http.post(this.baseUrl + 'api/group/find/page/' + page, obj).subscribe(result => {
-            this.chunk = result.json() as Chunk;
-        }, error => this.gm.ex.catchError(error));
+    async paginate(obj: Group, page: number) {
+        this.chunk = await this.gm.search(obj, page) as Chunk;
     }
 
     public onMembersLoad(groupId: number) {
@@ -83,11 +70,8 @@ export class GroupMyComponent {
         this.onEditInit(groupId);
     }
 
-    public onEditInit(groupId: number) {
-        this.http.get(this.baseUrl + 'api/group/get/' + groupId)
-            .subscribe(result => {
-                this.group = result.json();
-            }, error => this.gm.ex.catchError(error));
+    async onEditInit(groupId: number) {
+        this.group = await this.gm.get(groupId);
     }
 
     public onPaginate(page: number) {
@@ -103,14 +87,14 @@ export class GroupMyComponent {
         this.titleService.setTitle('My Agenda - Groups');
     }
 
-    ngAfterViewInit() {
+    async ngAfterViewInit() {
         var gc = new GroupCategoryModule();
         gc.http = this.http;
         gc.baseUrl = this.baseUrl;
-        gc.ex = this.gm.ex;
+        gc.ex = new ErrorExceptionModule();
         gc.find(new GroupCategory()).subscribe(result => { this.groupCategories = result });
 
-        this.mm.allNames().subscribe(result => { this.names = result });
+        this.names = await this.mm.allNames();
     }
 
     ngAfterViewChecked() {
@@ -138,38 +122,28 @@ export class GroupMyComponent {
         this.search = g;
     }
 
-    onGroupInfoChange(groupId: number) {
+    async onGroupInfoChange(groupId: number) {   
         if (groupId > 0) {
-            // Get group
-            this.http.get(this.baseUrl + 'api/group/get/' + groupId)
-                .subscribe(result => {
-                    var g = result.json();
+            var g = await this.gm.get(groupId);
 
-                    // Update groups view
-                    for (let e of this.chunk.groups) {
-                        if (e.id == groupId) {
-                            let index: number = this.chunk.groups.indexOf(e);
-                            this.chunk.groups[index] = g;
-                        }
-                    }
-
-                }, error => this.gm.ex.catchError(error));
+            // Update groups view
+            for (let e of this.chunk.groups) {
+                if (e.id == groupId) {
+                    let index: number = this.chunk.groups.indexOf(e);
+                    this.chunk.groups[index] = g;
+                }
+            }
         }
     }
 
-    onGroupAdd(groupId: number) {
+    async onGroupAdd(groupId: number) {
         if (groupId > 0) {
-            // Get group
-            this.http.get(this.baseUrl + 'api/group/get/' + groupId)
-                .subscribe(result => {
-                    var g = result.json();
+            var g = await this.gm.get(groupId);
 
-                    // Add new group to the list
-                    //this.chunk.groups.push(g);
-                    this.chunk.groups.splice(0, 0, g);
-                    this.chunk.pager.totalItems++;
-
-                }, error => this.gm.ex.catchError(error));
+            // Add new group to the list
+            //this.chunk.groups.push(g);
+            this.chunk.groups.splice(0, 0, g);
+            this.chunk.pager.totalItems++;
         }
     }
 

@@ -33,6 +33,12 @@ import { EventMyComponent } from './components/event/event.my.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { ReportTemplateComponent } from './components/reporttemplate/reporttemplate.component';
 import { ActivityReportComponent } from './components/activityreport/activityreport.component';
+import { DashboardService } from './services/dashboard.service';
+import { AccountService } from './services/account.service';
+import { MemberService } from './services/member.service';
+import { GroupService } from './services/group.service';
+import { RoleService } from './services/role.service';
+import { GroupCategoryService } from './services/groupcategory.service';
 
 @NgModule({
     declarations: [
@@ -100,7 +106,15 @@ import { ActivityReportComponent } from './components/activityreport/activityrep
 
             { path: '**', redirectTo: 'dashboard' }
         ])
-    ]
+    ],
+    providers: [
+        AccountService,
+        DashboardService,
+        MemberService,
+        GroupService,
+        GroupCategoryService,
+        RoleService
+    ],
 })
 export class AppModuleShared {
 }

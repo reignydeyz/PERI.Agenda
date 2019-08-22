@@ -2,8 +2,9 @@ import { Component, Inject, AfterViewInit } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import * as $ from "jquery";
 
-import { AccountModule, Role } from "../account/account.component";
 import { Observable } from 'rxjs/Observable';
+import { AccountService } from '../../services/account.service';
+import { Role } from '../../models/role';
 
 @Component({
     selector: 'nav-menu',
@@ -11,18 +12,14 @@ import { Observable } from 'rxjs/Observable';
     styleUrls: ['./navmenu.component.css']
 })
 export class NavMenuComponent {
-    private am: AccountModule
-
     public role: Role;
 
-    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string) {
-        this.am = new AccountModule();
-        this.am.http = http;
-        this.am.baseUrl = baseUrl;
+    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string,
+    private am: AccountService) {
+    }
 
-        this.am.getRole().subscribe(r => {
-            this.role = r;
-        });
+    async ngOnInit() {
+        this.role = await this.am.getRole();
     }
 
     ngAfterViewChecked() {

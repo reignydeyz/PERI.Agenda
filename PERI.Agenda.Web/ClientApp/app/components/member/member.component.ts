@@ -13,69 +13,11 @@ import { Observable } from 'rxjs/Observable';
 
 import { saveAs } from 'file-saver';
 import { IMyDpOptions } from 'mydatepicker';
-
-export class MemberModule {
-    public http: Http;
-    public baseUrl: string;
-    private ex: ErrorExceptionModule;
-
-    public add(m: Member): Observable<number> {
-        return this.http.post(this.baseUrl + 'api/member/new', {
-            name: m.name,
-            nickName: m.nickName,
-            birthDate: m.birthDate,
-            email: m.email,
-            address: m.address,
-            mobile: m.mobile,
-            isActive: m.isActive,
-            gender: m.gender,
-            invitedByMemberName: m.invitedByMemberName,
-            remarks: m.remarks
-        }).map(response => response.json());
-    }
-
-    public allNames(): Observable<string[]> {
-        return this.http.get(this.baseUrl + 'api/member/allnames').map(response => response.json());
-    }
-
-    public leading(id: number): Observable<number> {
-        return this.http.get(this.baseUrl + 'api/member/' + id + '/leading').map(response => response.json());
-    }
-
-    public following(id: number): Observable<number> {
-        return this.http.get(this.baseUrl + 'api/member/' + id + '/following').map(response => response.json());
-    }
-
-    public invites(id: number): Observable<number> {
-        return this.http.get(this.baseUrl + 'api/member/' + id + '/invites').map(response => response.json());
-    }
-
-    public activities(id: number): Observable<Activity[]> {
-        return this.http.get(this.baseUrl + 'api/member/' + id + '/activities').map(response => response.json());
-    }
-
-    public updateRole(m: Member) {
-        return this.http.post(this.baseUrl + 'api/user/updaterole', m);
-    }
-
-    public edit(m: Member) {
-        this.ex = new ErrorExceptionModule();
-
-        this.http.post(this.baseUrl + 'api/member/edit', {
-            id: m.id,
-            name: m.name,
-            nickName: m.nickName,
-            gender: m.gender,
-            birthDate: m.birthDate,
-            email: m.email,
-            address: m.address,
-            mobile: m.mobile,
-            isActive: m.isActive,
-            invitedByMembername: m.invitedByMemberName,
-            remarks: m.remarks
-        }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => this.ex.catchError(error));
-    }
-}
+import { Role } from '../../models/role';
+import { Member } from '../../models/member';
+import { Activity } from '../../models/activity';
+import { MemberService } from '../../services/member.service';
+import { RoleService } from '../../services/role.service';
 
 @Component({
     selector: 'member',
@@ -88,7 +30,7 @@ export class MemberComponent {
     public total: number;
     public actives: number;
     public inactives: number;
-    public member: Member;
+    public member: Member = new Member();
     public genders: LookUp[];
     public statuses: boolean[];
     public roles: Role[];
@@ -97,9 +39,8 @@ export class MemberComponent {
     public pager: Pager;
     public chunk: Chunk;
 
-    public enableEmail: boolean = true;
+    public enableEmail: boolean = true;    
     
-    private mm: MemberModule;
     private ex: ErrorExceptionModule;
 
     public myDatePickerOptions: IMyDpOptions = {
@@ -112,43 +53,27 @@ export class MemberComponent {
         saveAs(blob, "data.csv");
     }
 
-    private paginate(m: Member, page: number) {
-        this.http.post(this.baseUrl + 'api/member/find/page/' + page, m).subscribe(result => {
-            this.chunk = result.json() as Chunk;
-        }, error => this.ex.catchError(error));
+    async paginate(m: Member, page: number) {
+        this.chunk = await this.mm.find(m, page) as Chunk;
     }
 
-    private download(m: Member) {
-        this.http.post(this.baseUrl + 'api/member/download', m).subscribe(result => {
-            let parsedResponse = result.text();
-            this.downloadFile(parsedResponse);
-        }, error => this.ex.catchError(error));;
+    async download(m: Member) {
+        this.downloadFile(await this.mm.download(m));
     }
 
-    private getTotal() {
-        this.http.get(this.baseUrl + 'api/member/total/all').subscribe(result => {
-            this.total = result.json() as number;
-        }, error => this.ex.catchError(error));
-
-        this.http.get(this.baseUrl + 'api/member/total/active').subscribe(result => {
-            this.actives = result.json() as number;
-        }, error => this.ex.catchError(error));
-
-        this.http.get(this.baseUrl + 'api/member/total/inactive').subscribe(result => {
-            this.inactives = result.json() as number;
-        }, error => this.ex.catchError(error));
+    async getTotal() {
+        this.total = await this.mm.getTotal("all");
+        this.actives = await this.mm.getTotal("active");
+        this.inactives = await this.mm.getTotal("inactive");
     }
 
-    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
+    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title,
+    private mm: MemberService, private roleService: RoleService) {
         this.ex = new ErrorExceptionModule();
         this.ex.baseUrl = this.baseUrl;
-
-        this.mm = new MemberModule();
-        this.mm.http = http;
-        this.mm.baseUrl = baseUrl;
     }
 
-    ngOnInit() {
+    async ngOnInit() {
         this.member = new Member();
         this.search = new Member();
         this.pager = new Pager();
@@ -156,14 +81,12 @@ export class MemberComponent {
 
         this.statuses = [false, true];
 
-        this.getTotal();
+        await this.getTotal();
 
         this.titleService.setTitle('Members');
 
         // Populate roles
-        this.http.get(this.baseUrl + 'api/role/getall').subscribe(result => {
-            this.roles = result.json();
-        }, error => this.ex.catchError(error));
+        this.roles = await this.roleService.getAll();
     }
 
     // https://www.concretepage.com/angular-2/angular-2-ngform-with-ngmodel-directive-example
@@ -186,7 +109,7 @@ export class MemberComponent {
         this.download(this.search);
     }
 
-    public onNewSubmit(f: NgForm) {
+    async onNewSubmit(f: NgForm) {
         var middleInitial = (f.controls['middleInitial'].value == ''
             || f.controls['middleInitial'].value == null
             || f.controls['middleInitial'].value == undefined) ? ' ' : ' ' + f.controls['middleInitial'].value + '. ';
@@ -210,41 +133,32 @@ export class MemberComponent {
         m.invitedByMemberName = f.controls['invitedBy'].value;
         m.remarks = f.controls['remarks'].value;
 
-        this.mm.add(m).subscribe(
-            result => {
-                m.id = result;
-                //this.chunk.members.push(m);
-                this.chunk.members.splice(0, 0, m);
-                this.chunk.pager.totalItems++;
+        m.id = await this.mm.add(m);
 
-                this.actives += 1;
-                this.total += 1;
+        this.chunk.members.splice(0, 0, m);
+        this.chunk.pager.totalItems++;
 
-                alert('Added!');
-                $('#modalNew').modal('toggle');
-            },
-            error => this.ex.catchError(error));
+        this.actives += 1;
+        this.total += 1;
+
+        alert('Added!');
+        $('#modalNew').modal('toggle');
     }
 
-    public onEditInit(id: number) {
-        this.http.get(this.baseUrl + 'api/member/get/' + id)
-            .subscribe(result => {
-                this.member = result.json() as Member;
-
-                this.enableEmail = !this.member.email || this.member.email.length == 0;
-
-                if (moment(this.member.birthDate).isValid() == true) {
-                    this.member.birthDate = { date: { year: moment(this.member.birthDate).format('YYYY'), month: moment(this.member.birthDate).format('M'), day: moment(this.member.birthDate).format('D') } };
-                }
-            }, error => this.ex.catchError(error));
+    async onEditInit(id: number) {
+        this.member = await this.mm.get(id);
+        this.enableEmail = !this.member.email || this.member.email.length == 0;
+        if (moment(this.member.birthDate).isValid() == true) {
+            this.member.birthDate = { date: { year: moment(this.member.birthDate).format('YYYY'), month: moment(this.member.birthDate).format('M'), day: moment(this.member.birthDate).format('D') } };
+        }
     }
 
-    public onEditSubmit(member: Member) {
+    async onEditSubmit(member: Member) {
         if (this.member.birthDate != null) {
             this.member.birthDate = moment(this.member.birthDate.date.month + '/' + this.member.birthDate.date.day + '/' + this.member.birthDate.date.year).format('MM/DD/YYYY');
         }
 
-        this.mm.edit(member);  
+        await this.mm.edit(member);  
 
         for (let m of this.chunk.members) {
             if (m.id == member.id) {
@@ -274,13 +188,13 @@ export class MemberComponent {
     }
 
     // https://stackoverflow.com/questions/34547127/angular2-equivalent-of-document-ready
-    ngAfterViewInit() {
+    async ngAfterViewInit() {
         var lm = new LookUpModule();
         lm.http = this.http;
         lm.baseUrl = this.baseUrl;
         lm.getByGroup('Gender').subscribe(result => { this.genders = result });
 
-        this.mm.allNames().subscribe(result => { this.names = result });
+        this.names = await this.mm.allNames();        
     }
 
     ngAfterViewChecked() {
@@ -294,7 +208,7 @@ export class MemberComponent {
         }
     }
 
-    onDeleteClick() {
+    async onDeleteClick() {
         var flag = confirm('Are you sure you want to delete selected records?');
 
         if (!flag)
@@ -307,38 +221,32 @@ export class MemberComponent {
             }
         });
 
-        let body = JSON.stringify(selectedIds);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+        await this.mm.delete(selectedIds);
 
-        this.http.post(this.baseUrl + 'api/member/delete', body, options).subscribe(result => {
+        for (let id of selectedIds) {
+            for (let m of this.chunk.members) {
+                if (m.id == id) {
 
-            for (let id of selectedIds) {
-                for (let m of this.chunk.members) {
-                    if (m.id == id) {
-
-                        if (m.isActive) {
-                            this.actives -= 1;
-                        }
-                        else {
-                            this.inactives -= 1;
-                        }
-
-                        this.chunk.members.splice(this.chunk.members.indexOf(m), 1);
-
-                        this.chunk.pager.totalItems--;
+                    if (m.isActive) {
+                        this.actives -= 1;
                     }
+                    else {
+                        this.inactives -= 1;
+                    }
+
+                    this.chunk.members.splice(this.chunk.members.indexOf(m), 1);
+
+                    this.chunk.pager.totalItems--;
                 }
             }
+        }
 
-            this.total -= selectedIds.length;
+        this.total -= selectedIds.length;
 
-            alert('Success!');
-
-        }, error => this.ex.catchError(error));
+        alert('Success!');
     }
 
-    onActivateClick() {
+    async onActivateClick() {
         var flag = confirm('Are you sure you want to activate selected records?');
 
         if (!flag)
@@ -351,29 +259,23 @@ export class MemberComponent {
             }
         });
 
-        let body = JSON.stringify(selectedIds);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+        await this.mm.activate(selectedIds);
 
-        this.http.post(this.baseUrl + 'api/member/activate', body, options).subscribe(result => {
-
-            for (let id of selectedIds) {
-                for (let m of this.chunk.members) {
-                    if (m.id == id) {
-                        this.chunk.members[this.chunk.members.indexOf(m)].isActive = true;
-                    }
+        for (let id of selectedIds) {
+            for (let m of this.chunk.members) {
+                if (m.id == id) {
+                    this.chunk.members[this.chunk.members.indexOf(m)].isActive = true;
                 }
             }
+        }
 
-            this.actives += selectedIds.length;
-            this.inactives -= selectedIds.length;
+        this.actives += selectedIds.length;
+        this.inactives -= selectedIds.length;
 
-            alert('Success!');
-
-        }, error => this.ex.catchError(error));
+        alert('Success!');
     }
 
-    onDeactivateClick() {
+    async onDeactivateClick() {
         var flag = confirm('Are you sure you want to deactivate selected records?');
 
         if (!flag)
@@ -386,56 +288,31 @@ export class MemberComponent {
             }
         });
 
-        let body = JSON.stringify(selectedIds);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+        await this.mm.deactivate(selectedIds);
 
-        this.http.post(this.baseUrl + 'api/member/deactivate', body, options).subscribe(result => {
-
-            for (let id of selectedIds) {
-                for (let m of this.chunk.members) {
-                    if (m.id == id) {
-                        this.chunk.members[this.chunk.members.indexOf(m)].isActive = false;
-                    }
+        for (let id of selectedIds) {
+            for (let m of this.chunk.members) {
+                if (m.id == id) {
+                    this.chunk.members[this.chunk.members.indexOf(m)].isActive = false;
                 }
             }
+        }
 
-            this.actives -= selectedIds.length;
-            this.inactives += selectedIds.length;
+        this.actives -= selectedIds.length;
+        this.inactives += selectedIds.length;
 
-            alert('Success!');
-
-        }, error => this.ex.catchError(error));        
+        alert('Success!');
     }
 
-    onModalProfileInit(id: number) {
-        this.http.get(this.baseUrl + 'api/member/get/' + id)
-            .subscribe(result => {
-                this.member = result.json() as Member;
-
-                if (moment(this.member.birthDate).isValid() == true) {
-                    this.member.birthDate = { date: { year: moment(this.member.birthDate).format('YYYY'), month: moment(this.member.birthDate).format('M'), day: moment(this.member.birthDate).format('D') } };
-                }
-
-                this.mm.leading(this.member.id).subscribe(res => {
-                    this.member.leading = res
-                });
-
-                this.mm.following(this.member.id).subscribe(res => {
-                    this.member.following = res
-                });
-
-                this.mm.invites(this.member.id).subscribe(res => {
-                    this.member.invites = res
-                });
-
-                this.mm.activities(this.member.id).subscribe(res => {
-                    this.member.activities = res
-                });
-            }, error => this.ex.catchError(error));
+    async onModalProfileInit(id: number) {
+        this.member = await this.mm.get(id);
+        this.member.leading = await this.mm.leading(id);
+        this.member.following = await this.mm.following(id);
+        this.member.invites = await this.mm.invites(id);
+        this.member.activities = await this.mm.activities(id);        
     }
 
-    public names: string[];
+    public names: string[] = [];
     suggestionsForNew: string[] = [];
     suggestionsForEdit: string[] = [];
 
@@ -475,7 +352,7 @@ export class MemberComponent {
         this.member.invitedByMemberName = s;
     }
 
-    onRoleChange(member: Member, roleId: number) {
+    async onRoleChange(member: Member, roleId: number) {
         var flag = confirm('This will change the user`s role. Continue?');
 
         if (!flag)
@@ -483,53 +360,20 @@ export class MemberComponent {
 
         member.roleId = roleId;
 
-        this.mm.updateRole(member).subscribe(r => {
-            for (let m of this.chunk.members) {
-                if (m.id == member.id) {
-                    let index: number = this.chunk.members.indexOf(m);
-                    this.chunk.members[index] = member;
-                }
+        await this.mm.updateRole(member);
+
+        for (let m of this.chunk.members) {
+            if (m.id == member.id) {
+                let index: number = this.chunk.members.indexOf(m);
+                this.chunk.members[index] = member;
             }
-        });
+        }
 
         return false;
     }
 }
 
-export class Member {
-    id: number;
-    name: string;
-    nickName: string;
-    birthDate: any;
-    gender: number;
-    email: string;
-    address: string;
-    mobile: string;
-    isActive?: boolean;
-    roleId: number;
-    leading: number;
-    following: number;
-    invites: number;
-    activities: Activity[];
-    invitedBy: number;
-    invitedByMemberName: string;
-    remarks: string;
-}
-
-export class Role {
-    id: number;
-    name: string;
-}
-
 class Chunk {
     members: Member[];
     pager: Pager;
-}
-
-class Activity {
-    eventId: number;
-    category: string;
-    event: string;
-    eventDate: any;
-    timeLogged: any;
 }

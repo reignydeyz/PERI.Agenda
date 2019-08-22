@@ -2,19 +2,19 @@
 import * as $ from "jquery";
 
 import { NgForm } from '@angular/forms';
-import { GroupModule, Group } from './group.component';
-import { MemberModule } from '../member/member.component';
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
 import { Http } from '@angular/http';
-import { GroupCategory, GroupCategoryModule } from '../groupcategory/groupcategory.component';
+import { GroupCategoryModule } from '../groupcategory/groupcategory.component';
+import { MemberService } from '../../services/member.service';
+import { Group } from '../../models/group';
+import { GroupService } from '../../services/group.service';
+import { GroupCategory } from '../../models/groupcategory';
 
 @Component({
     selector: 'groupnew',
     templateUrl: './group.new.component.html'
 })
 export class GroupNewComponent {
-    private gm: GroupModule;
-    private mm: MemberModule;
     private ex: ErrorExceptionModule;
     
     public groupCategories: GroupCategory[];
@@ -23,15 +23,8 @@ export class GroupNewComponent {
     @Input('isAdmin') isAdmin: boolean;
     @Output() change: EventEmitter<number> = new EventEmitter<number>();
 
-    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string) {
-        this.mm = new MemberModule();
-        this.mm.http = http;
-        this.mm.baseUrl = baseUrl;
-
-        this.gm = new GroupModule();
-        this.gm.http = http;
-        this.gm.baseUrl = baseUrl;
-
+    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string,
+    private mm: MemberService, private gm: GroupService) {
         this.ex = new ErrorExceptionModule();
         this.ex.http = http;
         this.ex.baseUrl = baseUrl;
@@ -61,23 +54,22 @@ export class GroupNewComponent {
         this.group.leader = s;
     }
 
-    ngAfterViewInit() {
+    async ngAfterViewInit() {
         var gc = new GroupCategoryModule();
         gc.http = this.http;
         gc.baseUrl = this.baseUrl;
         gc.find(new GroupCategory()).subscribe(result => { this.groupCategories = result });
 
-        this.mm.allNames().subscribe(result => { this.names = result });
+        this.names = await this.mm.allNames();
     }
 
-    onNewSubmit(g: Group) {
-
-        this.gm.add(g).subscribe(result => {
-            g.id = result;
+    async onNewSubmit(g: Group) {
+        await this.gm.add(g).then(r => {
+            g.id = r;
             this.change.emit(g.id);
 
             alert('Added!');
             $('#modalNew').modal('toggle');
-        }, err => this.ex.catchError(err));
+        });
     }
 }

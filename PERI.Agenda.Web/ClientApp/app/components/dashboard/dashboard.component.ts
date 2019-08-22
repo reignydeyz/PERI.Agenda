@@ -3,8 +3,9 @@ import { Http } from '@angular/http';
 import { Title } from '@angular/platform-browser';
 
 import { Statistics, GraphDataSet } from '../graph/graph.component';
-import { AccountModule, Role } from "../account/account.component";
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
+import { DashboardService } from '../../services/dashboard.service';
+import { AccountService } from '../../services/account.service';
 
 @Component({
     selector: 'dashboard',
@@ -33,52 +34,35 @@ export class DashboardComponent {
         }
     };
 
-    private am: AccountModule
-
-    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
-        this.am = new AccountModule();
-        this.am.http = http;
-        this.am.baseUrl = baseUrl;
-
-        this.am.ex = new ErrorExceptionModule();
-        this.am.ex.baseUrl = this.baseUrl;
+    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title,
+    private dashboardService: DashboardService, private am: AccountService) {
     }
 
     ngOnInit() {
         this.titleService.setTitle('Dashboard'); 
     }
 
-    ngAfterViewInit() {
+    async ngAfterViewInit() {
+        var r = await this.am.getRole();
 
-        this.am.getRole().subscribe(r => {
-            if (r.name != "Admin") {
-                window.location.replace(this.baseUrl + 'calendar');
-            }
-            else {
-                this.onAttendanceLoad();
-            }
-        }, error => this.am.ex.catchError(error));
+        if (r.name != "Admin") {
+            window.location.replace(this.baseUrl + 'calendar');
+        }
+        else {
+            this.onAttendanceLoad();
+        }
     }
 
-    onAttendanceLoad() {
-        this.http.get(this.baseUrl + 'api/dashboard/eventcategories').subscribe(result => {
-            this.eventcategoryStats = result.json() as Statistics;
-        }, error => this.am.ex.catchError(error));
-
-        this.http.get(this.baseUrl + 'api/dashboard/locations').subscribe(result => {
-            this.locationStats = result.json() as Statistics;
-        }, error => this.am.ex.catchError(error));
+    async onAttendanceLoad() {
+        this.eventcategoryStats = await this.dashboardService.eventcategoryStats();
+        this.locationStats = await this.dashboardService.locationStats();
     }
 
-    onMemberLoad() {
-        this.http.get(this.baseUrl + 'api/dashboard/member').subscribe(result => {
-            this.memberStats = result.json() as Statistics;
-        }, error => this.am.ex.catchError(error));
+    async onMemberLoad() {
+        this.memberStats = await this.dashboardService.memberStats();
     }
 
-    onGroupsLoad() {
-        this.http.get(this.baseUrl + 'api/dashboard/groupcategories').subscribe(result => {
-            this.groupCategoryStats = result.json() as GraphDataSet; console.log(result.json());
-        }, error => console.error(error));
+    async onGroupsLoad() {
+        this.groupCategoryStats = await this.dashboardService.groupCategoryStats();
     }
 }

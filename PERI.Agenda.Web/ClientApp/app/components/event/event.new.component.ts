@@ -8,7 +8,7 @@ import { ErrorExceptionModule } from '../errorexception/errorexception.component
 import { Http } from '@angular/http';
 import { EventCategory, EventCategoryModule } from '../eventcategory/eventcategory.component';
 import { Location, LocationModule } from '../location/location.component';
-import { Group } from '../group/group.component';
+import { Group } from '../../models/group';
 
 @Component({
     selector: 'eventnew',

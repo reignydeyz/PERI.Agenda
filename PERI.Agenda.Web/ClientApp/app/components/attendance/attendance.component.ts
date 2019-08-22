@@ -14,13 +14,14 @@ import * as $ from "jquery";
 import { IMyDpOptions } from 'mydatepicker';
 
 import { Pager } from '../pager/pager.component';
-import { MemberModule, Member } from '../member/member.component';
 import { Rsvp, RsvpModule } from '../rsvp/rsvp.component';
 import { LookUp, LookUpModule } from '../lookup/lookup.component';
 
 import { saveAs } from 'file-saver';
 
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';  
+import { MemberService } from '../../services/member.service';
+import { Member } from '../../models/member';
 
 export class AttendanceModule {
     public http: Http;
@@ -77,7 +78,6 @@ export class AttendanceComponent {
     showLoader: boolean = true;
     private rm: RsvpModule;
     private am: AttendanceModule;
-    private mm: MemberModule;
 
     id: number;
     event: Event;
@@ -111,17 +111,14 @@ export class AttendanceComponent {
         dateFormat: 'mm/dd/yyyy',
     };
 
-    constructor(private route: ActivatedRoute, private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
+    constructor(private route: ActivatedRoute, private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title,
+    private mm: MemberService) {
         this.am = new AttendanceModule();
         this.am.http = http;
         this.am.baseUrl = baseUrl;
 
         this.am.ex = new ErrorExceptionModule();
         this.am.ex.baseUrl = this.baseUrl;
-
-        this.mm = new MemberModule();
-        this.mm.http = http;
-        this.mm.baseUrl = baseUrl;
 
         this.rm = new RsvpModule();
         this.rm.http = http;
@@ -195,7 +192,7 @@ export class AttendanceComponent {
         }
     }
 
-    ngAfterViewInit() {
+    async ngAfterViewInit() {
         var lm = new LookUpModule();
         lm.http = this.http;
         lm.baseUrl = this.baseUrl;
@@ -222,7 +219,7 @@ export class AttendanceComponent {
 
         this.initMenu();
 
-        this.mm.allNames().subscribe(result => { this.names = result });
+        this.names = await this.mm.allNames();
     }
 
     showMenuButton(): boolean {
@@ -307,7 +304,7 @@ export class AttendanceComponent {
         }        
     }
 
-    public onNewSubmit(f: NgForm) {
+    async onNewSubmit(f: NgForm) {
         var middleInitial = (f.controls['middleInitial'].value == ''
             || f.controls['middleInitial'].value == null
             || f.controls['middleInitial'].value == undefined) ? ' ' : ' ' + f.controls['middleInitial'].value + '. ';
@@ -331,21 +328,17 @@ export class AttendanceComponent {
         m.invitedByMemberName = f.controls['invitedBy'].value;
         m.remarks = f.controls['remarks'].value;
 
-        this.mm.add(m).subscribe(
-            result => {
-                m.id = result;
+        m.id = await this.mm.add(m);
 
-                let frm: any;
-                frm = document.getElementById("frmNew");
-                frm.reset();
+        let frm: any;
+        frm = document.getElementById("frmNew");
+        frm.reset();
 
-                var a = new Attendance();
-                a.memberId = m.id;
-                this.am.add(this.id, a).subscribe(r => { alert('Added!'); });
+        var a = new Attendance();
+        a.memberId = m.id;
+        this.am.add(this.id, a).subscribe(r => { alert('Added!'); });
 
-                this.totalAttendees++;
-            },
-            error => this.am.ex.catchError(error));
+        this.totalAttendees++;
     }
 
     ngAfterViewChecked() {

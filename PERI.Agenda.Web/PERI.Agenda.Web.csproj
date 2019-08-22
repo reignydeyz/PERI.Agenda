@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <IsPackable>false</IsPackable>
-	<Version>0.10.0.0</Version>
+	<Version>0.11.0.0</Version>
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
@@ -50,6 +50,17 @@
     <None Remove="ClientApp\app\components\profile\profile.component.ts" />
     <None Remove="ClientApp\app\components\reporttemplate\reporttemplate.component.ts" />
     <None Remove="ClientApp\app\components\rsvp\rsvp.component.ts" />
+    <None Remove="ClientApp\app\models\activity.ts" />
+    <None Remove="ClientApp\app\models\group.ts" />
+    <None Remove="ClientApp\app\models\groupcategory.ts" />
+    <None Remove="ClientApp\app\models\member.ts" />
+    <None Remove="ClientApp\app\models\role.ts" />
+    <None Remove="ClientApp\app\services\account.service.ts" />
+    <None Remove="ClientApp\app\services\dashboard.service.ts" />
+    <None Remove="ClientApp\app\services\group.service.ts" />
+    <None Remove="ClientApp\app\services\groupcategory.service.ts" />
+    <None Remove="ClientApp\app\services\member.service.ts" />
+    <None Remove="ClientApp\app\services\role.service.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -81,6 +92,17 @@
     <TypeScriptCompile Include="ClientApp\app\components\profile\profile.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\reporttemplate\reporttemplate.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\rsvp\rsvp.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\activity.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\group.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\groupcategory.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\member.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\role.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\account.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\dashboard.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\group.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\groupcategory.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\member.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\role.service.ts" />
   </ItemGroup>
 
   <ItemGroup>

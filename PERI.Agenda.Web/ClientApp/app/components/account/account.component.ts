@@ -2,7 +2,6 @@
 import { Http, Headers, RequestOptions } from '@angular/http';
 import * as $ from "jquery";
 
-import { Member, MemberModule } from '../member/member.component';
 import { LookUpModule, LookUp } from "../lookup/lookup.component";
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
 
@@ -11,23 +10,10 @@ import * as moment from 'moment';
 import { Title } from '@angular/platform-browser';
 import { Observable } from 'rxjs/Observable';
 import { NgForm } from '@angular/forms';
-
-export class AccountModule {
-    public http: Http;
-    public baseUrl: string;
-
-    public ex: ErrorExceptionModule;
-
-    public getProfile() : Observable<Member> {
-        return this.http.get(this.baseUrl + 'api/account/profile')
-            .map(r => r.json());
-    }
-
-    public getRole(): Observable<Role> {
-        return this.http.get(this.baseUrl + 'api/account/role')
-            .map(r => r.json());
-    }
-}
+import { Role } from '../../models/role';
+import { Member } from '../../models/member';
+import { AccountService } from '../../services/account.service';
+import { MemberService } from '../../services/member.service';
 
 @Component({
     selector: 'account',
@@ -36,9 +22,6 @@ export class AccountModule {
 export class AccountComponent {
     public genders: LookUp[];
     public profile: Member;
-
-    private am: AccountModule;
-    private mm: MemberModule;
     private ex: ErrorExceptionModule;
 
     public myDatePickerOptions: IMyDpOptions = {
@@ -46,14 +29,10 @@ export class AccountComponent {
         dateFormat: 'mm/dd/yyyy',
     };
 
-    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
-        this.am = new AccountModule();
-        this.am.http = http;
-        this.am.baseUrl = baseUrl;
-
-        this.mm = new MemberModule();
-        this.mm.http = http;
-        this.mm.baseUrl = baseUrl;
+    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title,
+        private am: AccountService,
+        private mm: MemberService
+    ) {
 
         this.profile = new Member();
 
@@ -61,21 +40,18 @@ export class AccountComponent {
         this.ex.baseUrl = this.baseUrl;
     }
 
-    ngAfterViewInit() {
+    async ngAfterViewInit() {
         var lm = new LookUpModule();
         lm.http = this.http;
         lm.baseUrl = this.baseUrl;
         lm.getByGroup('Gender').subscribe(result => { this.genders = result });
+        
+        this.profile = await this.am.getProfile();
+        this.titleService.setTitle(this.profile.name);
 
-        this.am.getProfile()
-            .subscribe(r => {
-                this.profile = r;
-                this.titleService.setTitle(r.name);
-
-                if (moment(this.profile.birthDate).isValid() == true) {
-                    this.profile.birthDate = { date: { year: moment(this.profile.birthDate).format('YYYY'), month: moment(this.profile.birthDate).format('M'), day: moment(this.profile.birthDate).format('D') } };
-                }
-            });
+        if (moment(this.profile.birthDate).isValid() == true) {
+            this.profile.birthDate = { date: { year: moment(this.profile.birthDate).format('YYYY'), month: moment(this.profile.birthDate).format('M'), day: moment(this.profile.birthDate).format('D') } };
+        }
     }
 
     public onChangePasswordSubmit(f: NgForm) {
@@ -89,13 +65,13 @@ export class AccountComponent {
         }, error => this.ex.catchError(error));
     }
 
-    public onEditSubmit(m: Member) {
+    async onEditSubmit(m: Member) {
         if (m.birthDate != null) {
             m.birthDate = moment(m.birthDate.date.month + '/' + m.birthDate.date.day + '/' + m.birthDate.date.year).format('MM/DD/YYYY');
         }
 
         m.isActive = true;
-        this.mm.edit(m);
+        await this.mm.edit(m);
     }
 
     public onDeactivateSubmit(f: NgForm) {
@@ -106,9 +82,4 @@ export class AccountComponent {
             window.location.replace(this.baseUrl + 'authentication/signout');
         }, error => this.ex.catchError(error));
     }
-}
-
-export class Role {
-    roleId: string;
-    name: string;
 }

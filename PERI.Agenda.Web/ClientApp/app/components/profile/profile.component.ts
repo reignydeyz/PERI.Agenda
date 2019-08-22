@@ -1,10 +1,11 @@
 ﻿import { Component, Inject, AfterViewInit, Input } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
-import { MemberModule, Member } from '../member/member.component';
-import { AccountModule } from '../account/account.component';
 import { Title } from '@angular/platform-browser';
 import * as $ from "jquery";
+import { Member } from '../../models/member';
+import { MemberService } from '../../services/member.service';
+import { AccountService } from '../../services/account.service';
 
 @Component({
     selector: 'profile',
@@ -16,47 +17,23 @@ import * as $ from "jquery";
 export class ProfileComponent {
     @Input('member') member: Member;
 
-    private ac: AccountModule;
-    private mm: MemberModule;
     private ex: ErrorExceptionModule;
 
-    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
+    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title,
+    private mm: MemberService, private ac: AccountService) {
         this.ex = new ErrorExceptionModule();
         this.ex.baseUrl = this.baseUrl;
-
-        this.mm = new MemberModule();
-        this.mm.http = http;
-        this.mm.baseUrl = baseUrl;
-
-        this.ac = new AccountModule();
-        this.ac.baseUrl = baseUrl;
-        this.ac.http = http;
     }
 
-    ngOnInit() {
+    async ngOnInit() {
         if (this.member == null || this.member == undefined) {
-            this.ac.getProfile()
-                .subscribe(r => {
-                    this.member = r;
+            this.member = await this.ac.getProfile();
+            this.member.leading = await this.mm.leading(this.member.id);
+            this.member.following = await this.mm.following(this.member.id);
+            this.member.invites = await this.mm.invites(this.member.id);
+            this.member.activities = await this.mm.activities(this.member.id);
 
-                    this.mm.leading(r.id).subscribe(res => {
-                        this.member.leading = res
-                    });
-
-                    this.mm.following(r.id).subscribe(res => {
-                        this.member.following = res
-                    });
-
-                    this.mm.invites(r.id).subscribe(res => {
-                        this.member.invites = res
-                    });
-
-                    this.mm.activities(r.id).subscribe(res => {
-                        this.member.activities = res
-                    });
-
-                    this.titleService.setTitle(r.name);
-                });
+            this.titleService.setTitle(this.member.name);
         }
     }
 
