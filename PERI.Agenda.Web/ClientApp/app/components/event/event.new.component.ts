@@ -6,9 +6,10 @@ import { EventModule, Event } from './event.component';
 
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
 import { Http } from '@angular/http';
-import { EventCategory, EventCategoryModule } from '../eventcategory/eventcategory.component';
 import { Location, LocationModule } from '../location/location.component';
 import { Group } from '../../models/group';
+import { EventCategory } from '../../models/eventcategory';
+import { EventCategoryService } from '../../services/eventcategory.service';
 
 @Component({
     selector: 'eventnew',
@@ -25,7 +26,8 @@ export class EventNewComponent {
     @Input('group') group: Group;
     @Output() change: EventEmitter<number> = new EventEmitter<number>();
 
-    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string) {
+    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string,
+    private ecm: EventCategoryService) {
         this.em = new EventModule();
         this.em.http = http;
         this.em.baseUrl = baseUrl;
@@ -39,11 +41,8 @@ export class EventNewComponent {
         }
     }
 
-    ngOnInit() {
-        var ecm = new EventCategoryModule();
-        ecm.http = this.http;
-        ecm.baseUrl = this.baseUrl;
-        ecm.find(new EventCategory()).subscribe(result => { this.eventCategories = result });
+    async ngOnInit() {
+        this.eventCategories = await this.ecm.find(new EventCategory());
 
         var l = new LocationModule();
         l.http = this.http;

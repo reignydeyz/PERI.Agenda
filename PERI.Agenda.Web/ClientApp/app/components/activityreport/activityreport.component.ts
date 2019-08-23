@@ -6,10 +6,13 @@ import { Title } from '@angular/platform-browser';
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
 import { NgForm, NgModel } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
-import { Report, ReportModule } from '../reporttemplate/reporttemplate.component';
 
 import { saveAs } from 'file-saver';
 import { IMyDpOptions } from 'mydatepicker';
+import { ActivityReport } from '../../models/activityreport';
+import { ActivityReportService } from '../../services/activityreport.service';
+import { Report } from '../../models/report';
+import { ReportService } from '../../services/report.service';
 
 @Component({
     selector: 'activityreport',
@@ -17,9 +20,6 @@ import { IMyDpOptions } from 'mydatepicker';
 })
 export class ActivityReportComponent {
     @Input() report: ActivityReport;
-
-    private ex: ErrorExceptionModule;
-    private rm: ReportModule;
     
     reports: Report[] = [];
 
@@ -28,38 +28,20 @@ export class ActivityReportComponent {
         dateFormat: 'mm/dd/yyyy',
     };
 
-    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
-        this.ex = new ErrorExceptionModule();
-        this.ex.http = http;
-        this.ex.baseUrl = baseUrl;
-
-        this.rm = new ReportModule();
-        this.rm.baseUrl = baseUrl;
-        this.rm.http = http;
+    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title,
+    private activityReportService: ActivityReportService, private ex: ErrorExceptionModule, private rm: ReportService) {
     } 
 
-    ngOnInit() {
-        this.rm.find(new Report()).subscribe(r => {
-            this.reports = r;
-        });
+    async ngOnInit() {
+        this.reports = await this.rm.find(new Report());
     }
 
-    onSubmit(r: ActivityReport) {
-        this.http.post(this.baseUrl + 'api/activityreport/generatereport', r).subscribe(result => {
-            let parsedResponse = result.text();
-            this.downloadFile(parsedResponse);
-        }, err => this.ex.catchError(err));
+    async onSubmit(r: ActivityReport) {
+        this.downloadFile(await this.activityReportService.generateReport(r));
     }
 
     downloadFile(data: any) {
         var blob = new Blob([data], { type: 'text/csv' });
         saveAs(blob, "data.csv");
     }
-}
-
-export class ActivityReport {
-    reportId: any;
-    groupId: number;
-    dateTimeStart: any;
-    dateTimeEnd: any;
 }

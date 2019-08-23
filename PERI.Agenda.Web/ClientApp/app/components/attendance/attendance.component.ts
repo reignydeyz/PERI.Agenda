@@ -3,7 +3,6 @@ import { Http, Headers, RequestOptions } from '@angular/http';
 import { NgForm, NgModel } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { EventCategoryModule, EventCategory } from '../eventcategory/eventcategory.component';
 import { EventModule, Event } from '../event/event.component';
 import { Title } from '@angular/platform-browser';
 
@@ -22,6 +21,8 @@ import { saveAs } from 'file-saver';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';  
 import { MemberService } from '../../services/member.service';
 import { Member } from '../../models/member';
+import { EventCategory } from '../../models/eventcategory';
+import { EventCategoryService } from '../../services/eventcategory.service';
 
 export class AttendanceModule {
     public http: Http;
@@ -112,7 +113,7 @@ export class AttendanceComponent {
     };
 
     constructor(private route: ActivatedRoute, private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title,
-    private mm: MemberService) {
+    private mm: MemberService, private ecm: EventCategoryService) {
         this.am = new AttendanceModule();
         this.am.http = http;
         this.am.baseUrl = baseUrl;
@@ -226,12 +227,8 @@ export class AttendanceComponent {
         return window.innerWidth >= 768;
     }
 
-    onStatsLoad() {
-        var ecm = new EventCategoryModule();
-        ecm.http = this.http;
-        ecm.baseUrl = this.baseUrl;
-        ecm.ex = new ErrorExceptionModule();
-        ecm.get(this.event.eventCategoryId).subscribe(res => { this.ec = res }, error => ecm.ex.catchError(error));
+    async onStatsLoad() {
+        this.ec = await this.ecm.get(this.event.eventCategoryId);
     }
 
     private getTotal() {

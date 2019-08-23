@@ -39,9 +39,7 @@ export class MemberComponent {
     public pager: Pager;
     public chunk: Chunk;
 
-    public enableEmail: boolean = true;    
-    
-    private ex: ErrorExceptionModule;
+    public enableEmail: boolean = true;
 
     public myDatePickerOptions: IMyDpOptions = {
         // other options...
@@ -68,9 +66,8 @@ export class MemberComponent {
     }
 
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title,
-    private mm: MemberService, private roleService: RoleService) {
-        this.ex = new ErrorExceptionModule();
-        this.ex.baseUrl = this.baseUrl;
+    private mm: MemberService, private roleService: RoleService, private ex: ErrorExceptionModule) {
+        
     }
 
     async ngOnInit() {
@@ -133,16 +130,20 @@ export class MemberComponent {
         m.invitedByMemberName = f.controls['invitedBy'].value;
         m.remarks = f.controls['remarks'].value;
 
-        m.id = await this.mm.add(m);
+        await this.mm.add(m).then(r => {
+            m.id = r;
 
-        this.chunk.members.splice(0, 0, m);
-        this.chunk.pager.totalItems++;
+            this.chunk.members.splice(0, 0, m);
+            this.chunk.pager.totalItems++;
 
-        this.actives += 1;
-        this.total += 1;
+            this.actives += 1;
+            this.total += 1;
 
-        alert('Added!');
-        $('#modalNew').modal('toggle');
+            alert('Added!');
+            $('#modalNew').modal('toggle');
+        }).catch(err => {
+            this.ex.catchError(err);
+        });
     }
 
     async onEditInit(id: number) {
@@ -221,29 +222,31 @@ export class MemberComponent {
             }
         });
 
-        await this.mm.delete(selectedIds);
+        await this.mm.delete(selectedIds).then(() => {
+            for (let id of selectedIds) {
+                for (let m of this.chunk.members) {
+                    if (m.id == id) {
 
-        for (let id of selectedIds) {
-            for (let m of this.chunk.members) {
-                if (m.id == id) {
+                        if (m.isActive) {
+                            this.actives -= 1;
+                        }
+                        else {
+                            this.inactives -= 1;
+                        }
 
-                    if (m.isActive) {
-                        this.actives -= 1;
+                        this.chunk.members.splice(this.chunk.members.indexOf(m), 1);
+
+                        this.chunk.pager.totalItems--;
                     }
-                    else {
-                        this.inactives -= 1;
-                    }
-
-                    this.chunk.members.splice(this.chunk.members.indexOf(m), 1);
-
-                    this.chunk.pager.totalItems--;
                 }
             }
-        }
 
-        this.total -= selectedIds.length;
+            this.total -= selectedIds.length;
 
-        alert('Success!');
+            alert('Success!');
+        }).catch(error => {
+            this.ex.catchError(error);
+        });
     }
 
     async onActivateClick() {
@@ -259,20 +262,22 @@ export class MemberComponent {
             }
         });
 
-        await this.mm.activate(selectedIds);
-
-        for (let id of selectedIds) {
-            for (let m of this.chunk.members) {
-                if (m.id == id) {
-                    this.chunk.members[this.chunk.members.indexOf(m)].isActive = true;
+        await this.mm.activate(selectedIds).then(() => {
+            for (let id of selectedIds) {
+                for (let m of this.chunk.members) {
+                    if (m.id == id) {
+                        this.chunk.members[this.chunk.members.indexOf(m)].isActive = true;
+                    }
                 }
             }
-        }
 
-        this.actives += selectedIds.length;
-        this.inactives -= selectedIds.length;
+            this.actives += selectedIds.length;
+            this.inactives -= selectedIds.length;
 
-        alert('Success!');
+            alert('Success!');
+        }).catch(error => {
+            this.ex.catchError(error);
+        });
     }
 
     async onDeactivateClick() {
@@ -288,20 +293,22 @@ export class MemberComponent {
             }
         });
 
-        await this.mm.deactivate(selectedIds);
-
-        for (let id of selectedIds) {
-            for (let m of this.chunk.members) {
-                if (m.id == id) {
-                    this.chunk.members[this.chunk.members.indexOf(m)].isActive = false;
+        await this.mm.deactivate(selectedIds).then(() => {
+            for (let id of selectedIds) {
+                for (let m of this.chunk.members) {
+                    if (m.id == id) {
+                        this.chunk.members[this.chunk.members.indexOf(m)].isActive = false;
+                    }
                 }
             }
-        }
 
-        this.actives -= selectedIds.length;
-        this.inactives += selectedIds.length;
+            this.actives -= selectedIds.length;
+            this.inactives += selectedIds.length;
 
-        alert('Success!');
+            alert('Success!');
+        }).catch(error => {
+            this.ex.catchError(error);
+        });
     }
 
     async onModalProfileInit(id: number) {
@@ -360,14 +367,14 @@ export class MemberComponent {
 
         member.roleId = roleId;
 
-        await this.mm.updateRole(member);
-
-        for (let m of this.chunk.members) {
-            if (m.id == member.id) {
-                let index: number = this.chunk.members.indexOf(m);
-                this.chunk.members[index] = member;
+        await this.mm.updateRole(member).then(() => {
+            for (let m of this.chunk.members) {
+                if (m.id == member.id) {
+                    let index: number = this.chunk.members.indexOf(m);
+                    this.chunk.members[index] = member;
+                }
             }
-        }
+        });
 
         return false;
     }

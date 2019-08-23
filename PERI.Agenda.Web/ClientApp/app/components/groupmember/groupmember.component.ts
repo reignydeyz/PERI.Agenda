@@ -11,27 +11,8 @@ import { Observable } from 'rxjs/Observable';
 import { saveAs } from 'file-saver';
 import { Member } from '../../models/member';
 import { Group } from '../../models/group';
-
-export class GroupMemberModule {
-    public http: Http;
-    public baseUrl: string;
-
-    public ex: ErrorExceptionModule;
-
-    public add(gm: GroupMember): Observable<number> {
-        return this.http.put(this.baseUrl + 'api/groupmember/add', {
-            memberId: gm.memberId,
-            groupId: gm.groupId
-        }).map(r => r.json());
-    }
-
-    public delete(gm: GroupMember) {
-        return this.http.post(this.baseUrl + 'api/groupmember/delete', {
-            memberId: gm.memberId,
-            groupId: gm.groupId
-        });
-    }
-}
+import { GroupMember } from '../../models/groupmember';
+import { GroupMemberService } from '../../services/groupmember.service';
 
 @Component({
     selector: 'groupmember',
@@ -50,28 +31,13 @@ export class GroupMemberComponent {
     public pager: Pager;
     public chunk: Chunk;
 
-    public gmm: GroupMemberModule;
-
-    private ex: ErrorExceptionModule;
-
-    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
-        this.ex = new ErrorExceptionModule();
-        this.ex.baseUrl = baseUrl;
-
-        this.gmm = new GroupMemberModule();
-        this.gmm.http = http;
-        this.gmm.baseUrl = baseUrl;
-        this.gmm.ex = new ErrorExceptionModule();
+    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title,
+    private gmm: GroupMemberService, private ex: ErrorExceptionModule) {
+        
     }
 
-    private paginate(member: string, page: number) {
-        let body = JSON.stringify(member);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
-
-        this.http.post(this.baseUrl + 'api/groupmember/' + this.group.id + '/checklist/page/' + page, body, options).subscribe(result => {
-            this.chunk = result.json() as Chunk;
-        }, error => this.ex.catchError(error));
+    private async paginate(member: string, page: number) {
+        this.chunk = await this.gmm.search(this.group.id, member, page);
     }
 
     downloadFile(data: any) {
@@ -79,11 +45,8 @@ export class GroupMemberComponent {
         saveAs(blob, "data.csv");
     }
 
-    private download(groupId: number) {
-        this.http.get(this.baseUrl + 'api/groupmember/' + groupId + '/download').subscribe(result => {
-            let parsedResponse = result.text();
-            this.downloadFile(parsedResponse);
-        }, error => this.gmm.ex.catchError(error));;
+    private async download(groupId: number) {
+        this.downloadFile(await this.download(groupId));
     }
 
     ngOnInit() {
@@ -91,10 +54,8 @@ export class GroupMemberComponent {
         this.pager = new Pager();
     }
 
-    ngOnChanges() {
-        this.http.post(this.baseUrl + 'api/groupmember/find/' + this.group.id, new Member()).subscribe(result => {
-            this.members = result.json();
-        }, error => this.ex.catchError(error));
+    async ngOnChanges() {
+        this.members = await this.gmm.find(this.group.id, new Member());
 
         if (this.members) {
             var tbl = <HTMLTableElement>document.getElementById("tblModalMembers");
@@ -130,9 +91,9 @@ export class GroupMemberComponent {
         this.paginate(this.search, page);
     }
 
-    toggle(gm: GroupMember) {
+    async toggle(gm: GroupMember) {
         if (gm.groupId > 0) {
-            this.gmm.delete(gm).subscribe(result => {
+            await this.gmm.delete(gm).then(() => {
                 for (let r of this.chunk.checklist) {
                     if (r.memberId == gm.memberId) {
                         let index: number = this.chunk.checklist.indexOf(r);
@@ -150,13 +111,14 @@ export class GroupMemberComponent {
                 }
 
                 this.change.emit(this.group.id);
-                //alert('Success');
-            }, error => this.ex.catchError(error));
+            }).catch(error => {
+                this.ex.catchError(error);
+            });
         }
         else {
             gm.groupId = this.group.id;
 
-            this.gmm.add(gm).subscribe(result => {
+            await this.gmm.add(gm).then(() => {
                 for (let r of this.chunk.checklist) {
                     if (r.memberId == gm.memberId) {
                         let index: number = this.chunk.checklist.indexOf(r);
@@ -175,12 +137,6 @@ export class GroupMemberComponent {
             }, error => this.ex.catchError(error));
         }
     }
-}
-
-export class GroupMember {
-    memberId: number;
-    name: string;
-    groupId: number;
 }
 
 class Chunk {

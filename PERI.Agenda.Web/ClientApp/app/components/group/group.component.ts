@@ -4,20 +4,19 @@ import { NgForm, NgModel, FormControl, FormsModule, ReactiveFormsModule } from '
 import * as $ from "jquery";
 
 import { Observable } from 'rxjs/Observable';
-
-import { GroupCategoryModule } from '../groupcategory/groupcategory.component';
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
 import { Pager } from '../pager/pager.component';
 import { Title } from '@angular/platform-browser';
 
 import * as moment from 'moment';
 import { saveAs } from 'file-saver';
-import { ActivityReport } from '../activityreport/activityreport.component';
 import { Member } from '../../models/member';
 import { MemberService } from '../../services/member.service';
 import { Group } from '../../models/group';
 import { GroupService } from '../../services/group.service';
 import { GroupCategory } from '../../models/groupcategory';
+import { GroupCategoryService } from '../../services/groupcategory.service';
+import { ActivityReport } from '../../models/activityreport';
 
 @Component({
     selector: 'group',
@@ -58,7 +57,7 @@ export class GroupComponent {
     }
 
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title,
-    private mm: MemberService, private gm: GroupService) {
+    private mm: MemberService, private gm: GroupService, private gcm: GroupCategoryService) {
     }
 
     async paginate(obj: Group, page: number) {
@@ -99,12 +98,7 @@ export class GroupComponent {
     }
 
     async ngAfterViewInit() {
-        var gc = new GroupCategoryModule();
-        gc.http = this.http;
-        gc.baseUrl = this.baseUrl;
-        gc.ex = new ErrorExceptionModule();
-        gc.find(new GroupCategory()).subscribe(result => { this.groupCategories = result });
-
+        this.groupCategories = await this.gcm.find(new GroupCategory());
         this.names = await this.mm.allNames();
     }
 

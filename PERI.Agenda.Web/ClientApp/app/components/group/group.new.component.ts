@@ -4,11 +4,11 @@ import * as $ from "jquery";
 import { NgForm } from '@angular/forms';
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
 import { Http } from '@angular/http';
-import { GroupCategoryModule } from '../groupcategory/groupcategory.component';
 import { MemberService } from '../../services/member.service';
 import { Group } from '../../models/group';
 import { GroupService } from '../../services/group.service';
 import { GroupCategory } from '../../models/groupcategory';
+import { GroupCategoryService } from '../../services/groupcategory.service';
 
 @Component({
     selector: 'groupnew',
@@ -24,7 +24,7 @@ export class GroupNewComponent {
     @Output() change: EventEmitter<number> = new EventEmitter<number>();
 
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string,
-    private mm: MemberService, private gm: GroupService) {
+    private mm: MemberService, private gm: GroupService, private gcm: GroupCategoryService) {
         this.ex = new ErrorExceptionModule();
         this.ex.http = http;
         this.ex.baseUrl = baseUrl;
@@ -55,11 +55,7 @@ export class GroupNewComponent {
     }
 
     async ngAfterViewInit() {
-        var gc = new GroupCategoryModule();
-        gc.http = this.http;
-        gc.baseUrl = this.baseUrl;
-        gc.find(new GroupCategory()).subscribe(result => { this.groupCategories = result });
-
+        this.groupCategories = await this.gcm.find(new GroupCategory());
         this.names = await this.mm.allNames();
     }
 

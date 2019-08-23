@@ -51,15 +51,23 @@
     <None Remove="ClientApp\app\components\reporttemplate\reporttemplate.component.ts" />
     <None Remove="ClientApp\app\components\rsvp\rsvp.component.ts" />
     <None Remove="ClientApp\app\models\activity.ts" />
+    <None Remove="ClientApp\app\models\activityreport.ts" />
+    <None Remove="ClientApp\app\models\eventcategory.ts" />
     <None Remove="ClientApp\app\models\group.ts" />
     <None Remove="ClientApp\app\models\groupcategory.ts" />
+    <None Remove="ClientApp\app\models\groupmember.ts" />
     <None Remove="ClientApp\app\models\member.ts" />
+    <None Remove="ClientApp\app\models\report.ts" />
     <None Remove="ClientApp\app\models\role.ts" />
     <None Remove="ClientApp\app\services\account.service.ts" />
+    <None Remove="ClientApp\app\services\activityreport.service.ts" />
     <None Remove="ClientApp\app\services\dashboard.service.ts" />
+    <None Remove="ClientApp\app\services\eventcategory.service.ts" />
     <None Remove="ClientApp\app\services\group.service.ts" />
     <None Remove="ClientApp\app\services\groupcategory.service.ts" />
+    <None Remove="ClientApp\app\services\groupmember.service.ts" />
     <None Remove="ClientApp\app\services\member.service.ts" />
+    <None Remove="ClientApp\app\services\report.service.ts" />
     <None Remove="ClientApp\app\services\role.service.ts" />
   </ItemGroup>
 
@@ -93,15 +101,23 @@
     <TypeScriptCompile Include="ClientApp\app\components\reporttemplate\reporttemplate.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\rsvp\rsvp.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\activity.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\activityreport.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\eventcategory.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\group.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\groupcategory.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\groupmember.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\member.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\report.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\role.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\account.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\activityreport.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\dashboard.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\eventcategory.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\group.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\groupcategory.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\groupmember.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\member.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\report.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\role.service.ts" />
   </ItemGroup>
 

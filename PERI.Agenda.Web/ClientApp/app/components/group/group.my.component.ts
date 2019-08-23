@@ -5,15 +5,16 @@ import * as $ from "jquery";
 
 import { Observable } from 'rxjs/Observable';
 
-import { GroupCategoryModule } from '../groupcategory/groupcategory.component';
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
 import { Pager } from '../pager/pager.component';
 import { Title } from '@angular/platform-browser';
-import { GroupMemberModule, GroupMember } from '../groupmember/groupmember.component';
 import { MemberService } from '../../services/member.service';
 import { Group } from '../../models/group';
 import { GroupService } from '../../services/group.service';
 import { GroupCategory } from '../../models/groupcategory';
+import { GroupCategoryService } from '../../services/groupcategory.service';
+import { GroupMemberService } from '../../services/groupmember.service';
+import { GroupMember } from '../../models/groupmember';
 
 @Component({
     selector: 'groupmy',
@@ -23,8 +24,6 @@ import { GroupCategory } from '../../models/groupcategory';
     ]
 })
 export class GroupMyComponent {
-    private gmm: GroupMemberModule;
-
     public group: Group;
     public groupCategories: GroupCategory[];
 
@@ -53,10 +52,8 @@ export class GroupMyComponent {
     }
 
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title,
-    private mm: MemberService, private gm: GroupService) {
-        this.gmm = new GroupMemberModule();
-        this.gmm.http = http;
-        this.gmm.baseUrl = baseUrl;
+    private mm: MemberService, private gm: GroupService, private gcm: GroupCategoryService, private gmm: GroupMemberService) {
+        
     }
 
     async paginate(obj: Group, page: number) {
@@ -88,12 +85,7 @@ export class GroupMyComponent {
     }
 
     async ngAfterViewInit() {
-        var gc = new GroupCategoryModule();
-        gc.http = this.http;
-        gc.baseUrl = this.baseUrl;
-        gc.ex = new ErrorExceptionModule();
-        gc.find(new GroupCategory()).subscribe(result => { this.groupCategories = result });
-
+        this.groupCategories = await this.gcm.find(new GroupCategory());
         this.names = await this.mm.allNames();
     }
 
@@ -147,10 +139,11 @@ export class GroupMyComponent {
         }
     }
 
-    join(groupId: number) {
+    async join(groupId: number) {
         var gm = new GroupMember();
         gm.groupId = groupId;
-        this.gmm.add(gm).subscribe(r => {
+
+        await this.gmm.add(gm).then(r => {
 
             alert("Success");
 
@@ -158,10 +151,10 @@ export class GroupMyComponent {
         });
     }
 
-    leave(groupId: number) {
+    async leave(groupId: number) {
         var gm = new GroupMember();
         gm.groupId = groupId;
-        this.gmm.delete(gm).subscribe(r => {
+        await this.gmm.delete(gm).then(r => {
 
             alert("Success");
 

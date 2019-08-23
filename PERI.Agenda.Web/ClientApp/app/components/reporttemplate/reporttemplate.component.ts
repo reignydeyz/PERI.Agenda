@@ -6,26 +6,10 @@ import { Title } from '@angular/platform-browser';
 import { NgForm, NgModel } from '@angular/forms';
 import * as $ from "jquery";
 import { Observable } from 'rxjs/Observable';
-import { EventCategory, EventCategoryModule } from '../eventcategory/eventcategory.component';
-
-export class ReportModule {
-    public http: Http;
-    public baseUrl: string;
-
-    public ex: ErrorExceptionModule;
-
-    public add(r: Report): Observable<number> {
-        return this.http.post(this.baseUrl + 'api/reporttemplate/new', r).map(response => response.json());
-    }
-
-    public edit(r: Report) {
-        return this.http.post(this.baseUrl + 'api/reporttemplate/edit', r);
-    }
-
-    public find(r: Report): Observable<Report[]> {
-        return this.http.post(this.baseUrl + 'api/reporttemplate/find', r).map(response => response.json());
-    }
-}
+import { Report, ReportEventCategory } from '../../models/report';
+import { ReportService } from '../../services/report.service';
+import { EventCategory } from '../../models/eventcategory';
+import { EventCategoryService } from '../../services/eventcategory.service';
 
 @Component({
     selector: 'reporttemplate',
@@ -34,24 +18,14 @@ export class ReportModule {
         '../table/table.component.css']
 })
 export class ReportTemplateComponent {
-    rm: ReportModule;    
-    ecm: EventCategoryModule;
-
     checklist: ReportEventCategory[];
     report: Report;
     reports: Report[] = [];
     eventCategories: EventCategory[] = [];
 
-    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
-        this.rm = new ReportModule();
-        this.rm.http = http;
-        this.rm.baseUrl = baseUrl;
-        this.rm.ex = new ErrorExceptionModule();
-
-        this.ecm = new EventCategoryModule();
-        this.ecm.http = http;
-        this.ecm.baseUrl = baseUrl;
-        this.ecm.ex = new ErrorExceptionModule();
+    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title,
+    private rm: ReportService, private ex: ErrorExceptionModule, private ecm: EventCategoryService) {
+        
     }
 
     checkAll() {
@@ -63,32 +37,21 @@ export class ReportTemplateComponent {
         });
     }
 
-    ngOnInit() {
+    async ngOnInit() {
         this.titleService.setTitle('Locations');
 
-        this.rm.find(new Report()).subscribe(r => {
-            this.reports = r
-        }, err => this.rm.ex.catchError(err));
-
-        this.ecm.find(new EventCategory()).subscribe(r => {
-            this.eventCategories = r
-        }, err => this.rm.ex.catchError(err));
+        this.reports = await this.rm.find(new Report());
+        this.eventCategories = await this.ecm.find(new EventCategory());
     }
 
-    onEditInit(r: Report) {
+    async onEditInit(r: Report) {
         this.report = r;
 
-        this.checklist = [];
-
-        this.http.get(this.baseUrl + 'api/reporttemplate/checklist/' + r.reportId)
-            .subscribe(result => {
-                this.checklist = result.json();
-            }, error => this.rm.ex.catchError(error));
+        this.checklist = await this.rm.checklist(r.reportId);
     }
 
-    onEditSubmit(rpt: Report) {
-        this.rm.edit(rpt).subscribe(r => {
-
+    async onEditSubmit(rpt: Report) {
+        await this.rm.edit(rpt).then(() => {
             var selectedIds = new Array();
             $("#frmEdit input:checkbox:checked").each(function () {
                 if ($(this).prop('checked')) {
@@ -99,46 +62,44 @@ export class ReportTemplateComponent {
             let body = JSON.stringify(selectedIds);
             let headers = new Headers({ 'Content-Type': 'application/json' });
             let options = new RequestOptions({ headers: headers });
-            
+
             this.http.post(this.baseUrl + 'api/eventcategoryreport/update/' + rpt.reportId, body, options)
                 .subscribe(res => {
                     alert('Updated.');
                     $('#modalEdit').modal('toggle');
                 });
-        })
+        });
     }
 
-    onNewSubmit(f: NgForm) {
+    async onNewSubmit(f: NgForm) {
         var r = new Report();
         r.name = f.controls['name'].value;
 
-        this.rm.add(r).subscribe(
-            result => {
-                r.reportId = result;
+        await this.rm.add(r).then(response => {
+            r.reportId = response;
 
-                var selectedIds = new Array();
-                $("#frmNew input:checkbox:checked").each(function () {
-                    if ($(this).prop('checked')) {
-                        selectedIds.push($(this).val());
-                    }
+            var selectedIds = new Array();
+            $("#frmNew input:checkbox:checked").each(function () {
+                if ($(this).prop('checked')) {
+                    selectedIds.push($(this).val());
+                }
+            });
+
+            let body = JSON.stringify(selectedIds);
+            let headers = new Headers({ 'Content-Type': 'application/json' });
+            let options = new RequestOptions({ headers: headers });
+
+            this.http.post(this.baseUrl + 'api/eventcategoryreport/addrange/' + r.reportId, body, options)
+                .subscribe(res => {
+                    this.reports.push(r);
+
+                    alert('Added!');
+                    $('#modalNew').modal('toggle');
                 });
-
-                let body = JSON.stringify(selectedIds);
-                let headers = new Headers({ 'Content-Type': 'application/json' });
-                let options = new RequestOptions({ headers: headers });
-                
-                this.http.post(this.baseUrl + 'api/eventcategoryreport/addrange/' + r.reportId, body, options)
-                    .subscribe(res => {
-                        this.reports.push(r);
-
-                        alert('Added!');
-                        $('#modalNew').modal('toggle');
-                    });
-            },
-            error => this.rm.ex.catchError(error));
+        });
     }
 
-    onDeleteClick() {
+    async onDeleteClick() {
         var flag = confirm('Are you sure you want to delete selected records?');
 
         if (!flag)
@@ -151,12 +112,7 @@ export class ReportTemplateComponent {
             }
         });
 
-        let body = JSON.stringify(selectedIds);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
-
-        this.http.post(this.baseUrl + 'api/reporttemplate/delete', body, options).subscribe(result => {
-
+        await this.rm.delete(selectedIds).then(() => {
             for (let id of selectedIds) {
                 for (let e of this.reports) {
                     if (e.reportId == id) {
@@ -166,18 +122,8 @@ export class ReportTemplateComponent {
             }
 
             alert('Success!');
-
-        }, error => this.rm.ex.catchError(error));
+        }).catch(error => {
+            this.ex.catchError(error);
+        });
     }
-}
-
-export class Report {
-    reportId: number;
-    name: string;
-}
-
-export class ReportEventCategory {
-    id: number;
-    name: number;
-    isSelected: boolean;
 }

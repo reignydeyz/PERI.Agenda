@@ -12,36 +12,8 @@ import { ErrorExceptionModule } from '../errorexception/errorexception.component
 import { Event } from '../event/event.component';
 
 import { saveAs } from 'file-saver';
-
-export class EventCategoryModule {
-    public http: Http;
-    public baseUrl: string;
-
-    public ex: ErrorExceptionModule;
-
-    public find(ec: EventCategory): Observable<EventCategory[]> {
-        return this.http.post(this.baseUrl + 'api/eventcategory/find', {
-            name: ec.name
-        }).map(response => response.json());
-    }
-
-    public add(ec: EventCategory): Observable<number> {
-        return this.http.post(this.baseUrl + 'api/eventcategory/new', {
-            name: ec.name
-        }).map(response => response.json());
-    }
-
-    public edit(ec: EventCategory) {
-        return this.http.post(this.baseUrl + 'api/eventcategory/edit', {
-            id: ec.id,
-            name: ec.name
-        }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => this.ex.catchError(error));
-    }
-
-    public get(id: number): Observable<EventCategory> {
-        return this.http.get(this.baseUrl + 'api/eventcategory/get/' + id).map(response => response.json());
-    }
-}
+import { EventCategory } from '../../models/eventcategory';
+import { EventCategoryService } from '../../services/eventcategory.service';
 
 @Component({
     selector: 'eventcategory',
@@ -50,9 +22,7 @@ export class EventCategoryModule {
         '../table/table.component.css']
 })
 export class EventCategoryComponent {
-    private ecm: EventCategoryModule;
-
-    public eventcategory = EventCategory;
+    public eventcategory: EventCategory;
     public eventcategories: EventCategory[];
     events: Event[];
 
@@ -70,11 +40,9 @@ export class EventCategoryComponent {
         }
     };
 
-    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
-        this.ecm = new EventCategoryModule();
-        this.ecm.http = http;
-        this.ecm.baseUrl = baseUrl;
-        this.ecm.ex = new ErrorExceptionModule();
+    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title,
+    private ecm: EventCategoryService, private ex: ErrorExceptionModule) {
+        
     }
 
     checkAll() {
@@ -86,9 +54,9 @@ export class EventCategoryComponent {
         });
     }
 
-    ngOnInit() {
+    async ngOnInit() {
         this.titleService.setTitle('Event Categories');
-        this.ecm.find(new EventCategory()).subscribe(result => { this.eventcategories = result }, error => this.ecm.ex.catchError(error));        
+        this.eventcategories = await this.ecm.find(new EventCategory());
     }
 
     ngAfterViewChecked() {
@@ -113,26 +81,23 @@ export class EventCategoryComponent {
         }
     }
 
-    onNewSubmit(f: NgForm) {
+    async onNewSubmit(f: NgForm) {
         var ec = new EventCategory();
         ec.name = f.controls['name'].value;
 
-        this.ecm.add(ec).subscribe(
-            result => {
-                ec.id = result;
-                this.eventcategories.push(ec);
+        await this.ecm.add(ec).then(result => {
+            ec.id = result;
+            this.eventcategories.push(ec);
 
-                alert('Added!');
-                $('#modalNew').modal('toggle');
-            },
-            error => this.ecm.ex.catchError(error));
+            alert('Added!');
+            $('#modalNew').modal('toggle');
+        }).catch(error => {
+            this.ex.catchError(error);
+        });
     }
 
-    public onEditInit(id: number) {
-        this.http.get(this.baseUrl + 'api/eventcategory/get/' + id)
-            .subscribe(result => {
-                this.eventcategory = result.json();
-            }, error => this.ecm.ex.catchError(error));
+    async onEditInit(id: number) {
+        this.eventcategory = await this.ecm.get(id);
     }
 
     public onEditSubmit(ec: EventCategory) {
@@ -146,7 +111,7 @@ export class EventCategoryComponent {
         }
     }
 
-    onDeleteClick() {
+    async onDeleteClick() {
         var flag = confirm('Are you sure you want to delete selected records?');
 
         if (!flag)
@@ -159,12 +124,7 @@ export class EventCategoryComponent {
             }
         });
 
-        let body = JSON.stringify(selectedIds);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
-
-        this.http.post(this.baseUrl + 'api/eventcategory/delete', body, options).subscribe(result => {
-
+        await this.ecm.delete(selectedIds).then(() => {
             for (let id of selectedIds) {
                 for (let e of this.eventcategories) {
                     if (e.id == id) {
@@ -174,8 +134,9 @@ export class EventCategoryComponent {
             }
 
             alert('Success!');
-
-        }, error => this.ecm.ex.catchError(error));
+        }).catch(error => {
+            this.ex.catchError(error);
+        });
     }
 
     downloadFile(data: any) {
@@ -183,38 +144,26 @@ export class EventCategoryComponent {
         saveAs(blob, "data.csv");
     }
 
-    onDownloadClick() {
-        this.http.get(this.baseUrl + 'api/eventcategory/download').subscribe(result => {
-            let parsedResponse = result.text();
-            this.downloadFile(parsedResponse);
-        }, error => this.ecm.ex.catchError(error));
+    async onDownloadClick() {
+        this.downloadFile(await this.ecm.download());
     }
 
-    onStatsLoad(id: number) {
-        this.onEditInit(id);
+    async onStatsLoad(id: number) {
+        await this.onEditInit(id);
 
         // Updating lineChartLabels does not reflect on the chart
         // https://github.com/valor-software/ng2-charts/issues/774
         this.chartLabels.length = 0;
 
-        this.http.get(this.baseUrl + 'api/eventcategory/stats/' + id).subscribe(result => {
-            this.stats = result.json() as GraphDataSet;
+        await this.ecm.stats(id).then(result => {
+            this.stats = result;
             this.chartLabels = this.stats.chartLabels;
-        }, error => console.error(error));
+        }).catch(error => {
+            this.ex.catchError(error);
+        });
     }
 
-    onEventsLoad(id: number) {
-        this.http.get(this.baseUrl + 'api/eventcategory/events/' + id).subscribe(result => {
-            this.events = result.json()
-        }, error => console.error(error));
+    async onEventsLoad(id: number) {
+        this.events = await this.ecm.events(id);
     }
-}
-
-export class EventCategory {
-    id: number;
-    name: string;
-    events: number;
-    minAttendees: number;
-    averageAttendees: number;
-    maxAttendees: number;
 }

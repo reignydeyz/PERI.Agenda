@@ -12,32 +12,7 @@ import { Statistics, GraphDataSet, GraphData } from '../graph/graph.component';
 import { saveAs } from 'file-saver';
 import { Group } from '../../models/group';
 import { GroupCategory } from '../../models/groupcategory';
-
-export class GroupCategoryModule {
-    public http: Http;
-    public baseUrl: string;
-
-    public ex: ErrorExceptionModule;
-
-    public find(ec: GroupCategory): Observable<GroupCategory[]> {
-        return this.http.post(this.baseUrl + 'api/groupcategory/find', {
-            name: ec.name
-        }).map(response => response.json());
-    }
-
-    public add(gc: GroupCategory): Observable<number> {
-        return this.http.post(this.baseUrl + 'api/groupcategory/new', {
-            name: gc.name
-        }).map(response => response.json());
-    }
-
-    public edit(gc: GroupCategory): Observable<number> {
-        return this.http.post(this.baseUrl + 'api/groupcategory/edit', {
-            id: gc.id,
-            name: gc.name
-        }).map(response => response.json());
-    }
-}
+import { GroupCategoryService } from '../../services/groupcategory.service';
 
 @Component({
     selector: 'groupcategory',
@@ -46,10 +21,8 @@ export class GroupCategoryModule {
         '../table/table.component.css']
 })
 export class GroupCategoryComponent {
-    private gcm: GroupCategoryModule;
-
-    public groupcategory = GroupCategory;
-    public groupcategories: GroupCategory[];
+    public groupcategory: GroupCategory = new GroupCategory();
+    public groupcategories: GroupCategory[] = [];
 
     groups: Group[];
 
@@ -67,13 +40,8 @@ export class GroupCategoryComponent {
         }
     };
 
-    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
-        this.gcm = new GroupCategoryModule();
-        this.gcm.http = http;
-        this.gcm.baseUrl = baseUrl;
-
-        this.gcm.ex = new ErrorExceptionModule();
-        this.gcm.ex.baseUrl = this.baseUrl;
+    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title,
+    private gcm: GroupCategoryService, private ex: ErrorExceptionModule) {
     }
 
     downloadFile(data: any) {
@@ -81,11 +49,8 @@ export class GroupCategoryComponent {
         saveAs(blob, "data.csv");
     }
 
-    download(id: number) {
-        this.http.get(this.baseUrl + 'api/groupcategory/' + id + '/download').subscribe(result => {
-            let parsedResponse = result.text();
-            this.downloadFile(parsedResponse);
-        }, error => this.gcm.ex.catchError(error));;
+    async download(id: number) {
+        this.downloadFile(await this.gcm.download(id));
     }
 
     checkAll() {
@@ -97,10 +62,10 @@ export class GroupCategoryComponent {
         });
     }
 
-    ngOnInit() {
+    async ngOnInit() {
         this.titleService.setTitle('Group Categories');
 
-        this.gcm.find(new GroupCategory()).subscribe(result => { this.groupcategories = result });
+        this.groupcategories = await this.gcm.find(new GroupCategory());
     }
 
     ngAfterViewChecked() {
@@ -114,32 +79,27 @@ export class GroupCategoryComponent {
         }
     }
 
-    onNewSubmit(f: NgForm) {
+    async onNewSubmit(f: NgForm) {
         var gc = new GroupCategory();
         gc.name = f.controls['name'].value;
 
-        this.gcm.add(gc).subscribe(
-            result => {
-                gc.id = result;
-                this.groupcategories.push(gc);
+        await this.gcm.add(gc).then(r => {
+            gc.id = r;
+            this.groupcategories.push(gc);
 
-                alert('Added!');
-                $('#modalNew').modal('toggle');
-            },
-            error => this.gcm.ex.catchError(error));
+            alert('Added!');
+            $('#modalNew').modal('toggle');
+        }).catch(err => {
+            this.ex.catchError(err);
+        });
     }
 
-    onEditInit(id: number) {
-        this.http.get(this.baseUrl + 'api/groupcategory/get/' + id)
-            .subscribe(result => {
-                console.log(result.json());
-                this.groupcategory = result.json();
-            }, error => this.gcm.ex.catchError(error));
+    async onEditInit(id: number) {
+        this.groupcategory = await this.gcm.get(id);
     }
 
-    public onEditSubmit(gc: GroupCategory) {
-        this.gcm.edit(gc).subscribe(r => {
-
+    async onEditSubmit(gc: GroupCategory) {
+        await this.gcm.edit(gc).then(() => {
             this.onGroupCategoryInfoChange(gc.id);
 
             alert('Updated!');
@@ -147,25 +107,20 @@ export class GroupCategoryComponent {
         });
     }
 
-    onGroupCategoryInfoChange(gcId: number) {
+    async onGroupCategoryInfoChange(gcId: number) {
         if (gcId > 0) {
-            // Get group category
-            this.http.get(this.baseUrl + 'api/groupcategory/get/' + gcId)
-                .subscribe(result => {
-                    var res = result.json();
+            var res = await this.gcm.get(gcId);
 
-                    for (let e of this.groupcategories) {
-                        if (e.id == res.id) {
-                            let index: number = this.groupcategories.indexOf(e);
-                            this.groupcategories[index] = res;
-                        }
-                    }
-
-                }, error => this.gcm.ex.catchError(error));
+            for (let e of this.groupcategories) {
+                if (e.id == res.id) {
+                    let index: number = this.groupcategories.indexOf(e);
+                    this.groupcategories[index] = res;
+                }
+            }
         }
     }
 
-    onDeleteClick() {
+    async onDeleteClick() {
         var flag = confirm('Are you sure you want to delete selected records?');
 
         if (!flag)
@@ -178,12 +133,7 @@ export class GroupCategoryComponent {
             }
         });
 
-        let body = JSON.stringify(selectedIds);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
-
-        this.http.post(this.baseUrl + 'api/groupcategory/delete', body, options).subscribe(result => {
-
+        await this.gcm.delete(selectedIds).then(() => {
             for (let id of selectedIds) {
                 for (let e of this.groupcategories) {
                     if (e.id == id) {
@@ -193,20 +143,17 @@ export class GroupCategoryComponent {
             }
 
             alert('Success!');
-
-        }, error => this.gcm.ex.catchError(error));
+        });
     }
 
-    onStatsLoad(id: number) {
+    async onStatsLoad(id: number) {
         this.onEditInit(id);
 
         // Updating lineChartLabels does not reflect on the chart
         // https://github.com/valor-software/ng2-charts/issues/774
         this.chartLabels.length = 0;
 
-        this.http.get(this.baseUrl + 'api/groupcategory/stats/' + id).subscribe(result => {
-            this.stats = result.json() as GraphDataSet;
-            this.chartLabels = this.stats.chartLabels;
-        }, error => console.error(error));
+        this.stats = await this.gcm.stats(id);
+        this.chartLabels = this.stats.chartLabels;
     }
 }

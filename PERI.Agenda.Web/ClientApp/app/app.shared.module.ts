@@ -39,6 +39,11 @@ import { MemberService } from './services/member.service';
 import { GroupService } from './services/group.service';
 import { RoleService } from './services/role.service';
 import { GroupCategoryService } from './services/groupcategory.service';
+import { ErrorExceptionModule } from './components/errorexception/errorexception.component';
+import { ActivityReportService } from './services/activityreport.service';
+import { ReportService } from './services/report.service';
+import { EventCategoryService } from './services/eventcategory.service';
+import { GroupMemberService } from './services/groupmember.service';
 
 @NgModule({
     declarations: [
@@ -113,7 +118,12 @@ import { GroupCategoryService } from './services/groupcategory.service';
         MemberService,
         GroupService,
         GroupCategoryService,
-        RoleService
+        RoleService,
+        ErrorExceptionModule,
+        ActivityReportService,
+        ReportService,
+        EventCategoryService,
+        GroupMemberService
     ],
 })
 export class AppModuleShared {
