@@ -45,6 +45,7 @@ import { ReportService } from './services/report.service';
 import { EventCategoryService } from './services/eventcategory.service';
 import { GroupMemberService } from './services/groupmember.service';
 import { LocationService } from './services/location.service';
+import { EventService } from './services/event.service';
 
 @NgModule({
     declarations: [
@@ -125,7 +126,8 @@ import { LocationService } from './services/location.service';
         ReportService,
         EventCategoryService,
         GroupMemberService,
-        LocationService
+        LocationService,
+        EventService
     ],
 })
 export class AppModuleShared {

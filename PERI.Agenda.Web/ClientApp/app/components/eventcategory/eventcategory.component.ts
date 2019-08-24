@@ -9,8 +9,7 @@ import { Title } from '@angular/platform-browser';
 
 import { Statistics, GraphDataSet, GraphData } from '../graph/graph.component';
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
-import { Event } from '../event/event.component';
-
+import { Event } from '../../models/event';
 import { saveAs } from 'file-saver';
 import { EventCategory } from '../../models/eventcategory';
 import { EventCategoryService } from '../../services/eventcategory.service';

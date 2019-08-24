@@ -2,7 +2,6 @@
 import * as $ from "jquery";
 
 import { NgForm } from '@angular/forms';
-import { EventModule, Event } from './event.component';
 
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
 import { Http } from '@angular/http';
@@ -11,15 +10,14 @@ import { EventCategory } from '../../models/eventcategory';
 import { EventCategoryService } from '../../services/eventcategory.service';
 import { LocationService } from '../../services/location.service';
 import { Location } from '../../models/location';
+import { Event } from '../../models/event';
+import { EventService } from '../../services/event.service';
 
 @Component({
     selector: 'eventnew',
     templateUrl: './event.new.component.html'
 })
 export class EventNewComponent {
-    private em: EventModule;
-    private ex: ErrorExceptionModule;
-
     public eventCategories: EventCategory[];
     public locations: Location[];
 
@@ -28,15 +26,8 @@ export class EventNewComponent {
     @Output() change: EventEmitter<number> = new EventEmitter<number>();
 
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string,
-    private ecm: EventCategoryService, private lm: LocationService) {
-        this.em = new EventModule();
-        this.em.http = http;
-        this.em.baseUrl = baseUrl;
-
-        this.ex = new ErrorExceptionModule();
-        this.ex.http = http;
-        this.ex.baseUrl = baseUrl;
-
+    private ecm: EventCategoryService, private lm: LocationService, private em: EventService, private ex: ErrorExceptionModule) {
+       
         if (this.event == null || this.event == undefined) {
             this.event = new Event();
         }
@@ -47,7 +38,7 @@ export class EventNewComponent {
         this.locations = await this.lm.find(new Location());
     }
 
-    public onNewSubmit(f: NgForm) {
+    async onNewSubmit(f: NgForm) {
         var e = new Event();
         e.name = f.controls['name'].value;
         e.eventCategoryId = f.controls['eventCategoryId'].value;
@@ -62,7 +53,7 @@ export class EventNewComponent {
         e.location = l.name;
 
         if (this.group == null || this.group == undefined) {
-            this.em.add(e).subscribe(
+            await this.em.add(e).then(
                 result => {
                     e.id = result;
                     this.change.emit(e.id);
@@ -72,7 +63,7 @@ export class EventNewComponent {
                 }, error => this.ex.catchError(error));
         }
         else {
-            this.em.addExclusive(e, this.group.id).subscribe(
+            await this.em.addExclusive(e, this.group.id).then(
                 result => {
                     e.id = result;
                     this.change.emit(e.id);

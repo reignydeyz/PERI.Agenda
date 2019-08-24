@@ -2,8 +2,6 @@
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { NgForm, NgModel } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-
-import { EventModule, Event } from '../event/event.component';
 import { Title } from '@angular/platform-browser';
 
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
@@ -22,7 +20,9 @@ import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import { MemberService } from '../../services/member.service';
 import { Member } from '../../models/member';
 import { EventCategory } from '../../models/eventcategory';
+import { Event } from '../../models/event';
 import { EventCategoryService } from '../../services/eventcategory.service';
+import { EventService } from '../../services/event.service';
 
 export class AttendanceModule {
     public http: Http;
@@ -113,7 +113,7 @@ export class AttendanceComponent {
     };
 
     constructor(private route: ActivatedRoute, private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title,
-    private mm: MemberService, private ecm: EventCategoryService) {
+   private mm: MemberService, private ecm: EventCategoryService, private em: EventService, private ex: ErrorExceptionModule) {
         this.am = new AttendanceModule();
         this.am.http = http;
         this.am.baseUrl = baseUrl;
@@ -199,17 +199,10 @@ export class AttendanceComponent {
         lm.baseUrl = this.baseUrl;
         lm.getByGroup('Gender').subscribe(result => { this.genders = result });
 
-        var em = new EventModule();
-        em.http = this.http;
-        em.baseUrl = this.baseUrl;
-
-        em.ex = new ErrorExceptionModule();
-        em.ex.baseUrl = this.baseUrl;
-
-        em.get(this.id).subscribe(r => {
+        await this.em.get(this.id).then(r => {
             this.event = r;
             this.titleService.setTitle(r.name);
-        }, error => em.ex.catchError(error));
+        }, error => this.ex.catchError(error));
 
         this.getTotal();
 

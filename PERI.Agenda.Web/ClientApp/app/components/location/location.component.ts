@@ -9,7 +9,7 @@ import { Title } from '@angular/platform-browser';
 
 import { Statistics, GraphDataSet, GraphData } from '../graph/graph.component';
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
-import { Event } from '../event/event.component';
+import { Event } from '../../models/event';
 import { Location } from '../../models/location';
 import { LocationService } from '../../services/location.service';
 

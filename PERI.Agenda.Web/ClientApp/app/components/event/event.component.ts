@@ -14,56 +14,8 @@ import { EventCategory } from '../../models/eventcategory';
 import { EventCategoryService } from '../../services/eventcategory.service';
 import { LocationService } from '../../services/location.service';
 import { Location } from '../../models/location';
-
-export class EventModule {
-    public http: Http;
-    public baseUrl: string;
-
-    public ex: ErrorExceptionModule;
-
-    public find(e: Event): Observable<Event[]> {        
-        return this.http.post(this.baseUrl + 'api/event/find', {
-            name: e.name,
-            eventCategoryId: e.eventCategoryId,
-            dateTimeStart: e.dateTimeStart,
-            dateTimeEnd: e.dateTimeEnd,
-            locationId: e.locationId
-        }).map(response => response.json());
-    }
-
-    public add(e: Event): Observable<number> {
-        return this.http.post(this.baseUrl + 'api/event/new', {
-            name: e.name,
-            eventCategoryId: e.eventCategoryId,
-            dateTimeStart: e.dateTimeStart,
-            locationId: e.locationId
-        }).map(response => response.json());
-    }
-
-    public addExclusive(e: Event, groupId: number): Observable<number> {
-        return this.http.post(this.baseUrl + 'api/event/new/exclusive/' + groupId, {
-            name: e.name,
-            eventCategoryId: e.eventCategoryId,
-            dateTimeStart: e.dateTimeStart,
-            locationId: e.locationId
-        }).map(response => response.json());
-    }
-
-    public edit(e: Event) {
-        return this.http.post(this.baseUrl + 'api/event/edit', {
-            id: e.id,
-            name: e.name,
-            eventCategoryId: e.eventCategoryId,
-            dateTimeStart: e.dateTimeStart,
-            locationId: e.locationId
-        });
-    }
-
-    public get(id: number): Observable<Event> {
-        return this.http.get(this.baseUrl + 'api/event/get/' + id)
-            .map(response => response.json());
-    }
-}
+import { Event } from '../../models/event';
+import { EventService } from '../../services/event.service';
 
 @Component({
     selector: 'event',
@@ -73,8 +25,6 @@ export class EventModule {
     ]
 })
 export class EventComponent {
-    private em: EventModule;
-
     public event: Event;
     public eventCategories: EventCategory[];
     public locations: Location[];
@@ -87,25 +37,19 @@ export class EventComponent {
 
     // https://stackoverflow.com/questions/44000162/how-to-change-title-of-a-page-using-angularangular-2-or-4-route
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title, private ecm: EventCategoryService,
-    private lm: LocationService) {
-        this.em = new EventModule();
-        this.em.http = http;
-        this.em.baseUrl = baseUrl;
-
-        this.em.ex = new ErrorExceptionModule();
-        this.em.ex.baseUrl = this.baseUrl;
+    private lm: LocationService, private em: EventService, private ex: ErrorExceptionModule) {
     }
 
-    private paginate(obj: Event, page: number) {
+    private async paginate(obj: Event, page: number) {
         if (this.isAdmin) {
-            this.http.post(this.baseUrl + 'api/event/find/page/' + page, obj).subscribe(result => {
+            await this.em.search(obj, page).then(result => {
                 this.chunk = result.json() as Chunk;
-            }, error => this.em.ex.catchError(error));
+            }, error => this.ex.catchError(error));
         }
         else {
-            this.http.post(this.baseUrl + 'api/event/find/mypage/' + page, obj).subscribe(result => {
+            await this.em.searchMyPage(obj, page).then(result => {
                 this.chunk = result.json() as Chunk;
-            }, error => this.em.ex.catchError(error));
+            }, error => this.ex.catchError(error));
         }
     }
 
@@ -176,40 +120,39 @@ export class EventComponent {
         this.download(this.search);
     }
 
-    private download(e: Event) {
-        this.http.post(this.baseUrl + 'api/event/download', e).subscribe(result => {
-            let parsedResponse = result.text();
+    private async download(e: Event) {
+        await this.em.download(e).then(result => {
+            let parsedResponse = result;
             this.downloadFile(parsedResponse);
-        }, error => this.em.ex.catchError(error));;
+        }, error => this.ex.catchError(error));;
     }
 
-    onEventAdd(eventId: number) {
+    async onEventAdd(eventId: number) {
         if (eventId > 0) {
             // Get event
-            this.http.get(this.baseUrl + 'api/event/get/' + eventId)
-                .subscribe(result => {
-                    var g = result.json();
+            await this.em.get(eventId)
+                .then(result => {
+                    var g = result;
 
                     // Add new event to the list
                     //this.chunk.events.push(g);
                     this.chunk.events.splice(0, 0, g);
                     this.chunk.pager.totalItems++;
 
-                }, error => this.em.ex.catchError(error));
+                }, error => this.ex.catchError(error));
         }
     }
 
-    public onEditInit(id: number) {
-        this.http.get(this.baseUrl + 'api/event/get/' + id)
-            .subscribe(result => { this.event = result.json() as Event }, error => this.em.ex.catchError(error));
+    async onEditInit(id: number) {
+        this.event = await this.em.get(id);
     }
 
-    onEventInfoChange(eventId: number) {
+    async onEventInfoChange(eventId: number) {
         if (eventId > 0) {
             // Get event
-            this.http.get(this.baseUrl + 'api/event/get/' + eventId)
-                .subscribe(result => {
-                    var res = result.json();
+            await this.em.get(eventId)
+                .then(result => {
+                    var res = result;
 
                     for (let e of this.chunk.events) {
                         if (e.id == res.id) {
@@ -218,11 +161,11 @@ export class EventComponent {
                         }
                     }
 
-                }, error => this.em.ex.catchError(error));
+                }, error => this.ex.catchError(error));
         }
     }
 
-    onDeleteClick() {
+    async onDeleteClick() {
         var flag = confirm('Are you sure you want to delete selected records?');
 
         if (!flag)
@@ -235,11 +178,7 @@ export class EventComponent {
             }
         });
 
-        let body = JSON.stringify(selectedIds);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
-
-        this.http.post(this.baseUrl + 'api/event/delete', body, options).subscribe(result => {
+        await this.em.delete(selectedIds).then(() => {
 
             for (let id of selectedIds) {
                 for (let e of this.chunk.events) {
@@ -253,22 +192,8 @@ export class EventComponent {
 
             alert('Success!');
 
-        }, error => this.em.ex.catchError(error));
+        }, error => this.ex.catchError(error));
     }
-}
-
-export class Event {
-    id: number;
-    eventCategoryId: number;
-    category: string;
-    name: string;
-    dateTimeStart: string;
-    dateTimeEnd: string;
-    time: string;
-    locationId: number;
-    location: string;
-    attendance: number;
-    isExclusive: boolean;
 }
 
 class Chunk {
