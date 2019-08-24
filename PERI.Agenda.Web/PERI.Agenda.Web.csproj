@@ -56,6 +56,7 @@
     <None Remove="ClientApp\app\models\group.ts" />
     <None Remove="ClientApp\app\models\groupcategory.ts" />
     <None Remove="ClientApp\app\models\groupmember.ts" />
+    <None Remove="ClientApp\app\models\location.ts" />
     <None Remove="ClientApp\app\models\member.ts" />
     <None Remove="ClientApp\app\models\report.ts" />
     <None Remove="ClientApp\app\models\role.ts" />
@@ -66,6 +67,7 @@
     <None Remove="ClientApp\app\services\group.service.ts" />
     <None Remove="ClientApp\app\services\groupcategory.service.ts" />
     <None Remove="ClientApp\app\services\groupmember.service.ts" />
+    <None Remove="ClientApp\app\services\location.service.ts" />
     <None Remove="ClientApp\app\services\member.service.ts" />
     <None Remove="ClientApp\app\services\report.service.ts" />
     <None Remove="ClientApp\app\services\role.service.ts" />
@@ -106,6 +108,7 @@
     <TypeScriptCompile Include="ClientApp\app\models\group.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\groupcategory.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\groupmember.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\location.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\member.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\report.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\role.ts" />
@@ -116,6 +119,7 @@
     <TypeScriptCompile Include="ClientApp\app\services\group.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\groupcategory.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\groupmember.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\location.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\member.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\report.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\role.service.ts" />

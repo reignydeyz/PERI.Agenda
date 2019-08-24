@@ -10,34 +10,8 @@ import { Title } from '@angular/platform-browser';
 import { Statistics, GraphDataSet, GraphData } from '../graph/graph.component';
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
 import { Event } from '../event/event.component';
-
-export class LocationModule {
-    public http: Http;
-    public baseUrl: string;
-
-    public ex: ErrorExceptionModule;
-
-    public add(l: Location): Observable<number> {
-        return this.http.post(this.baseUrl + 'api/location/new', {
-            name: l.name,
-            address: l.address
-        }).map(response => response.json());
-    }
-
-    public edit(l: Location) {
-        return this.http.post(this.baseUrl + 'api/location/edit', {
-            id: l.id,
-            name: l.name,
-            address: l.address
-        }).subscribe(result => { alert('Updated!'); $('#modalEdit').modal('toggle'); }, error => this.ex.catchError(error));
-    }
-
-    public find(l: Location): Observable<Location[]> {
-        return this.http.post(this.baseUrl + 'api/location/find', {
-            name: l.name
-        }).map(response => response.json());
-    }
-}
+import { Location } from '../../models/location';
+import { LocationService } from '../../services/location.service';
 
 @Component({
     selector: 'location',
@@ -46,7 +20,6 @@ export class LocationModule {
         '../table/table.component.css']
 })
 export class LocationComponent {
-    private lm: LocationModule;
     location: Location = new Location(); 
     locations: Location[];
     events: Event[];
@@ -65,11 +38,9 @@ export class LocationComponent {
         }
     };
 
-    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title) {
-        this.lm = new LocationModule();
-        this.lm.http = http;
-        this.lm.baseUrl = baseUrl;
-        this.lm.ex = new ErrorExceptionModule();
+    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title,
+    private lm: LocationService, private ex: ErrorExceptionModule) {
+        
     }
 
     checkAll() {
@@ -81,9 +52,9 @@ export class LocationComponent {
         });
     }
 
-    ngOnInit() {
+    async ngOnInit() {
         this.titleService.setTitle('Locations');
-        this.lm.find(new Location()).subscribe(result => { this.locations = result }, error => this.lm.ex.catchError(error));
+        this.locations = await this.lm.find(new Location());
     }
 
     ngAfterViewChecked() {
@@ -108,19 +79,19 @@ export class LocationComponent {
         }
     }
 
-    onEditInit(id: number) {
-        this.http.get(this.baseUrl + 'api/location/get/' + id)
-            .subscribe(result => {
-                this.location = result.json();
-            }, error => this.lm.ex.catchError(error));
+    async onEditInit(id: number) {
+        await this.lm.get(id)
+            .then(result => {
+                this.location = result;
+            }, error => this.ex.catchError(error));
     }
 
-    onNewSubmit(f: NgForm) {
+    async onNewSubmit(f: NgForm) {
         var l = new Location();
         l.name = f.controls['name'].value;
         l.address = f.controls['address'].value;
 
-        this.lm.add(l).subscribe(
+        this.lm.add(l).then(
             result => {
                 l.id = result;
                 this.locations.push(l);
@@ -128,7 +99,7 @@ export class LocationComponent {
                 alert('Added!');
                 $('#modalNew').modal('toggle');
             },
-            error => this.lm.ex.catchError(error));
+            error => this.ex.catchError(error));
     }
 
     public onEditSubmit(l: Location) {
@@ -142,7 +113,7 @@ export class LocationComponent {
         }
     }
 
-    onDeleteClick() {
+    async onDeleteClick() {
         var flag = confirm('Are you sure you want to delete selected records?');
 
         if (!flag)
@@ -155,11 +126,7 @@ export class LocationComponent {
             }
         });
 
-        let body = JSON.stringify(selectedIds);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
-
-        this.http.post(this.baseUrl + 'api/location/delete', body, options).subscribe(result => {
+        await this.lm.delete(selectedIds).then(result => {
 
             for (let id of selectedIds) {
                 for (let e of this.locations) {
@@ -171,7 +138,7 @@ export class LocationComponent {
 
             alert('Success!');
 
-        }, error => this.lm.ex.catchError(error));
+        }, error => this.ex.catchError(error));
     }
 
     onStatsLoad(id: number) {
@@ -181,24 +148,15 @@ export class LocationComponent {
         // https://github.com/valor-software/ng2-charts/issues/774
         this.chartLabels.length = 0;
 
-        this.http.get(this.baseUrl + 'api/location/stats/' + id).subscribe(result => {
-            this.stats = result.json() as GraphDataSet;
+        this.lm.stats(id).then(result => {
+            this.stats = result;
             this.chartLabels = this.stats.chartLabels;
         }, error => console.error(error));
     }
 
-    onEventsLoad(id: number) {
-        this.http.get(this.baseUrl + 'api/location/events/' + id).subscribe(result => {
+    async onEventsLoad(id: number) {
+        this.lm.events(id).then(result => {
             this.events = result.json()
         }, error => console.error(error));
     }
-}
-
-export class Location {
-    id: number;
-    name: string;
-    address: string;
-    minAttendees: number;
-    averageAttendees: number;
-    maxAttendees: number;
 }

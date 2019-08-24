@@ -5,7 +5,6 @@ import * as $ from "jquery";
 
 import { Title } from '@angular/platform-browser';
 import * as moment from "moment";
-import { LocationModule, Location } from '../location/location.component';
 import { Observable } from 'rxjs/Observable';
 
 import { ErrorExceptionModule } from '../errorexception/errorexception.component';
@@ -13,6 +12,8 @@ import { Pager } from '../pager/pager.component';
 import { saveAs } from 'file-saver';
 import { EventCategory } from '../../models/eventcategory';
 import { EventCategoryService } from '../../services/eventcategory.service';
+import { LocationService } from '../../services/location.service';
+import { Location } from '../../models/location';
 
 export class EventModule {
     public http: Http;
@@ -85,7 +86,8 @@ export class EventComponent {
     @Input('isAdmin') isAdmin: boolean = true;
 
     // https://stackoverflow.com/questions/44000162/how-to-change-title-of-a-page-using-angularangular-2-or-4-route
-    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title, private ecm: EventCategoryService) {
+    constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title, private ecm: EventCategoryService,
+    private lm: LocationService) {
         this.em = new EventModule();
         this.em.http = http;
         this.em.baseUrl = baseUrl;
@@ -121,11 +123,7 @@ export class EventComponent {
         }
 
         this.eventCategories = await this.ecm.find(new EventCategory());
-
-        var l = new LocationModule();
-        l.http = this.http;
-        l.baseUrl = this.baseUrl;
-        l.find(new Location()).subscribe(result => { this.locations = result });       
+        this.locations = await this.lm.find(new Location());
     }
 
     checkAll() {
