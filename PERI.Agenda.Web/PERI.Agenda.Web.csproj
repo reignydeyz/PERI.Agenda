@@ -52,6 +52,7 @@
     <None Remove="ClientApp\app\components\rsvp\rsvp.component.ts" />
     <None Remove="ClientApp\app\models\activity.ts" />
     <None Remove="ClientApp\app\models\activityreport.ts" />
+    <None Remove="ClientApp\app\models\attendance.ts" />
     <None Remove="ClientApp\app\models\event.ts" />
     <None Remove="ClientApp\app\models\eventcategory.ts" />
     <None Remove="ClientApp\app\models\group.ts" />
@@ -61,8 +62,10 @@
     <None Remove="ClientApp\app\models\member.ts" />
     <None Remove="ClientApp\app\models\report.ts" />
     <None Remove="ClientApp\app\models\role.ts" />
+    <None Remove="ClientApp\app\models\rsvp.ts" />
     <None Remove="ClientApp\app\services\account.service.ts" />
     <None Remove="ClientApp\app\services\activityreport.service.ts" />
+    <None Remove="ClientApp\app\services\attendance.service.ts" />
     <None Remove="ClientApp\app\services\dashboard.service.ts" />
     <None Remove="ClientApp\app\services\event.service.ts" />
     <None Remove="ClientApp\app\services\eventcategory.service.ts" />
@@ -106,6 +109,7 @@
     <TypeScriptCompile Include="ClientApp\app\components\rsvp\rsvp.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\activity.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\activityreport.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\attendance.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\event.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\eventcategory.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\group.ts" />
@@ -115,8 +119,10 @@
     <TypeScriptCompile Include="ClientApp\app\models\member.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\report.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\role.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\rsvp.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\account.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\activityreport.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\attendance.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\dashboard.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\event.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\eventcategory.service.ts" />

@@ -6,7 +6,8 @@ import { ErrorExceptionModule } from '../errorexception/errorexception.component
 
 import { Title } from '@angular/platform-browser';
 import * as moment from "moment";
-import { RsvpModule, Rsvp } from '../rsvp/rsvp.component';
+import { RsvpModule } from '../rsvp/rsvp.component';
+import { Rsvp } from '../../models/rsvp';
 
 @Component({
     selector: 'calendar',

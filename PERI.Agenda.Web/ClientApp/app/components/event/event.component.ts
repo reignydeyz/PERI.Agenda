@@ -43,12 +43,12 @@ export class EventComponent {
     private async paginate(obj: Event, page: number) {
         if (this.isAdmin) {
             await this.em.search(obj, page).then(result => {
-                this.chunk = result.json() as Chunk;
+                this.chunk = result as Chunk;
             }, error => this.ex.catchError(error));
         }
         else {
             await this.em.searchMyPage(obj, page).then(result => {
-                this.chunk = result.json() as Chunk;
+                this.chunk = result as Chunk;
             }, error => this.ex.catchError(error));
         }
     }

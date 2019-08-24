@@ -11,7 +11,7 @@ import * as $ from "jquery";
 import { IMyDpOptions } from 'mydatepicker';
 
 import { Pager } from '../pager/pager.component';
-import { Rsvp, RsvpModule } from '../rsvp/rsvp.component';
+import { RsvpModule } from '../rsvp/rsvp.component';
 import { LookUp, LookUpModule } from '../lookup/lookup.component';
 
 import { saveAs } from 'file-saver';
@@ -23,48 +23,9 @@ import { EventCategory } from '../../models/eventcategory';
 import { Event } from '../../models/event';
 import { EventCategoryService } from '../../services/eventcategory.service';
 import { EventService } from '../../services/event.service';
-
-export class AttendanceModule {
-    public http: Http;
-    public baseUrl: string;
-
-    public ex: ErrorExceptionModule;
-
-    public registrants(eventId: number): Observable<Attendance[]> {
-        return this.http.get(this.baseUrl + 'api/attendance/' + eventId)
-            .map(r => r.json());
-    }
-
-    public searchRegistrants(eventId: number, member: string): Observable<Attendance[]> {
-        let body = JSON.stringify(member);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
-
-        return this.http.post(this.baseUrl + 'api/attendance/' + eventId + '/search', body, options)
-        .map(r => r.json());
-    }
-
-    public searchGoing(r: Rsvp): Observable<Rsvp[]> {
-        return this.http.post(this.baseUrl + 'api/rsvp/find', {
-            eventid: r.eventId,
-            member: r.member,
-            isGoing: r.isGoing
-        }).map(r => r.json());
-    }
-
-    public add(eventId: number, a: Attendance): Observable<number> {
-        return this.http.put(this.baseUrl + 'api/attendance/' + eventId + '/add', {
-            memberId: a.memberId,
-            dateTimeLogged: moment().format('MM/DD/YYYY, h:mm:ss a')
-        }).map(r => r.json());
-    }
-
-    public delete(eventId: number, a: Attendance) {
-        return this.http.post(this.baseUrl + 'api/attendance/' + eventId + '/delete', {
-            memberId: a.memberId
-        });
-    }
-}
+import { Attendance } from '../../models/attendance';
+import { Rsvp } from '../../models/rsvp';
+import { AttendanceService } from '../../services/attendance.service';
 
 // https://angular-2-training-book.rangle.io/handout/routing/routeparams.html
 
@@ -78,7 +39,6 @@ export class AttendanceModule {
 export class AttendanceComponent {
     showLoader: boolean = true;
     private rm: RsvpModule;
-    private am: AttendanceModule;
 
     id: number;
     event: Event;
@@ -113,14 +73,8 @@ export class AttendanceComponent {
     };
 
     constructor(private route: ActivatedRoute, private http: Http, @Inject('BASE_URL') private baseUrl: string, private titleService: Title,
-   private mm: MemberService, private ecm: EventCategoryService, private em: EventService, private ex: ErrorExceptionModule) {
-        this.am = new AttendanceModule();
-        this.am.http = http;
-        this.am.baseUrl = baseUrl;
-
-        this.am.ex = new ErrorExceptionModule();
-        this.am.ex.baseUrl = this.baseUrl;
-
+   private mm: MemberService, private ecm: EventCategoryService, private em: EventService, private ex: ErrorExceptionModule, private am: AttendanceService) {
+        
         this.rm = new RsvpModule();
         this.rm.http = http;
         this.rm.baseUrl = baseUrl;
@@ -132,20 +86,17 @@ export class AttendanceComponent {
 
     private paginate(obj: string, page: number) {
         this.showLoader = true;
-        let body = JSON.stringify(obj);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
 
-        this.http.post(this.baseUrl + 'api/attendance/' + this.id + '/search/page/' + page, body, options).subscribe(result => {
-            this.chunk = result.json() as Chunk;
+        this.am.search(this.id, obj, page).then(result => {
+            this.chunk = result as Chunk;
             this.showLoader = false;
-        }, error => this.am.ex.catchError(error));
+        }, error => this.ex.catchError(error));
     }
 
     private paginateAttendees(page: number) {
-        this.http.get(this.baseUrl + 'api/attendance/' + this.id + '/attendees/page/' + page).subscribe(result => {
-            this.chunkAttendees = result.json() as ChunkAttendees;
-        }, error => this.am.ex.catchError(error));
+        this.am.paginateAttendees(this.id, page).then(result => {
+            this.chunkAttendees = result as ChunkAttendees;
+        }, error => this.ex.catchError(error));
     }
 
     ngOnInit() {
@@ -224,20 +175,18 @@ export class AttendanceComponent {
         this.ec = await this.ecm.get(this.event.eventCategoryId);
     }
 
-    private getTotal() {
-        var ex = new ErrorExceptionModule();
+    private async getTotal() {
+        await this.am.getTotal(this.id, 'all').then(result => {
+            this.total = result;
+        }, error => this.ex.catchError(error));
 
-        this.http.get(this.baseUrl + 'api/attendance/' + this.id + '/total/all').subscribe(result => {
-            this.total = result.json() as number;
-        }, error => ex.catchError(error));
+        await this.am.getTotal(this.id, 'attendees').then(result => {
+            this.totalAttendees = result;
+        }, error => this.ex.catchError(error));
 
-        this.http.get(this.baseUrl + 'api/attendance/' + this.id + '/total/attendees').subscribe(result => {
-            this.totalAttendees = result.json() as number;
-        }, error => ex.catchError(error));
-
-        this.http.get(this.baseUrl + 'api/attendance/' + this.id + '/total/pending').subscribe(result => {
-            this.totalPending = result.json() as number;
-        }, error => ex.catchError(error));
+        await this.am.getTotal(this.id, 'pending').then(result => {
+            this.totalPending = result;
+        }, error => this.ex.catchError(error));
     }
 
     public onSearchRegistrantsSubmit(f: NgForm) {
@@ -257,15 +206,15 @@ export class AttendanceComponent {
     }
 
     public onFirstTimers() {
-        this.http.get(this.baseUrl + 'api/attendance/' + this.id + '/firsttimers').subscribe(result => {
-            this.firstTimers = result.json();
-        }, error => this.am.ex.catchError(error));
+        this.am.firstTimers(this.id).then(result => {
+            this.firstTimers = result;
+        }, error => this.ex.catchError(error));
     }
 
     public toggle(a: Attendance) {
         this.showLoader = true;
         if (a.dateTimeLogged != null && a.dateTimeLogged != '') {
-            this.am.delete(this.id, a).subscribe(r => {
+            this.am.delete(this.id, a).then(r => {
 
                 for (let r of this.chunk.registrants) {
                     if (r.memberId == a.memberId) {
@@ -276,10 +225,10 @@ export class AttendanceComponent {
                     }
                 }
                 this.showLoader = false;
-            }, error => this.am.ex.catchError(error));
+            }, error => this.ex.catchError(error));
         }
         else {
-            this.am.add(this.id, a).subscribe(r => {
+            this.am.add(this.id, a).then(r => {
 
                 for (let r of this.chunk.registrants) {
                     if (r.memberId == a.memberId) {
@@ -290,7 +239,7 @@ export class AttendanceComponent {
                     }
                 }
                 this.showLoader = false;
-            }, error => this.am.ex.catchError(error));
+            }, error => this.ex.catchError(error));
         }        
     }
 
@@ -326,7 +275,7 @@ export class AttendanceComponent {
 
         var a = new Attendance();
         a.memberId = m.id;
-        this.am.add(this.id, a).subscribe(r => { alert('Added!'); });
+        this.am.add(this.id, a).then(r => { alert('Added!'); });
 
         this.totalAttendees++;
     }
@@ -356,9 +305,9 @@ export class AttendanceComponent {
         r.eventId = this.id;
         r.isGoing = true;
 
-        this.am.searchGoing(r).subscribe(result => {
+        this.am.searchGoing(r).then(result => {
             this.going = result;
-        }, error => this.am.ex.catchError(error));
+        }, error => this.ex.catchError(error));
     }
 
     onAttendedClick(r: Rsvp) {
@@ -417,17 +366,17 @@ export class AttendanceComponent {
     }
 
     downloadAttendees() {
-        this.http.get(this.baseUrl + 'api/attendance/' + this.id + '/downloadattendees').subscribe(result => {
-            let parsedResponse = result.text();
+        this.am.downloadAttendees(this.id).then(result => {
+            let parsedResponse = result;
             this.downloadFile(parsedResponse);
-        }, error => this.am.ex.catchError(error));;
+        }, error => this.ex.catchError(error));;
     }
 
     downloadFirstTimers() {
-        this.http.get(this.baseUrl + 'api/attendance/' + this.id + '/downloadfirsttimers').subscribe(result => {
-            let parsedResponse = result.text();
+        this.am.downloadFirstTimers(this.id).then(result => {
+            let parsedResponse = result;
             this.downloadFile(parsedResponse);
-        }, error => this.am.ex.catchError(error));;
+        }, error => this.ex.catchError(error));;
     }
 
     // ============================================================
@@ -498,12 +447,6 @@ export class AttendanceComponent {
         }
     }
     // ============================================================
-}
-
-export class Attendance {
-    memberId: number;
-    name: string;
-    dateTimeLogged: string;
 }
 
 class Chunk {
