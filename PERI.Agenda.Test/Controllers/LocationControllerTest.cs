@@ -1,10 +1,12 @@
-﻿using FluentAssertions;
+﻿using AutoMapper;
+using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MockQueryable.Moq;
 using Moq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PERI.Agenda.Web;
 using PERI.Agenda.Web.Controllers;
 using System;
 using System.Collections.Generic;
@@ -47,7 +49,11 @@ namespace PERI.Agenda.Test.Controllers
             locationBusiness = new BLL.Location(mockUnitOfWork.Object);
             eventBusiness = new BLL.Event(mockUnitOfWork.Object);
 
-            controller = new LocationController(locationBusiness, eventBusiness);
+            var profile = new AutoMapperProfileConfiguration();
+            var mapperConfig = new MapperConfiguration(config => config.AddProfile(profile));
+            var mapper = new Mapper(mapperConfig);
+
+            controller = new LocationController(locationBusiness, eventBusiness, mapper);
             controller.ControllerContext = new ControllerContext();
             controller.ControllerContext.HttpContext = new DefaultHttpContext();
             controller.ControllerContext.HttpContext.Items.Add("EndUser", new EF.EndUser { MemberId = 1, Member = new EF.Member { CommunityId = 1 } });

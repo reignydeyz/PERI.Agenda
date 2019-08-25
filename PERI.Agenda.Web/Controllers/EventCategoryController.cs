@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Text;
 using PERI.Agenda.Core;
 using PERI.Agenda.BLL;
+using AutoMapper;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -19,11 +20,13 @@ namespace PERI.Agenda.Web.Controllers
     {
         private readonly IEventCategory eventCategoryBusiness;
         private readonly IEvent eventBusiness;
+        private readonly IMapper mapper;
 
-        public EventCategoryController(IEventCategory eventCategory, IEvent eventBusiness)
+        public EventCategoryController(IEventCategory eventCategory, IEvent eventBusiness, IMapper mapper)
         {
             this.eventCategoryBusiness = eventCategory;
             this.eventBusiness = eventBusiness;
+            this.mapper = mapper;
         }
 
         /// <summary>
@@ -87,7 +90,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_ec = eventCategoryBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var o = AutoMapper.Mapper.Map<EF.EventCategory>(args);
+            var o = this.mapper.Map<EF.EventCategory>(args);
             o.CommunityId = user.Member.CommunityId;
             o.DateTimeCreated = DateTime.Now;
             o.CreatedBy = user.Member.Name;
@@ -108,7 +111,7 @@ namespace PERI.Agenda.Web.Controllers
 
             obj.CommunityId = user.Member.CommunityId;
 
-            var o = AutoMapper.Mapper.Map<EF.EventCategory>(obj);
+            var o = this.mapper.Map<EF.EventCategory>(obj);
             o.DateTimeModified = DateTime.Now;
             o.ModifiedBy = user.Member.Name;
 

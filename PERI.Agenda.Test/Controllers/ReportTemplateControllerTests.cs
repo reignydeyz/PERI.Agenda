@@ -13,6 +13,7 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using AutoMapper;
+using PERI.Agenda.Web;
 
 namespace PERI.Agenda.Test.Controllers
 {
@@ -47,7 +48,11 @@ namespace PERI.Agenda.Test.Controllers
             eventCategoryBusiness = new BLL.EventCategory(mockUnitOfWork.Object);
             reportBusiness = new BLL.Report(mockUnitOfWork.Object);
 
-            controller = new ReportTemplateController(reportBusiness, eventCategoryBusiness);
+            var profile = new AutoMapperProfileConfiguration();
+            var mapperConfig = new MapperConfiguration(config => config.AddProfile(profile));
+            var mapper = new Mapper(mapperConfig);
+
+            controller = new ReportTemplateController(reportBusiness, eventCategoryBusiness, mapper);
             controller.ControllerContext = new ControllerContext();
             controller.ControllerContext.HttpContext = new DefaultHttpContext();
             controller.ControllerContext.HttpContext.Items.Add("EndUser", new EF.EndUser { MemberId = 1, Member = new EF.Member { CommunityId = 1 } });

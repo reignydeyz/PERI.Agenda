@@ -4,6 +4,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,12 +21,14 @@ namespace PERI.Agenda.Web.Controllers
         private readonly IGroup groupBusiness;
         private readonly IGroupCategory groupCategoryBusiness;
         private readonly IMember memberBusiness;
+        private readonly IMapper mapper;
 
-        public GroupController(IGroup group, IGroupCategory groupCategory, IMember member)
+        public GroupController(IGroup group, IGroupCategory groupCategory, IMember member, IMapper mapper)
         {
             this.groupBusiness = group;
             this.groupCategoryBusiness = groupCategory;
             this.memberBusiness = member;
+            this.mapper = mapper;
         }
 
         /// <summary>
@@ -40,7 +43,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_g = groupBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var o = AutoMapper.Mapper.Map<EF.Group>(obj);
+            var o = this.mapper.Map<EF.Group>(obj);
 
             o.GroupCategory = new EF.GroupCategory { CommunityId = user.Member.CommunityId };
 
@@ -81,7 +84,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_g = groupBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var o = AutoMapper.Mapper.Map<EF.Group>(obj);
+            var o = this.mapper.Map<EF.Group>(obj);
 
             o.GroupCategory = new EF.GroupCategory { CommunityId = user.Member.CommunityId };
 
@@ -154,7 +157,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_g = groupBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var o = AutoMapper.Mapper.Map<EF.Group>(obj);
+            var o = this.mapper.Map<EF.Group>(obj);
 
             // Get group leader id
             var bll_m = memberBusiness;
@@ -186,7 +189,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_g = groupBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var o = AutoMapper.Mapper.Map<EF.Group>(obj);
+            var o = this.mapper.Map<EF.Group>(obj);
 
             // Get group leader id
             var bll_m = memberBusiness;

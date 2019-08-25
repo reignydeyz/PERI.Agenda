@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,11 +18,13 @@ namespace PERI.Agenda.Web.Controllers
     {
         private readonly IReport reportBusiness;
         private readonly IEventCategory eventCategoryBusiness;
+        private readonly IMapper mapper;
 
-        public ReportTemplateController(IReport report, IEventCategory eventCategory)
+        public ReportTemplateController(IReport report, IEventCategory eventCategory, IMapper mapper)
         {
             this.reportBusiness = report;
             this.eventCategoryBusiness = eventCategory;
+            this.mapper = mapper;
         }
         
         [HttpPost("[action]")]
@@ -31,7 +34,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_rt = reportBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var o = AutoMapper.Mapper.Map<EF.Report>(args);
+            var o = this.mapper.Map<EF.Report>(args);
             o.CommunityId = user.Member.CommunityId.Value;
             o.DateCreated = DateTime.Now;
             o.CreatedBy = user.Member.Name;
@@ -47,7 +50,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_rt = reportBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var o = AutoMapper.Mapper.Map<EF.Report>(args);
+            var o = this.mapper.Map<EF.Report>(args);
             o.CommunityId = user.Member.CommunityId.Value;
             o.DateModified = DateTime.Now;
             o.ModifiedBy = user.Member.Name;

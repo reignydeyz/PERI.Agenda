@@ -21,18 +21,18 @@ namespace PERI.Agenda.Test
 
             // Reset Mapper
             // https://github.com/AutoMapper/AutoMapper/issues/2607
-            Mapper.Reset();
+            //Mapper.Reset();
 
             // Initialize Mapper
             // https://stackoverflow.com/questions/14108080/automapper-enum-to-byte-with-implemention-imapperconfigurator/14150006#14150006
-            Mapper.Initialize(m => m.AddProfile<Web.AutoMapperProfileConfiguration>());
+            //Mapper.Initialize(m => m.AddProfile<Web.AutoMapperProfileConfiguration>());
         }
 
         public void Dispose()
         {
             // Do "global" teardown here; Called after every test method.
 
-            Mapper.Reset();
+            //Mapper.Reset();
         }
     }
 }

@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using AutoMapper;
 using Microsoft.Extensions.Options;
+using PERI.Agenda.Web;
 
 namespace PERI.Agenda.Test.Controllers
 {
@@ -82,11 +83,16 @@ namespace PERI.Agenda.Test.Controllers
             var mockLookUpBusiness = new Mock<BLL.ILookUp>();
             var mockDBContext = new Mock<EF.AARSContext>();
 
+            var profile = new AutoMapperProfileConfiguration();
+            var mapperConfig = new MapperConfiguration(config => config.AddProfile(profile));
+            var mapper = new Mapper(mapperConfig);
+
             controller = new MemberController(mockOptions.Object,
                 memberBusiness,
                 endUserBusiness,
                 mockLookUpBusiness.Object,
-                null)
+                null,
+                mapper)
             {
                 ControllerContext = new ControllerContext()
             };

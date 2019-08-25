@@ -21,7 +21,7 @@ import { EventCategoryService } from '../../services/eventcategory.service';
         '../table/table.component.css']
 })
 export class EventCategoryComponent {
-    public eventcategory: EventCategory;
+    public eventcategory: EventCategory = new EventCategory();
     public eventcategories: EventCategory[];
     events: Event[];
 

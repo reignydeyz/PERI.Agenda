@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using PERI.Agenda.BLL;
+using AutoMapper;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -30,18 +31,21 @@ namespace PERI.Agenda.Web.Controllers
         private readonly IMember memberBusiness;
         private readonly IEndUser endUserBusiness;
         private readonly ILookUp lookUpBusiness;
+        private readonly IMapper mapper;
 
         public MemberController(IOptions<Core.Emailer> settingsOptions, 
             IMember member,
             IEndUser endUser,
             ILookUp lookUp,
-            EF.AARSContext context)
+            EF.AARSContext context,
+            IMapper mapper)
         {
             smtp = settingsOptions.Value;
             this.context = context;
             this.memberBusiness = member;
             this.endUserBusiness = endUser;
             this.lookUpBusiness = lookUp;
+            this.mapper = mapper;
         }
 
         /// <summary>
@@ -62,7 +66,7 @@ namespace PERI.Agenda.Web.Controllers
 
             obj.CommunityId = user.Member.CommunityId;
 
-            var o = AutoMapper.Mapper.Map<EF.Member>(obj);
+            var o = this.mapper.Map<EF.Member>(obj);
 
             var res = from r in await bll_member.Find(o).Where(x => x.IsActive == (obj.IsActive ?? x.IsActive)).ToListAsync()
                       join m in bll_member.Find(new EF.Member { CommunityId = obj.CommunityId }) on r.InvitedBy equals m.Id into g
@@ -96,46 +100,53 @@ namespace PERI.Agenda.Web.Controllers
         [Route("Find/Page/{id}")]
         public async Task<IActionResult> Page([FromBody] Models.Member obj, int id)
         {
-            
-            var bll_member = memberBusiness;
-            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+            try
+            {
+                var bll_member = memberBusiness;
+                var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            obj.CommunityId = user.Member.CommunityId.Value;
+                obj.CommunityId = user.Member.CommunityId.Value;
 
-            var o = AutoMapper.Mapper.Map<EF.Member>(obj);
+                var o = this.mapper.Map<EF.Member>(obj);
 
-            if (obj.RoleId != null)
-                o.EndUser = new EF.EndUser { RoleId = obj.RoleId.Value };
+                if (obj.RoleId != null)
+                    o.EndUser = new EF.EndUser { RoleId = obj.RoleId.Value };
 
-            var members = bll_member.Find(o).Where(x => x.IsActive == (obj.IsActive ?? x.IsActive));
-            var page = id;
-            var pager = new Core.Pager(await members.CountAsync(), page == 0 ? 1 : page, 100);
+                var members = bll_member.Find(o).Where(x => x.IsActive == (obj.IsActive ?? x.IsActive));
+                var page = id;
+                var pager = new Core.Pager(await members.CountAsync(), page == 0 ? 1 : page, 100);
 
-            var res = from r in await members.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize).ToListAsync()
-                      join m in bll_member.Find(new EF.Member { CommunityId = obj.CommunityId }) on r.InvitedBy equals m.Id into g
-                      from m1 in g.DefaultIfEmpty()
-                      select new
-                      {
-                          r.Id,
-                          r.Name,
-                          r.NickName,
-                          r.Address,
-                          r.Mobile,
-                          r.Email,
-                          r.BirthDate,
-                          r.Remarks,
-                          r.CivilStatus,
-                          r.Gender,
-                          InvitedByMemberName = m1 == null ? "" : m1.Name,
-                          r.IsActive,
-                          RoleId = r.EndUser == null ? 0 : r.EndUser.RoleId
-                      };
+                var res = from r in await members.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize).ToListAsync()
+                          join m in bll_member.Find(new EF.Member { CommunityId = obj.CommunityId }) on r.InvitedBy equals m.Id into g
+                          from m1 in g.DefaultIfEmpty()
+                          select new
+                          {
+                              r.Id,
+                              r.Name,
+                              r.NickName,
+                              r.Address,
+                              r.Mobile,
+                              r.Email,
+                              r.BirthDate,
+                              r.Remarks,
+                              r.CivilStatus,
+                              r.Gender,
+                              InvitedByMemberName = m1 == null ? "" : m1.Name,
+                              r.IsActive,
+                              RoleId = r.EndUser == null ? 0 : r.EndUser.RoleId
+                          };
 
-            dynamic obj1 = new ExpandoObject();
-            obj1.members = res;
-            obj1.pager = pager;
+                dynamic obj1 = new ExpandoObject();
+                obj1.members = res;
+                obj1.pager = pager;
 
-            return Json(obj1);
+                return Json(obj1);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                return BadRequest();
+            }
         }
 
         /// <summary>
@@ -156,7 +167,7 @@ namespace PERI.Agenda.Web.Controllers
                     var bll_member = memberBusiness;
                     var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-                    var m = AutoMapper.Mapper.Map<EF.Member>(args);
+                    var m = this.mapper.Map<EF.Member>(args);
                     m.IsActive = true;
                     m.CommunityId = user.Member.CommunityId.Value;
                     m.CreatedBy = user.Member.Name;
@@ -300,7 +311,7 @@ namespace PERI.Agenda.Web.Controllers
 
             obj.CommunityId = user.Member.CommunityId;
 
-            var o = AutoMapper.Mapper.Map<EF.Member>(obj);
+            var o = this.mapper.Map<EF.Member>(obj);
 
             if (!await bll_member.IsSelectedIdsOk(new int[] { obj.Id }, user))
                 return BadRequest();
@@ -469,7 +480,7 @@ namespace PERI.Agenda.Web.Controllers
 
             obj.CommunityId = user.Member.CommunityId;
 
-            var o = AutoMapper.Mapper.Map<EF.Member>(obj);
+            var o = this.mapper.Map<EF.Member>(obj);
 
             var res = from r in await bll_member.Find(o).Where(x => x.IsActive == (obj.IsActive ?? x.IsActive)).ToListAsync()
                       join genders in (await bll_lu.GetByGroup("Gender")).Select(x => new { Label = x.Name, Value = int.Parse(x.Value) }) on r.Gender equals genders.Value into e

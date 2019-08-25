@@ -57,7 +57,12 @@ namespace PERI.Agenda.Web
             {
                 options.CustomSchemaIds(x => x.FullName);
             });
-            services.AddAutoMapper();
+            // AutoMapper
+            var mappingConfig = new MapperConfiguration(mc => {
+                mc.AddProfile(new AutoMapperProfileConfiguration());
+            });
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
 
             services.AddAuthentication("MyCookieMiddlewareInstance")
             .AddCookie("MyCookieMiddlewareInstance", options =>

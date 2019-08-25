@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using PERI.Agenda.Core;
 using PERI.Agenda.BLL;
 using NLog;
+using AutoMapper;
 
 namespace PERI.Agenda.Web.Controllers
 {
@@ -23,18 +24,21 @@ namespace PERI.Agenda.Web.Controllers
         private readonly IRegistrant registrantBusiness;
         private readonly IGroup groupBusiness;
         private readonly EF.AARSContext context;
+        private readonly IMapper mapper;
 
         public EventController(IEventCategory eventCategory,
             IEvent eventBusiness,
             IRegistrant registrant,
             IGroup group,
-            EF.AARSContext context)
+            EF.AARSContext context,
+            IMapper mapper)
         {
             this.context = context;
             this.eventCategoryBusiness = eventCategory;
             this.eventBusiness = eventBusiness;
             this.registrantBusiness = registrant;
             this.groupBusiness = group;
+            this.mapper = mapper;
         }
 
         /// <summary>
@@ -187,7 +191,7 @@ namespace PERI.Agenda.Web.Controllers
 
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var o = AutoMapper.Mapper.Map<EF.Event>(obj);
+            var o = this.mapper.Map<EF.Event>(obj);
             o.CreatedBy = user.Member.Name;
             o.DateTimeCreated = DateTime.Now;
 
@@ -215,7 +219,7 @@ namespace PERI.Agenda.Web.Controllers
             {
                 try
                 {
-                    var o = AutoMapper.Mapper.Map<EF.Event>(obj);
+                    var o = this.mapper.Map<EF.Event>(obj);
                     o.IsExclusive = true;
                     o.CreatedBy = user.Member.Name;
                     o.DateTimeCreated = DateTime.Now;

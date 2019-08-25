@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,11 +18,13 @@ namespace PERI.Agenda.Web.Controllers
     {
         private readonly ILocation locationBusiness;
         private readonly IEvent eventBusiness;
+        private readonly IMapper mapper;
 
-        public LocationController(ILocation location, IEvent eventBusiness)
+        public LocationController(ILocation location, IEvent eventBusiness, IMapper mapper)
         {
             this.locationBusiness = location;
             this.eventBusiness = eventBusiness;
+            this.mapper = mapper;
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
@@ -33,7 +36,7 @@ namespace PERI.Agenda.Web.Controllers
             var bll_l = locationBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            var o = AutoMapper.Mapper.Map<EF.Location>(args);
+            var o = this.mapper.Map<EF.Location>(args);
             o.CommunityId = user.Member.CommunityId;
             o.DateTimeCreated = DateTime.Now;
             o.CreatedBy = user.Member.Name;
@@ -54,7 +57,7 @@ namespace PERI.Agenda.Web.Controllers
 
             obj.CommunityId = user.Member.CommunityId;
 
-            var o = AutoMapper.Mapper.Map<EF.Location>(obj);
+            var o = this.mapper.Map<EF.Location>(obj);
             o.DateTimeModified = DateTime.Now;
             o.ModifiedBy = user.Member.Name;
 

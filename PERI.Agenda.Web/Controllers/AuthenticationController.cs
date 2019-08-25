@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -26,12 +27,15 @@ namespace PERI.Agenda.Web.Controllers
         private readonly ICommunity communityBusiness;
         private readonly EF.AARSContext context;
 
+        private readonly IMapper mapper;
+
         public AuthenticationController(IOptions<Core.Emailer> settingsOptions,
             IOptions<Core.GoogleReCaptcha> options,
             IEndUser endUser,
             IMember member,
             ICommunity community,
-            EF.AARSContext context)
+            EF.AARSContext context,
+            IMapper mapper)
         {
             smtp = settingsOptions.Value;
             captcha = options.Value;
@@ -39,6 +43,7 @@ namespace PERI.Agenda.Web.Controllers
             this.endUserBusiness = endUser;
             this.memberBusiness = member;
             this.communityBusiness = community;
+            this.mapper = mapper;
         }
 
         private async Task AddClaimsAndSignIn(EF.EndUser args)
@@ -206,7 +211,7 @@ namespace PERI.Agenda.Web.Controllers
                         var midlleInitial = String.IsNullOrEmpty(args.MiddleInitial) ? " " : $" {args.MiddleInitial}. ";
                         var name = args.FirstName.Trim() + midlleInitial + args.LastName.Trim();
 
-                        var m = AutoMapper.Mapper.Map<EF.Member>(args);
+                        var m = this.mapper.Map<EF.Member>(args);
                         m.Name = name;
                         m.IsActive = true;
                         m.DateCreated = DateTime.Now;
