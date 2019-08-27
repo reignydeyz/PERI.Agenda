@@ -159,23 +159,26 @@ export class MemberComponent {
             this.member.birthDate = moment(this.member.birthDate.date.month + '/' + this.member.birthDate.date.day + '/' + this.member.birthDate.date.year).format('MM/DD/YYYY');
         }
 
-        await this.mm.edit(member);  
-
-        for (let m of this.chunk.members) {
-            if (m.id == member.id) {
-                let index: number = this.chunk.members.indexOf(m);
-                this.chunk.members[index] = member;
+        await this.mm.edit(member).then(r => {
+            for (let m of this.chunk.members) {
+                if (m.id == member.id) {
+                    let index: number = this.chunk.members.indexOf(m);
+                    this.chunk.members[index] = member;
+                }
             }
-        }
 
-        if (member.isActive) {
-            this.actives += 1;
-            this.inactives -= 1;
-        }
-        else {
-            this.actives -= 1;
-            this.inactives += 1;
-        }
+            if (member.isActive) {
+                this.actives += 1;
+                this.inactives -= 1;
+            }
+            else {
+                this.actives -= 1;
+                this.inactives += 1;
+            }
+
+            alert('Updated!');
+            $('#modalEdit').modal('toggle');
+        });  
     }
 
     // https://stackoverflow.com/questions/20043265/check-if-checkbox-element-is-checked-in-typescript

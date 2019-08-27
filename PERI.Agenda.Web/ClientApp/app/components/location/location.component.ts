@@ -103,14 +103,17 @@ export class LocationComponent {
     }
 
     public onEditSubmit(l: Location) {
-        this.lm.edit(l);
-
-        for (let e of this.locations) {
-            if (e.id == l.id) {
-                let index: number = this.locations.indexOf(e);
-                this.locations[index] = l;
+        this.lm.edit(l).then(r => {
+            for (let e of this.locations) {
+                if (e.id == l.id) {
+                    let index: number = this.locations.indexOf(e);
+                    this.locations[index] = l;
+                }
             }
-        }
+
+            alert('Added!');
+            $('#modalEdit').modal('toggle');
+        });
     }
 
     async onDeleteClick() {
