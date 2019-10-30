@@ -275,6 +275,13 @@ namespace PERI.Agenda.Web.Controllers
                 return BadRequest();
 
             var r = await bll_member.Get(new EF.Member { Id = id, CommunityId = user.Member.CommunityId });
+
+            // InvitedBy
+            var invitedBy = await bll_member.GetById(r.InvitedBy.Value);
+            var invitedByMemberName = string.Empty;
+            if (invitedBy != null)
+                invitedByMemberName = invitedBy.Name;
+
             return Json(new Models.Member
                 {
                     Address = r.Address,
@@ -285,7 +292,7 @@ namespace PERI.Agenda.Web.Controllers
                     Gender = r.Gender,
                     Id = r.Id,
                     InvitedBy = r.InvitedBy,
-                    InvitedByMemberName = r.InvitedBy > 0 ? (await bll_member.GetById(r.InvitedBy.Value)).Name : "",
+                    InvitedByMemberName = invitedByMemberName,
                     IsActive = r.IsActive,
                     Mobile = r.Mobile,
                     Name = r.Name,
