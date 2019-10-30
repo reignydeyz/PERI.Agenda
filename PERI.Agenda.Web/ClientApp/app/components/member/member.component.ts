@@ -141,7 +141,7 @@ export class MemberComponent {
 
             alert('Added!');
             $('#modalNew').modal('toggle');
-        }).catch(err => {
+        }, err => {
             this.ex.catchError(err);
         });
     }
@@ -178,6 +178,8 @@ export class MemberComponent {
 
             alert('Updated!');
             $('#modalEdit').modal('toggle');
+        }, err => {
+            this.ex.catchError(err);
         });  
     }
 
