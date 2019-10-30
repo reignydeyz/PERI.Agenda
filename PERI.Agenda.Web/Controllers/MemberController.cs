@@ -276,11 +276,14 @@ namespace PERI.Agenda.Web.Controllers
 
             var r = await bll_member.Get(new EF.Member { Id = id, CommunityId = user.Member.CommunityId });
 
-            // InvitedBy
-            var invitedBy = await bll_member.GetById(r.InvitedBy.Value);
+            // InvitedBy            
             var invitedByMemberName = string.Empty;
-            if (invitedBy != null)
-                invitedByMemberName = invitedBy.Name;
+            if (r.InvitedBy > 0)
+            {
+                var invitedBy = await bll_member.GetById(r.InvitedBy.Value);
+                if (invitedBy != null)
+                    invitedByMemberName = invitedBy.Name;
+            }
 
             return Json(new Models.Member
                 {
