@@ -402,7 +402,7 @@ export class AttendanceComponent {
             .catch(err => {
                 console.log('Error while establishing connection, retrying...');
                 console.log(err);
-                setTimeout(this.startConnection(), 5000);
+                setTimeout(this.startConnection() as any, 5000);
             });
     }
 
