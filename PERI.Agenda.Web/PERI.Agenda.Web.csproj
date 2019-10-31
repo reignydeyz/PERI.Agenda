@@ -7,6 +7,7 @@
     <IsPackable>false</IsPackable>
 	<Version>0.11.0.4</Version>
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+  <ProjectGuid>{e45d014b-ffd6-45e8-9921-79dd1f25f5ef}</ProjectGuid>
   </PropertyGroup>
 
   <ItemGroup>
