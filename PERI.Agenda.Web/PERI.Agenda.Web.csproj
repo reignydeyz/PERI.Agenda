@@ -5,7 +5,7 @@
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <IsPackable>false</IsPackable>
-	<Version>0.12.0.0</Version>
+	<Version>0.12.0.1</Version>
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
   <ProjectGuid>{e45d014b-ffd6-45e8-9921-79dd1f25f5ef}</ProjectGuid>
   </PropertyGroup>
