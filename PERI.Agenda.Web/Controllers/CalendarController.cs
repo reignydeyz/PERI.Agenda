@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PERI.Agenda.BLL;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PERI.Agenda.Web.Controllers
-{    
+{
     [BLL.VerifyUser]
     [Produces("application/json")]
     [Route("api/Calendar")]

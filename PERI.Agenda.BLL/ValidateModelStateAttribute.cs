@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using NLog;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Text;
 
 namespace PERI.Agenda.BLL
 {

@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NLog;
+using PERI.Agenda.BLL;
+using PERI.Agenda.Core;
 using System;
 using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using PERI.Agenda.Core;
-using PERI.Agenda.BLL;
-using NLog;
-using AutoMapper;
 
 namespace PERI.Agenda.Web.Controllers
 {

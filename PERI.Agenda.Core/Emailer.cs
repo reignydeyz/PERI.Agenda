@@ -1,8 +1,6 @@
 ﻿using MailKit.Net.Smtp;
 using MimeKit;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PERI.Agenda.Core

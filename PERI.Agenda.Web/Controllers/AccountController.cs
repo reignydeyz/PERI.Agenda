@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using NLog;
-using PERI.Agenda.Core;
 using Microsoft.Extensions.Options;
-using System.Dynamic;
+using NLog;
 using PERI.Agenda.BLL;
+using PERI.Agenda.Core;
+using System;
+using System.Dynamic;
+using System.Threading.Tasks;
 
 namespace PERI.Agenda.Web.Controllers
 {
