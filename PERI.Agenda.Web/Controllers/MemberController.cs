@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Dynamic;
-using PERI.Agenda.Core;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
-using System.Text;
-using NLog;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Linq;
+using NLog;
 using PERI.Agenda.BLL;
-using AutoMapper;
+using PERI.Agenda.Core;
+using System;
+using System.Dynamic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace PERI.Agenda.Web.Controllers
 {

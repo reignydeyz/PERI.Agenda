@@ -1,20 +1,17 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using MockQueryable.Moq;
 using Moq;
-using PERI.Agenda.Web.Controllers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
-using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using AutoMapper;
-using Microsoft.Extensions.Options;
 using PERI.Agenda.Web;
+using PERI.Agenda.Web.Controllers;
+using System.Linq;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace PERI.Agenda.Test.Controllers
 {

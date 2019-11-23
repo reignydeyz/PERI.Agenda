@@ -1,9 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PERI.Agenda.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using PERI.Agenda.Repository;
 using System.Threading.Tasks;
 
 namespace PERI.Agenda.BLL
