@@ -15,13 +15,13 @@
     <table class="table table-striped table-hover tbl" id="tbl">
         <thead>
             <tr>
-                <th><input type="checkbox" (change)="checkAll()" id="checkall" /></th>
-                <th></th>
-                <th>Name</th>
-                <th>Events</th>
-                <th>Min Attendees</th>
-                <th>Average Attendees</th>
-                <th>Max Attendees</th>
+                <th scope="col" ><input type="checkbox" (change)="checkAll()" id="checkall" /></th>
+                <th scope="col" ></th>
+                <th scope="col" >Name</th>
+                <th scope="col" >Events</th>
+                <th scope="col" >Min Attendees</th>
+                <th scope="col" >Average Attendees</th>
+                <th scope="col" >Max Attendees</th>
             </tr>
         </thead>
         <tbody>
@@ -129,11 +129,11 @@
                             <table class="table table-striped table-hover tbl1" id="tbl1">
                                 <thead>
                                     <tr>
-                                        <th>Category</th>
-                                        <th>Event</th>
-                                        <th>Location</th>
-                                        <th>Date</th>
-                                        <th>Attendance</th>
+                                        <th scope="col" >Category</th>
+                                        <th scope="col" >Event</th>
+                                        <th scope="col" >Location</th>
+                                        <th scope="col" >Date</th>
+                                        <th scope="col" >Attendance</th>
                                     </tr>
                                 </thead>
                                 <tbody style="padding-bottom: 50px">
