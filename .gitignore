@@ -324,3 +324,4 @@ ASALocalRun/
 appsettings.json
 appsettings.Development.json
 .sonarqube/
+coverage.opencover.xml
