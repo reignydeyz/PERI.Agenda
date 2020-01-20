@@ -39,6 +39,7 @@ You may need to understand the nature of ASP-MVC before going through the entire
 - [SignalR](https://www.asp.net/signalr)
 - [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle)
 - [Moq](https://github.com/Moq/moq4/wiki/Quickstart)
+- [SendGrid](https://sendgrid.com)
 
 ### Solution Structure
 

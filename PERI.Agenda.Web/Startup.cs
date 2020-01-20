@@ -75,7 +75,7 @@ namespace PERI.Agenda.Web
 
             services.AddScoped<BLL.VerifyUserAttribute>();
 
-            services.Configure<Core.Emailer>(options => Core.Setting.Configuration.GetSection("SmtpClient").Bind(options));
+            services.Configure<Core.Emailer>(options => Core.Setting.Configuration.GetSection("Emailer").Bind(options));
             services.Configure<Core.GoogleReCaptcha>(options => Core.Setting.Configuration.GetSection("GoogleReCaptcha").Bind(options));
 
             services.AddScoped<BLL.ValidateReCaptchaAttribute>();

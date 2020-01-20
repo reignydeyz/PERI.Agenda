@@ -7,11 +7,10 @@
 
   <ItemGroup>
     <PackageReference Include="JWT" Version="5.1.1" />
-    <PackageReference Include="MailKit" Version="2.1.5.1" />
     <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
-    <PackageReference Include="MimeKit" Version="2.1.5.1" />
+    <PackageReference Include="SendGrid" Version="9.12.5" />
   </ItemGroup>
 
 </Project>

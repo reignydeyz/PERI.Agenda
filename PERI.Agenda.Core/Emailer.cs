@@ -1,43 +1,23 @@
-﻿using MailKit.Net.Smtp;
-using MimeKit;
+﻿using SendGrid;
+using SendGrid.Helpers.Mail;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PERI.Agenda.Core
 {
     public class Emailer
     {
-        public string DisplayName { get; set; }
-        public string DisplayEmail { get; set; }
-        public string SmtpServer { get; set; }
-        public string SmtpPort { get; set; }
-        public bool UseSsl { get; set; }
-        public string SmtpUser { get; set; }
-        public string SmtpPassword { get; set; }
+        public string SendGridApiKey { get; set; }
 
-        public async Task SendEmail(string to, string subject, string message)
+        public async Task<Response> SendEmail(string to, string subject, string message)
         {
-            var msg = new MimeMessage();
-
-            msg.From.Add(new MailboxAddress(DisplayName, DisplayEmail));
-            msg.To.Add(new MailboxAddress("", to));
-            msg.Subject = subject;
-            var bodyBuilder = new BodyBuilder();
-            bodyBuilder.HtmlBody = message;
-            msg.Body = bodyBuilder.ToMessageBody();
-
-            using (var client = new SmtpClient())
-            {
-                await client.ConnectAsync(SmtpServer, Convert.ToInt32(SmtpPort), Convert.ToBoolean(UseSsl));
-
-                // Note: only needed if the SMTP server requires authentication
-                await client.AuthenticateAsync(SmtpUser, SmtpPassword);
-
-                await client.SendAsync(msg);
-                await client.DisconnectAsync(true);
-            }
+            var client = new SendGridClient(SendGridApiKey);
+            var from = new EmailAddress("no-reply@agenda.com", "Agenda Admin");
+            var to1 = new EmailAddress(to, "Member");
+            var htmlContent = message;
+            var msg = MailHelper.CreateSingleEmail(from, to1, subject, string.Empty, htmlContent);
+            var res = await client.SendEmailAsync(msg);
+            return res;
         }
     }
 }
