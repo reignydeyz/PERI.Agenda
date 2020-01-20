@@ -91,14 +91,8 @@ You may need to understand the nature of ASP-MVC before going through the entire
     "Secret": "[SECRET_KEY]"
   },
   
-  "SmtpClient": {
-    "DisplayName": "[DISPLAY_NAME]",
-    "DisplayEmail": "[EMAIL]",
-    "SmtpServer": "[SMTP_SERVER]",
-    "SmtpPort": "[PORT]",
-    "UseSsl": [true/false],
-    "SmtpUser": "[SMTP_USERNAME]",
-    "SmtpPassword": "[SMTP_USER_PASSWORD]"
+  "Emailer": {
+    "SendGridApiKey": "[SENDGRID_API_KEY]"
   },
 
   "GoogleReCaptcha": {
