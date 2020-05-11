@@ -6,7 +6,7 @@ Business Requirements Document
 
 ## Use Case Diagram
 
-![Agenda](/uploads/e079ba64215105858cdb52d32a3ccd36/Agenda.jpg)
+![Agenda](images/usecase.jpg)
 
 ### Truth Table
 
@@ -26,14 +26,14 @@ Business Requirements Document
 
 ## Workflow Diagram
 
-![workflow](/uploads/013d3876a865aaa6969770db273100e9/workflow.jpg)
+![workflow](images/workflow.jpg)
 
 ## Flow Charts
 
 ### Registration
 
-![flowchart_-_registration](/uploads/130466a1a1be746b0c36ad1cf51d3630/flowchart_-_registration.jpg)
+![flowchart_-_registration](images/flowchart_-_registration.jpg)
 
 ### Calendar
 
-![Agenda](/uploads/2b92878ea84abbd1b32921c52a2e2e2b/Agenda.jpg)
+![Agenda](images/flowchart.jpg)

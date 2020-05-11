@@ -14,11 +14,11 @@ The document will walk you through. The API is composed of several endpoints/mod
 
 #### Login
 
-Authenticates the client
+Authenticates the client and returns token needed for the subsequent requests
 
 | Method | URL |
 |---|---|
-| POST | [host]/authentication/signin |
+| POST | [host]/signin |
 
 **Request Body**
 
