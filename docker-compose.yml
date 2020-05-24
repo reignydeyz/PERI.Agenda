@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  peri.agenda.web:
+    image: ${DOCKER_REGISTRY-}periagendaweb
+    build:
+      context: .
+      dockerfile: PERI.Agenda.Web/Dockerfile
