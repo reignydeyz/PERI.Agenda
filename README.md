@@ -88,7 +88,8 @@ You may need to understand the nature of ASP-MVC before going through the entire
   },
 
   "JWT": {
-    "Secret": "[SECRET_KEY]"
+    "Secret": "[SECRET_KEY]",
+	"MinutesToExpiry" : [NUMBER]
   },
   
   "Emailer": {

@@ -47,6 +47,10 @@ import { GroupMemberService } from './services/groupmember.service';
 import { LocationService } from './services/location.service';
 import { EventService } from './services/event.service';
 import { AttendanceService } from './services/attendance.service';
+import { AuthGuardService as AuthGuard } from './services/auth-guard.service';
+
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { ResponseInterceptor } from './interceptors/res.interceptor';
 
 @NgModule({
     declarations: [
@@ -78,6 +82,7 @@ import { AttendanceService } from './services/attendance.service';
         ActivityReportComponent
     ],
     imports: [
+        HttpClientModule,
         CommonModule,
         HttpModule,
         FormsModule,
@@ -99,7 +104,7 @@ import { AttendanceService } from './services/attendance.service';
             { path: 'eventmy', component: EventMyComponent },
             { path: 'eventcategory', component: EventCategoryComponent },
             { path: 'location', component: LocationComponent },
-            { path: 'dashboard', component: DashboardComponent },
+            { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]  },
             { path: 'attendance/:id', component: AttendanceComponent },
             { path: 'group', component: GroupComponent },
             { path: 'groupcategory', component: GroupCategoryComponent },
@@ -116,6 +121,7 @@ import { AttendanceService } from './services/attendance.service';
         ])
     ],
     providers: [
+        { provide: HTTP_INTERCEPTORS, useClass: ResponseInterceptor, multi: true },
         AccountService,
         DashboardService,
         MemberService,
@@ -129,7 +135,8 @@ import { AttendanceService } from './services/attendance.service';
         GroupMemberService,
         LocationService,
         EventService,
-        AttendanceService
+        AttendanceService,
+        AuthGuard
     ],
 })
 export class AppModuleShared {

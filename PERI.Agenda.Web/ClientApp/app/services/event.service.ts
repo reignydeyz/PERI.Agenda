@@ -2,11 +2,12 @@
 import { Http, Headers, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import { Event } from '../models/event';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class EventService {
     constructor(@Inject('BASE_URL') private baseUrl: string,
-        private http: Http) { }
+        private http: HttpClient) { }
 
     async find(e: Event): Promise<Event[]> {
         const response = await this.http.post(this.baseUrl + 'api/event/find', {
@@ -16,7 +17,7 @@ export class EventService {
             dateTimeEnd: e.dateTimeEnd,
             locationId: e.locationId
         }).toPromise();
-        return response.json() as Event[];
+        return response as Event[];
     }
 
     async add(e: Event): Promise<number> {
@@ -27,7 +28,7 @@ export class EventService {
             locationId: e.locationId
         }).toPromise();
 
-        return response.json() as number;
+        return response as number;
     }
 
     async addExclusive(e: Event, groupId: number): Promise<number> {
@@ -38,7 +39,7 @@ export class EventService {
             locationId: e.locationId
         }).toPromise();
 
-        return response.json() as number;
+        return response as number;
     }
 
     async edit(e: Event) {
@@ -53,29 +54,29 @@ export class EventService {
 
     async get(id: number): Promise<Event> {
         const response = await this.http.get(this.baseUrl + 'api/event/get/' + id).toPromise();
-        return response.json() as Event;
+        return response as Event;
     }
 
     async search(obj: Event, page: number): Promise<any> {
         const response = await this.http.post(this.baseUrl + 'api/event/find/page/' + page, obj).toPromise();
-        return response.json();
+        return response;
     }
 
     async searchMyPage(obj: Event, page: number): Promise<any> {
         const response = await this.http.post(this.baseUrl + 'api/event/find/mypage/' + page, obj).toPromise();
-        return response.json();
+        return response;
     }
 
     async download(e: Event): Promise<string> {
         const response = await this.http.post(this.baseUrl + 'api/event/download', e).toPromise();
-        return response.text();
+        return response as string;
     }
 
     async delete(selectedIds: number[]) {
         let body = JSON.stringify(selectedIds);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+        /*let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });*/
 
-        await this.http.post(this.baseUrl + 'api/event/delete', body, options).toPromise();
+        await this.http.post(this.baseUrl + 'api/event/delete', body, { "headers": { "Content-Type": "application/json" } }).toPromise();
     }
 }

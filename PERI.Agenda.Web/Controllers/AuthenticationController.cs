@@ -54,7 +54,8 @@ namespace PERI.Agenda.Web.Controllers
                         new Claim("http://schemas.microsoft.com/accesscontrolservice/2010/07/claims/identityprovider", "ASP.NET Identity", "http://www.w3.org/2001/XMLSchema#string"),
                         new Claim(ClaimTypes.Name, args.Member.Name),
                         new Claim(ClaimTypes.Email, args.Member.Email),
-                        new Claim(ClaimTypes.UserData, Core.JWT.GenerateToken(args.UserId, Core.Setting.Configuration.GetValue<string>("JWT:Secret"))),
+                        new Claim(ClaimTypes.UserData, Core.JWT.GenerateToken(args.UserId, Core.Setting.Configuration.GetValue<string>("JWT:Secret"),
+                            Core.Setting.Configuration.GetValue<int>("JWT:MinutesToExpire"))),
 
                         // Role
                         new Claim(ClaimTypes.Role, args.Role.Name),
@@ -159,7 +160,9 @@ namespace PERI.Agenda.Web.Controllers
                     user.LastLoginDate = DateTime.Now;
                     await buser.Edit(user);
 
-                    return Json(Core.JWT.GenerateToken(user.UserId, Core.Setting.Configuration.GetValue<string>("JWT:Secret")));
+                    var minutes = Core.Setting.Configuration.GetValue<int>("JWT:MinutesToExpire");
+
+                    return Json(Core.JWT.GenerateToken(user.UserId, Core.Setting.Configuration.GetValue<string>("JWT:Secret"), minutes));
                 }
             }
 

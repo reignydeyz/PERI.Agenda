@@ -2,11 +2,12 @@
 import { Http, Headers, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import { Group } from '../models/group';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class GroupService {
     constructor(@Inject('BASE_URL') private baseUrl: string,
-        private http: Http) { }
+        private http: HttpClient) { }
 
     async find(e: Group): Promise<Group[]> {
         const response = await this.http.post(this.baseUrl + 'api/group/find', {
@@ -15,12 +16,12 @@ export class GroupService {
             leader: e.leader
         }).toPromise();
 
-        return response.json() as Group[];
+        return response as Group[];
     }
 
     async search(e: Group, page: number): Promise<any> {
         const response = await this.http.post(this.baseUrl + 'api/group/find/page/' + page, e).toPromise();
-        return response.json();
+        return response;
     }
 
     async add(g: Group): Promise<number> {
@@ -30,7 +31,7 @@ export class GroupService {
             leader: g.leader
         }).toPromise();
 
-        return response.json() as number;
+        return response as number;
     }
 
     async edit(g: Group) {
@@ -44,24 +45,24 @@ export class GroupService {
 
     async get(id: number) : Promise<Group> {
         const response = await this.http.get(this.baseUrl + 'api/group/get/' + id).toPromise();
-        return response.json() as Group;
+        return response as Group;
     }
 
     async delete(selectedIds: number[]) {
         let body = JSON.stringify(selectedIds);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+        /*let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });*/
 
-        await this.http.post(this.baseUrl + 'api/group/delete', body, options).toPromise();
+        await this.http.post(this.baseUrl + 'api/group/delete', body, { "headers": { "Content-Type": "application/json" } }).toPromise();
     }
 
     async download(g: Group): Promise<string> {
         const response = await this.http.post(this.baseUrl + 'api/group/download', g).toPromise();
-        return response.text() as string;
+        return response as string;
     }
 
     async downloadMembers(groupId: number): Promise<string> {
         const response = await this.http.get(this.baseUrl + 'api/groupmember/' + groupId + '/download').toPromise();
-        return response.text() as string;
+        return response as string;
     }
 }

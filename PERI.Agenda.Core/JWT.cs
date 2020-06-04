@@ -15,10 +15,10 @@ namespace PERI.Agenda.Core
         /// <param name="id"></param>
         /// <param name="secret"></param>
         /// <returns>JWT string</returns>
-        public static string GenerateToken(int id, string secret)
+        public static string GenerateToken(int id, string secret, int minutesToExpire)
         {
-            var add12HoursUtc = DateTime.UtcNow.AddHours(12);
-            Int32 unixTimestamp = (Int32)(add12HoursUtc.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            var expiry = DateTime.UtcNow.AddMinutes(minutesToExpire);
+            Int32 unixTimestamp = (Int32)(expiry.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 
             IJwtAlgorithm algorithm = new HMACSHA256Algorithm();
             IJsonSerializer serializer = new JsonNetSerializer();
