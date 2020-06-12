@@ -167,13 +167,17 @@ namespace PERI.Agenda.BLL
 
         public async Task<EF.Member> Get(EF.Member args)
         {
-            return await _unitOfWork.MemberRepository.Entities.FirstOrDefaultAsync(x => x.Id == args.Id
+            return await _unitOfWork.MemberRepository.Entities
+                .Include(x => x.EndUser)
+                .FirstOrDefaultAsync(x => x.Id == args.Id
             && x.CommunityId == args.CommunityId);
         }
 
         public async Task<EF.Member> GetById(int id)
         {
-            return await _unitOfWork.MemberRepository.Entities.FirstOrDefaultAsync(x => x.Id == id);
+            return await _unitOfWork.MemberRepository.Entities
+                .Include(x => x.EndUser)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<bool> IsSelectedIdsOk(int[] ids, EF.EndUser user)

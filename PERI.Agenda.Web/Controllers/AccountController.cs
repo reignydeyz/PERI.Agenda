@@ -56,7 +56,8 @@ namespace PERI.Agenda.Web.Controllers
                 Mobile = r.Mobile,
                 Name = r.Name,
                 NickName = r.NickName,
-                Remarks = r.Remarks
+                Remarks = r.Remarks,
+                RoleId = r.EndUser == null ? 0 : r.EndUser.RoleId
             };
         }
 
