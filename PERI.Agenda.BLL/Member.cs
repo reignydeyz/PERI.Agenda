@@ -59,7 +59,8 @@ namespace PERI.Agenda.BLL
                     CreatedBy = args.CreatedBy,
                     DateCreated = args.DateCreated,
                     InvitedBy = args.InvitedBy,
-                    Remarks = args.Remarks
+                    Remarks = args.Remarks,
+                    Gender = args.Gender
                 };
 
                 await _unitOfWork.MemberRepository.AddAsync(m);
