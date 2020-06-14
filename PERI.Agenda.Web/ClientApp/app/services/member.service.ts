@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class MemberService {
     constructor(@Inject('BASE_URL') private baseUrl: string,
-        private http: HttpClient) { }
+        private http: HttpClient, private http1: Http) { }
 
     async add(m: Member) : Promise<number> {
         const response = await this.http.post(this.baseUrl + 'api/member/new', {
@@ -111,7 +111,7 @@ export class MemberService {
     }
 
     async download(m: Member): Promise<string> {
-        const response = await this.http.post(this.baseUrl + 'api/member/download/', m).toPromise();
-        return response as string;
+        const response = await this.http1.post(this.baseUrl + 'api/member/download/', m).toPromise();
+        return response.text();
     }
 }

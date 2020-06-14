@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class EventCategoryService {
     constructor(@Inject('BASE_URL') private baseUrl: string,
-        private http: HttpClient) { }
+        private http: HttpClient, private http1: Http) { }
 
     async find(ec: EventCategory): Promise<EventCategory[]> {
         const response = await this.http.post(this.baseUrl + 'api/eventcategory/find', {
@@ -47,8 +47,8 @@ export class EventCategoryService {
     }
 
     async download(): Promise<string> {
-        const response = await this.http.get(this.baseUrl + 'api/eventcategory/download').toPromise();
-        return response as string;
+        const response = await this.http1.get(this.baseUrl + 'api/eventcategory/download').toPromise();
+        return response.text();
     }
 
     async stats(id: number): Promise<GraphDataSet> {

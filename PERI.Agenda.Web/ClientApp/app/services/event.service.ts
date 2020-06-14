@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class EventService {
     constructor(@Inject('BASE_URL') private baseUrl: string,
-        private http: HttpClient) { }
+        private http: HttpClient, private http1: Http) { }
 
     async find(e: Event): Promise<Event[]> {
         const response = await this.http.post(this.baseUrl + 'api/event/find', {
@@ -68,8 +68,8 @@ export class EventService {
     }
 
     async download(e: Event): Promise<string> {
-        const response = await this.http.post(this.baseUrl + 'api/event/download', e).toPromise();
-        return response as string;
+        const response = await this.http1.post(this.baseUrl + 'api/event/download', e).toPromise();
+        return response.text();
     }
 
     async delete(selectedIds: number[]) {

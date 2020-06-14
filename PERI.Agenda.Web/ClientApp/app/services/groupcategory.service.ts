@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class GroupCategoryService {
     constructor(@Inject('BASE_URL') private baseUrl: string,
-        private http: HttpClient) { }
+        private http: HttpClient, private http1: Http) { }
 
     async find(ec: GroupCategory): Promise<GroupCategory[]> {
         const response = await this.http.post(this.baseUrl + 'api/groupcategory/find', {
@@ -36,8 +36,8 @@ export class GroupCategoryService {
     }
 
     async download(id: number): Promise<string> {
-        const response = await this.http.get(this.baseUrl + 'api/groupcategory/' + id + '/download').toPromise();
-        return response as string;
+        const response = await this.http1.get(this.baseUrl + 'api/groupcategory/' + id + '/download').toPromise();
+        return response.text();
     }
 
     async get(gcId: number): Promise<GroupCategory> {

@@ -9,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class AttendanceService {
     constructor(@Inject('BASE_URL') private baseUrl: string,
-        private http: HttpClient) { }
+        private http: HttpClient, private http1: Http) { }
 
     async registrants(eventId: number): Promise<Attendance[]> {
         const response = await this.http.get(this.baseUrl + 'api/attendance/' + eventId).toPromise();
@@ -48,14 +48,14 @@ export class AttendanceService {
         }).toPromise();
     }
 
-    async downloadAttendees(eventId: number): Promise<string> {
-        const response = await this.http.get(this.baseUrl + 'api/attendance/' + eventId + '/downloadattendees').toPromise();
-        return response as string;
+    async downloadAttendees(eventId: number) {
+        const response = await this.http1.get(this.baseUrl + 'api/attendance/' + eventId + '/downloadattendees').toPromise();
+        return response.text();
     }
 
     async downloadFirstTimers(eventId: number): Promise<string> {
-        const response = await this.http.get(this.baseUrl + 'api/attendance/' + eventId + '/downloadfirsttimers').toPromise();
-        return response as string;
+        const response = await this.http1.get(this.baseUrl + 'api/attendance/' + eventId + '/downloadfirsttimers').toPromise();
+        return response.text();
     }
 
     async getTotal(eventId: number, args: string): Promise<number> {
