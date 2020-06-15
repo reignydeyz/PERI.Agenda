@@ -173,8 +173,12 @@ namespace PERI.Agenda.Web.Controllers
             var bll_gm = groupMemberBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            if (!await bll_g.IsSelectedIdsOk(new int[] { obj.GroupId }, user))
-                throw new ArgumentException("Group Id is invalid.");
+            // Check if member adding/deleting himself
+            if (obj.MemberId != null)
+            {
+                if (!await bll_g.IsSelectedIdsOk(new int[] { obj.GroupId }, user))
+                    throw new ArgumentException("Group Id is invalid.");
+            }
 
             return await bll_gm.Add(new EF.GroupMember {
                 GroupId = obj.GroupId,
@@ -196,8 +200,12 @@ namespace PERI.Agenda.Web.Controllers
             var bll_gm = groupMemberBusiness;
             var user = HttpContext.Items["EndUser"] as EF.EndUser;
 
-            if (!await bll_g.IsSelectedIdsOk(new int[] { obj.GroupId }, user))
-                throw new ArgumentException("Group Id is invalid.");
+            // Check if member adding/deleting himself
+            if (obj.MemberId != null)
+            {
+                if (!await bll_g.IsSelectedIdsOk(new int[] { obj.GroupId }, user))
+                    throw new ArgumentException("Group Id is invalid.");
+            }
 
             await bll_gm.Delete(new EF.GroupMember {
                 GroupId = obj.GroupId,
