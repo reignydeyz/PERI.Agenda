@@ -4481,9 +4481,9 @@
       "dev": true
     },
     "jquery": {
-      "version": "3.2.1",
-      "resolved": "https://registry.npmjs.org/jquery/-/jquery-3.2.1.tgz",
-      "integrity": "sha1-XE2d5lKvbNCncBVKYxu6ErAVx4c=",
+      "version": "3.5.0",
+      "resolved": "https://registry.npmjs.org/jquery/-/jquery-3.5.0.tgz",
+      "integrity": "sha512-Xb7SVYMvygPxbFMpTFQiHh1J7HClEaThguL15N/Gg37Lri/qKyhRGZYzHRyLH8Stq3Aow0LsHO2O2ci86fCrNQ==",
       "dev": true
     },
     "js-base64": {
@@ -7006,7 +7006,7 @@
         },
         "readable-stream": {
           "version": "2.3.6",
-          "resolved": "http://registry.npmjs.org/readable-stream/-/readable-stream-2.3.6.tgz",
+          "resolved": "https://registry.npmjs.org/readable-stream/-/readable-stream-2.3.6.tgz",
           "integrity": "sha512-tQtKA9WIAhBF3+VLAseyMqZeBjW0AHJoxOtYqSUZNJxauErmLbVm2FW1y+J/YA9dUrAC39ITejlZWhVIwawkKw==",
           "dev": true,
           "requires": {
