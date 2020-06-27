@@ -116,7 +116,7 @@ Sample data can be found in ```TestDataGenerator.cs``` and is used by several te
 
 ### Tips
 
-- ```Community``` is an organization or main group that is required in sign-up page. Because the system supports multiple parties, it is important to identify the ```Community``` when signing-up.
+- ```Community``` is an organization or main group that is required in sign-up page. Because the system supports multiple parties, it is important to identify the ```Community``` you're signing-up to.
 
 - After generating all the DB scripts, you need to add a default ```Community```. To do this, open DB via SSMS and look for ```Community``` table and manually add your default community.
 
