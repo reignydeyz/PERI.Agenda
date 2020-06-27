@@ -8,6 +8,9 @@
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.10/clipboard.min.js"></script>
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" />
 <div class="container col-md-6 col-md-offset-3">
     <div class="panel-heading">
         <div class="panel-title text-center">
@@ -58,6 +61,15 @@
         </div>
         <div class="form-group">
             <label>Community*</label>
+            <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" style="float:right">
+                What's a community?
+            </a>
+            <div class="collapse" id="collapseExample">
+                <div class="card card-body">
+                    <p>Community is an organization or main group that is required in sign-up page. Because the system supports multiple parties, it is important to identify the Community when signing-up.</p>
+                    <p>Should you wish to start a new Community, please <a href="https://periapsys.com" target="_blank">contact us</a>.</p>
+                </div>
+            </div>
             @Html.DropDownListFor(x => x.CommunityId, ViewBag.Communities as SelectList, "--SELECT--", new { @class = "form-control", @required = "", @autocomplete = "off" })
         </div>
         <div class="form-group">
