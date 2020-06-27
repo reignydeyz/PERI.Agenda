@@ -123,7 +123,3 @@ Sample data can be found in ```TestDataGenerator.cs``` and is used by several te
 - The newly registered member will have the role, ```User```.
 
 - Because there's no way to create ```Admin``` at first, you need to use SSMS and manually edit your role after signing-up. You can see your account info in ```prompt.EndUser``` table. Change the ```RoleId``` to ```1``` to make your account admin.
-
-### Quality Gate (SonarCloud)
-
-[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=reignydeyz_PERI.Agenda)](https://sonarcloud.io/dashboard?id=reignydeyz_PERI.Agenda)
