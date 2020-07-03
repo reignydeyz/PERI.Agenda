@@ -12,5 +12,6 @@ namespace PERI.Agenda.BLL
         Task<int> Leading(int id);
         Task<int> Following(int id);
         Task<int> Invites(int id);
+        Task<EF.Member> GetByEmail(string email);
     }
 }

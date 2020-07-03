@@ -27,11 +27,7 @@ namespace PERI.Agenda.BLL
         public async Task<int> Add(EF.Member args)
         {
             // Validate Email
-            var m = await Find(new EF.Member
-            {
-                Email = String.IsNullOrEmpty(args.Email) ? "email" : args.Email.Trim(),
-                CommunityId = args.CommunityId
-            }).FirstOrDefaultAsync();
+            var m = await GetByEmail(String.IsNullOrEmpty(args.Email) ? "email" : args.Email.Trim());
 
             if (m == null)
             {
@@ -102,11 +98,7 @@ namespace PERI.Agenda.BLL
         public async Task Edit(EF.Member args)
         {
             // Validate Email
-            var m = await Find(new EF.Member
-            {
-                Email = String.IsNullOrEmpty(args.Email) ? "email" : args.Email.Trim(),
-                CommunityId = args.CommunityId
-            }).FirstOrDefaultAsync();
+            var m = await GetByEmail(String.IsNullOrEmpty(args.Email) ? "email" : args.Email.Trim());
 
             if (m != null && args.Id != m.Id)
             {
@@ -251,6 +243,11 @@ namespace PERI.Agenda.BLL
         public Task Delete(EF.Member args)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<EF.Member> GetByEmail(string email)
+        {
+            return await _unitOfWork.MemberRepository.Entities.FirstOrDefaultAsync(x => x.Email == email);
         }
     }
 }
