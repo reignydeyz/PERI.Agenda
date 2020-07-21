@@ -21,6 +21,7 @@ namespace PERI.Agenda.EF
         public virtual DbSet<EndUser> EndUser { get; set; }
         public virtual DbSet<Event> Event { get; set; }
         public virtual DbSet<EventCategory> EventCategory { get; set; }
+        public virtual DbSet<EventGroup> EventGroup { get; set; }
         public virtual DbSet<EventCategoryReport> EventCategoryReport { get; set; }
         public virtual DbSet<EventSection> EventSection { get; set; }
         public virtual DbSet<FirstTimer> FirstTimer { get; set; }
@@ -571,6 +572,24 @@ namespace PERI.Agenda.EF
                 entity.Property(e => e.DateCreated).HasColumnType("datetime");
 
                 entity.Property(e => e.UserName).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<EventGroup>(entity =>
+            {
+                entity.HasKey(e => new { e.EventId, e.GroupId })
+                    .HasName("PK__EventGro__C80D672665364ACF");
+
+                entity.ToTable("EventGroup", "prompt");
+
+                entity.HasOne(d => d.Event)
+                    .WithMany(p => p.EventGroup)
+                    .HasForeignKey(d => d.EventId)
+                    .HasConstraintName("FK_EventGroup_Event");
+
+                entity.HasOne(d => d.Group)
+                    .WithMany(p => p.EventGroup)
+                    .HasForeignKey(d => d.GroupId)
+                    .HasConstraintName("FK_EventGroup_Group");
             });
         }
     }

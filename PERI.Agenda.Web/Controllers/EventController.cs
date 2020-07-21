@@ -111,7 +111,7 @@ namespace PERI.Agenda.Web.Controllers
         }
 
         /// <summary>
-        /// earches events that are created by the logged in user/member
+        /// Searches events that are created by the logged in user/member
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="id"></param>
@@ -140,6 +140,46 @@ namespace PERI.Agenda.Web.Controllers
                           r.IsExclusive
                       };
             var page = id;
+            var pager = new Core.Pager(await res.CountAsync(), page == 0 ? 1 : page, 100);
+
+            dynamic obj1 = new ExpandoObject();
+            obj1.events = await res.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize).ToListAsync();
+            obj1.pager = pager;
+
+            return Json(obj1);
+        }
+
+        /// <summary>
+        /// Searches events that are created by the logged in user/member
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="groupId"></param>
+        /// <param name="pageNum"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("Find/Group/{groupId}/{pageNum}")]
+        public async Task<IActionResult> MyPage([FromBody] EF.Event obj, int groupId, int pageNum)
+        {
+            var bll_event = eventBusiness;
+            var user = HttpContext.Items["EndUser"] as EF.EndUser;
+
+            obj.EventCategory = new EF.EventCategory { CommunityId = user.Member.CommunityId };
+
+            var res = from r in bll_event.Find(obj)
+                      where r.EventGroup.Any(x => x.GroupId == groupId)
+                      select new
+                      {
+                          r.Id,
+                          r.EventCategoryId,
+                          Category = r.EventCategory.Name,
+                          r.Name,
+                          r.IsActive,
+                          r.DateTimeStart,
+                          Location = (r.Location == null ? "" : r.Location.Name),
+                          Attendance = r.Attendance.Count,
+                          r.IsExclusive
+                      };
+            var page = pageNum;
             var pager = new Core.Pager(await res.CountAsync(), page == 0 ? 1 : page, 100);
 
             dynamic obj1 = new ExpandoObject();
@@ -223,7 +263,7 @@ namespace PERI.Agenda.Web.Controllers
                     o.IsExclusive = true;
                     o.CreatedBy = user.Member.Name;
                     o.DateTimeCreated = DateTime.Now;
-                    var eventId = bll_e.Add(o).Result;
+                    var eventId = bll_e.Add(o, groupId).Result;
 
                     // Gets members from a group
                     var gr = await bll_g.Get(new EF.Group { Id = groupId });

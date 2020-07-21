@@ -8,6 +8,7 @@ namespace PERI.Agenda.EF
         public Event()
         {
             Attendance = new HashSet<Attendance>();
+            EventGroup = new HashSet<EventGroup>();
             Registrant = new HashSet<Registrant>();
             Rsvp = new HashSet<Rsvp>();
         }
@@ -31,6 +32,7 @@ namespace PERI.Agenda.EF
         public EventCategory EventCategory { get; set; }
         public Location Location { get; set; }
         public ICollection<Attendance> Attendance { get; set; }
+        public virtual ICollection<EventGroup> EventGroup { get; set; }
         public ICollection<Registrant> Registrant { get; set; }
         public ICollection<Rsvp> Rsvp { get; set; }
     }

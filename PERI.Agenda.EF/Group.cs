@@ -7,6 +7,7 @@ namespace PERI.Agenda.EF
     {
         public Group()
         {
+            EventGroup = new HashSet<EventGroup>();
             GroupMember = new HashSet<GroupMember>();
         }
 
@@ -21,6 +22,7 @@ namespace PERI.Agenda.EF
         public string ModifiedBy { get; set; }
 
         public GroupCategory GroupCategory { get; set; }
+        public virtual ICollection<EventGroup> EventGroup { get; set; }
         public ICollection<GroupMember> GroupMember { get; set; }
     }
 }

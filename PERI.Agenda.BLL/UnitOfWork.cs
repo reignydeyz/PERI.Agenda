@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PERI.Agenda.EF;
 using PERI.Agenda.Repository;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,6 +27,7 @@ namespace PERI.Agenda.BLL
         public IRepository<EF.Report> ReportRepository => new GenericRepository<EF.Report>(_dbContext);
         public IRepository<EF.EventCategoryReport> EventCategoryReportRepository => new GenericRepository<EF.EventCategoryReport>(_dbContext);
         public IRepository<EF.FirstTimer> FirstTimerRepository => new GenericRepository<EF.FirstTimer>(_dbContext);
+        public IRepository<EventGroup> EventGroupRepository => new GenericRepository<EF.EventGroup>(_dbContext);
         #endregion
         public UnitOfWork(EF.AARSContext dbContext)
         {

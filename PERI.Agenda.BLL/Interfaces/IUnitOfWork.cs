@@ -22,6 +22,7 @@ namespace PERI.Agenda.BLL
         IRepository<EF.EventCategoryReport> EventCategoryReportRepository { get; }
         IRepository<EF.Report> ReportRepository { get; }
         IRepository<EF.FirstTimer> FirstTimerRepository { get; }
+        IRepository<EF.EventGroup> EventGroupRepository { get; }
         /// <summary>
         /// Commits all changes
         /// </summary>

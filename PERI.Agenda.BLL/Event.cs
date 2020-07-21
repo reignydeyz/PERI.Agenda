@@ -68,6 +68,7 @@ namespace PERI.Agenda.BLL
             .Include(x => x.EventCategory)
             .Include(x => x.Attendance)
             .Include(x => x.Location)
+            .Include(x => x.EventGroup)
             .Where(x => (x.DateTimeStart >= (args.DateTimeStart ?? x.DateTimeStart) && x.DateTimeStart <= (args.DateTimeEnd ?? DateTime.Now.AddYears(100)))
             && x.Name.Contains(args.Name ?? "")
             && x.EventCategoryId == (args.EventCategoryId == 0 ? x.EventCategoryId : args.EventCategoryId)
@@ -119,6 +120,15 @@ namespace PERI.Agenda.BLL
                 || x.IsExclusive == true && x.Registrant.Select(y => y.MemberId).Contains(memberId))
             && x.EventCategory.CommunityId == communityId
             && x.Attendance.Count(y => y.MemberId == memberId) <= 0);
+        }
+
+        public async Task<int> Add(EF.Event e, int groupId)
+        {
+            var id = await this.Add(e);
+
+            await unitOfWork.EventGroupRepository.AddAsync(new EF.EventGroup { EventId = id, GroupId = groupId });
+
+            return id;
         }
     }
 }

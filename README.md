@@ -60,7 +60,8 @@ You may need to understand the nature of ASP-MVC before going through the entire
 ### Database
 
 1. Create a database using SSMS.
-2. Execute the ff accordingly
+2. Open ```db scripts``` folder
+3. Execute the ff accordingly
    - 01 - AARS tables.sql
    - 02 - AARS.LookUp defaults.sql
    - 10 - Agenda schema.sql
