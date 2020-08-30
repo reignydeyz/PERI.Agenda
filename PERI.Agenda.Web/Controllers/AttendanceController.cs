@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace PERI.Agenda.Web.Controllers
 {
+    [ApiVersion("1.0")]
     [BLL.VerifyUser]
     [Produces("application/json")]
     [Route("api/Attendance")]

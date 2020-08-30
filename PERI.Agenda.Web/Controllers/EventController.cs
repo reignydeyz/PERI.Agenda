@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace PERI.Agenda.Web.Controllers
 {
+    [ApiVersion("1.0")]
     [BLL.VerifyUser]
     [Produces("application/json")]
     [Route("api/Event")]
@@ -189,7 +190,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json(obj1);
         }
 
-        [ApiExplorerSettings(IgnoreApi = true)]
+        //[ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         [Route("download")]
         public async Task<IActionResult> Download([FromBody] EF.Event obj)
@@ -220,7 +221,7 @@ namespace PERI.Agenda.Web.Controllers
             return result;
         }
 
-        [ApiExplorerSettings(IgnoreApi = true)]
+        //[ApiExplorerSettings(IgnoreApi = true)]
         [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpPost]
         [Route("new")]
@@ -336,7 +337,7 @@ namespace PERI.Agenda.Web.Controllers
             return Json(obj);
         }
 
-        [ApiExplorerSettings(IgnoreApi = true)]
+        //[ApiExplorerSettings(IgnoreApi = true)]
         [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpPost("[action]")]
         public async Task Edit([FromBody] EF.Event obj)
@@ -349,7 +350,7 @@ namespace PERI.Agenda.Web.Controllers
             await bll_event.Edit(obj);
         }
 
-        [ApiExplorerSettings(IgnoreApi = true)]
+        //[ApiExplorerSettings(IgnoreApi = true)]
         [BLL.VerifyUser(AllowedRoles = "Admin")]
         [HttpPost("[action]")]
         public async Task<IActionResult> Delete([FromBody] int[] ids)

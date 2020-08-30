@@ -15,6 +15,9 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
 using PERI.Agenda.BLL;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Reflection;
+using Microsoft.AspNetCore.Mvc;
 
 namespace PERI.Agenda.Web
 {
@@ -45,13 +48,29 @@ namespace PERI.Agenda.Web
             services.AddSignalR();
             services.AddMvc();
             
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(options =>
             {
-                c.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info { Title = "API", Description = "Endpoints" });
+                options.DocInclusionPredicate((docName, apiDesc) =>
+                {
+                    if (!apiDesc.TryGetMethodInfo(out MethodInfo methodInfo))
+                    {
+                        return false;
+                    }
+
+                    IEnumerable<ApiVersion> versions = methodInfo.DeclaringType
+                        .GetCustomAttributes(true)
+                        .OfType<ApiVersionAttribute>()
+                        .SelectMany(a => a.Versions);
+
+                    return versions.Any(v => $"v{v.ToString()}" == docName);
+                });
+
+                options.SwaggerDoc("v1.0", new Swashbuckle.AspNetCore.Swagger.Info { Title = "API", Description = "v1.0" });
+                options.SwaggerDoc("v2.0", new Swashbuckle.AspNetCore.Swagger.Info { Title = "API", Description = "v2.0" });
 
                 // Configure Swagger to use the xml documentation file
                 var xmlFile = Path.ChangeExtension(typeof(Startup).Assembly.Location, ".xml");
-                c.IncludeXmlComments(xmlFile);
+                options.IncludeXmlComments(xmlFile);
             });
             services.ConfigureSwaggerGen(options =>
             {
@@ -142,10 +161,12 @@ namespace PERI.Agenda.Web
                 });
             });
 
+            app.UseApiVersioning();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API");
+                c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "V1");
+                c.SwaggerEndpoint("/swagger/v2.0/swagger.json", "V2");
             });
         }
     }

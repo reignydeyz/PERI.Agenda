@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace PERI.Agenda.Web.Controllers
 {
-
+    [ApiVersion("1.0")]
     public class AuthenticationController : Controller
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
