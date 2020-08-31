@@ -55,7 +55,7 @@ namespace PERI.Agenda.Web.Controllers
                         new Claim(ClaimTypes.Name, args.Member.Name),
                         new Claim(ClaimTypes.Email, args.Member.Email),
                         new Claim(ClaimTypes.UserData, Core.JWT.GenerateToken(args.UserId, Core.Setting.Configuration.GetValue<string>("JWT:Secret"),
-                            Core.Setting.Configuration.GetValue<int>("JWT:MinutesToExpire"))),
+                            Core.Setting.Configuration.GetValue<int>("JWT:AccessTokenMinutesToExpire"))),
 
                         // Role
                         new Claim(ClaimTypes.Role, args.Role.Name),
@@ -160,7 +160,7 @@ namespace PERI.Agenda.Web.Controllers
                     user.LastLoginDate = DateTime.Now;
                     await buser.Edit(user);
 
-                    var minutes = Core.Setting.Configuration.GetValue<int>("JWT:MinutesToExpire");
+                    var minutes = Core.Setting.Configuration.GetValue<int>("JWT:AccessTokenMinutesToExpire");
 
                     return Json(Core.JWT.GenerateToken(user.UserId, Core.Setting.Configuration.GetValue<string>("JWT:Secret"), minutes));
                 }

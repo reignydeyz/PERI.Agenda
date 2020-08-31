@@ -59,7 +59,7 @@ namespace PERI.Agenda.Web.Controllers.V2
                         new Claim(ClaimTypes.Name, args.Member.Name),
                         new Claim(ClaimTypes.Email, args.Member.Email),
                         new Claim(ClaimTypes.UserData, Core.JWT.GenerateToken(args.UserId, Core.Setting.Configuration.GetValue<string>("JWT:Secret"),
-                            Core.Setting.Configuration.GetValue<int>("JWT:MinutesToExpire"))),
+                            Core.Setting.Configuration.GetValue<int>("JWT:AccessTokenMinutesToExpire"))),
 
                         // Role
                         new Claim(ClaimTypes.Role, args.Role.Name),
