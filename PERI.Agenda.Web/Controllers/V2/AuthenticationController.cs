@@ -107,10 +107,11 @@ namespace PERI.Agenda.Web.Controllers.V2
                     user.LastLoginDate = DateTime.Now;
                     await buser.Edit(user);
 
-                    var minutes = Core.Setting.Configuration.GetValue<int>("JWT:MinutesToExpire");
+                    var accessTokenMinutes = Core.Setting.Configuration.GetValue<int>("JWT:AccessTokenMinutesToExpire");
+                    var refreshTokenMinutes = Core.Setting.Configuration.GetValue<int>("JWT:RefreshTokenMinutesToExpire");
 
-                    var accessToken = Core.JWT.GenerateToken(user.UserId, Core.Setting.Configuration.GetValue<string>("JWT:Secret"), minutes);
-                    var refreshToken = Core.JWT.GenerateToken(user.UserId, Core.Setting.Configuration.GetValue<string>("JWT:Secret"), 10080 * 2); // 2 weeks
+                    var accessToken = Core.JWT.GenerateToken(user.UserId, Core.Setting.Configuration.GetValue<string>("JWT:Secret"), accessTokenMinutes);
+                    var refreshToken = Core.JWT.GenerateToken(user.UserId, Core.Setting.Configuration.GetValue<string>("JWT:Secret"), refreshTokenMinutes);
 
                     return Json(new Token
                     {
@@ -140,10 +141,11 @@ namespace PERI.Agenda.Web.Controllers.V2
             user.LastLoginDate = DateTime.Now;
             await endUserBusiness.Edit(user);
 
-            var minutes = Core.Setting.Configuration.GetValue<int>("JWT:MinutesToExpire");
+            var accessTokenMinutes = Core.Setting.Configuration.GetValue<int>("JWT:AccessTokenMinutesToExpire");
+            var refreshTokenMinutes = Core.Setting.Configuration.GetValue<int>("JWT:RefreshTokenMinutesToExpire");
 
-            var accessToken = Core.JWT.GenerateToken(user.UserId, Core.Setting.Configuration.GetValue<string>("JWT:Secret"), minutes);
-            var refreshToken = Core.JWT.GenerateToken(user.UserId, Core.Setting.Configuration.GetValue<string>("JWT:Secret"), 10080 * 2); // 2 weeks
+            var accessToken = Core.JWT.GenerateToken(user.UserId, Core.Setting.Configuration.GetValue<string>("JWT:Secret"), accessTokenMinutes);
+            var refreshToken = Core.JWT.GenerateToken(user.UserId, Core.Setting.Configuration.GetValue<string>("JWT:Secret"), refreshTokenMinutes);
 
             return Json(new Token
             {
